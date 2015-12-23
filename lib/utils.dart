@@ -75,6 +75,19 @@ createPolymerElement(String name, String path, String appName) {
   fileCss.writeAsStringSync(polymerElementCssContent());
 }
 
+createModel(String name, String path, String appName) {
+  Directory dir = createDirectory("$path${toSnakeCase(name)}");
+
+  File models = new File("$path/models.dart");
+  models.writeAsString(models.readAsStringSync() +
+      "\n" +
+      "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
+
+  File fileDart =
+  createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart");
+  fileDart.writeAsStringSync(modelContent(name, appName));
+}
+
 toSnakeCase(String name) => name?.replaceAll("-", "_").replaceAll(" ", "_")?.toLowerCase();
 toLispCase(String name) => name?.replaceAll("_", "-").replaceAll(" ", "-")?.toLowerCase();
 toCamelCase(String str) => toLispCase(str)

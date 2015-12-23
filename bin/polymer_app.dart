@@ -153,6 +153,14 @@ createNewService(ArgResults results, ArgParser parser, String elementName) {
       elementName, dir.resolveSymbolicLinksSync() + "/lib/services/", library);
 }
 
+createNewModel(ArgResults results, ArgParser parser, String elementName) {
+  Directory dir = new Directory(".");
+  String library =
+  toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+  createModel(
+      elementName, dir.resolveSymbolicLinksSync() + "/lib/models/", library);
+}
+
 createNewElement(ArgResults results, ArgParser parser, String elementName) {
   if (toLispCase(elementName).split("-")?.length < 2) {
     print("Bad element name, should be 'polymer-element'");
@@ -195,7 +203,7 @@ void main(List<String> args) {
   } else if (results.rest.length == 3 &&
       results.rest[0] == "new" &&
       results.rest[1] == "model") {
-    //createNewModel(results, parser, results.rest[2]);
+    createNewModel(results, parser, results.rest[2]);
   } else if (results.rest.length == 3 &&
       results.rest[0] == "new" &&
       results.rest[1] == "service") {

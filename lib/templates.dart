@@ -129,6 +129,19 @@ factoryContent(String name, String appName) => _formatter
         "${toCamelCase(name)}._internal();"
         "}");
 
+modelContent(String name, String appName) => _formatter
+    .format('library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
+        'import "package:polymer_app/polymer_model.dart";'
+        'class ${toCamelCase(name)} extends PolymerModel {'
+        '@reflectable '
+        'String foo;'
+        '${toCamelCase(name)}(this.foo);'
+        '_fromJson(Map json) {'
+        'this.foo = json["json"];'
+        '}'
+        'Map get toMap => {"foo": foo};'
+        '}');
+
 indexHtmlContent(String appName) => "<!DOCTYPE html>\n"
     "<html>\n"
     "\t<head>\n"
