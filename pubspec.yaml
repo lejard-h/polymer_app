@@ -20,6 +20,8 @@ dependencies:
   args: any
   path: any
   ansicolor: any
+  http: any
+  dart_style: any
 
 transformers:
   - web_components:

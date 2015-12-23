@@ -136,14 +136,21 @@ createPubspec(Directory directory, String appName) {
   pubspecFile.writeAsStringSync(pubspecContent(appName));
 }
 
-create(ArgResults results, ArgParser parser) {
-  String appName = getAppName(results, parser);
+createNewApplication(ArgResults results, ArgParser parser, String appName) {
   print("Creating '${green(appName)}' application");
   Directory directory = getDirectory(appName, parser);
 
   createPubspec(directory, appName);
   createLibDirectory(directory, appName);
   createWebDirectory(directory, appName);
+}
+
+createNewService(ArgResults results, ArgParser parser, String elementName) {
+  Directory dir = new Directory(".");
+  String library =
+  toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+  createService(
+      elementName, dir.resolveSymbolicLinksSync() + "/lib/services/", library);
 }
 
 createNewElement(ArgResults results, ArgParser parser, String elementName) {
@@ -173,9 +180,10 @@ void main(List<String> args) {
   parser.addFlag('help', abbr: 'h');
 
   ArgResults results = parser.parse(args);
-
-  if (results.rest.length == 2 && results.rest[0] == "create") {
-    create(results, parser);
+  if (results.rest.length == 3 &&
+      results.rest[0] == "new" &&
+      results.rest[1] == "app") {
+    createNewApplication(results, parser, results.rest[2]);
   } else if (results.rest.length == 3 &&
       results.rest[0] == "new" &&
       results.rest[1] == "element") {
@@ -187,11 +195,11 @@ void main(List<String> args) {
   } else if (results.rest.length == 3 &&
       results.rest[0] == "new" &&
       results.rest[1] == "model") {
-   // createNewElement(results, parser, results.rest[2]);
+    //createNewModel(results, parser, results.rest[2]);
   } else if (results.rest.length == 3 &&
       results.rest[0] == "new" &&
       results.rest[1] == "service") {
-  //  createNewElement(results, parser, results.rest[2]);
+    createNewService(results, parser, results.rest[2]);
   } else {
     usage(parser);
   }
@@ -199,7 +207,7 @@ void main(List<String> args) {
 
 void usage(ArgParser parser) {
   print('polymer_app \n'
-      ' - create app_name\n'
+      ' - new app app_name\n'
       ' - new element element-name\n'
       ' - new model name\n'
       ' - new behavior name\n'

@@ -2,6 +2,8 @@
  * Created by lejard_h on 23/12/15.
  */
 
+library polymer_app.utils;
+
 import 'dart:io';
 import 'package:polymer_app/templates.dart';
 import 'package:ansicolor/ansicolor.dart';
@@ -26,8 +28,21 @@ File createFile(String path) {
   return file;
 }
 
+createService(String name, String path, String appName) {
+  Directory dir = createDirectory("$path${toSnakeCase(name)}");
+
+  File services = new File("$path/services.dart");
+  services.writeAsString(services.readAsStringSync() +
+      "\n" +
+      "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
+
+  File fileDart =
+  createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart");
+  fileDart.writeAsStringSync(factoryContent(name, appName));
+}
+
 createPolymerBehavior(String name, String path, String appName) {
-  Directory dir = createDirectory("$path/${toSnakeCase(name)}");
+  Directory dir = createDirectory("$path${toSnakeCase(name)}");
 
   File behaviors = new File("$path/behaviors.dart");
   behaviors.writeAsString(behaviors.readAsStringSync() +
@@ -40,7 +55,7 @@ createPolymerBehavior(String name, String path, String appName) {
 }
 
 createPolymerElement(String name, String path, String appName) {
-  Directory dir = createDirectory("$path/${toSnakeCase(name)}");
+  Directory dir = createDirectory("$path${toSnakeCase(name)}");
 
   File elements = new File("$path/elements.dart");
   elements.writeAsString(elements.readAsStringSync() +
@@ -60,8 +75,8 @@ createPolymerElement(String name, String path, String appName) {
   fileCss.writeAsStringSync(polymerElementCssContent());
 }
 
-toSnakeCase(String name) => name?.replaceAll("-", "_").replaceAll(" ", "_");
-toLispCase(String name) => name?.replaceAll("_", "-").replaceAll(" ", "-");
+toSnakeCase(String name) => name?.replaceAll("-", "_").replaceAll(" ", "_")?.toLowerCase();
+toLispCase(String name) => name?.replaceAll("_", "-").replaceAll(" ", "-")?.toLowerCase();
 toCamelCase(String str) => toLispCase(str)
     ?.split('-')
     ?.map((e) => e[0].toUpperCase() + e.substring(1))
