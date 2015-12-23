@@ -29,6 +29,11 @@ File createFile(String path) {
 createPolymerElement(String name, String path, String appName) {
   Directory dir = createDirectory("$path/${toSnakeCase(name)}");
 
+  File elements = new File("$path/elements.dart");
+  elements.writeAsString(elements.readAsStringSync() +
+      "\n" +
+      "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
+
   File fileDart =
       createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart");
   fileDart.writeAsStringSync(polymerElementDartContent(name, appName));
@@ -37,7 +42,8 @@ createPolymerElement(String name, String path, String appName) {
       createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.html");
   fileHtml.writeAsStringSync(polymerElementHtmlContent(name));
 
-  File fileCss = createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.css");
+  File fileCss =
+      createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.css");
   fileCss.writeAsStringSync(polymerElementCssContent());
 }
 

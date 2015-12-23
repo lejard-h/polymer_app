@@ -1,8 +1,11 @@
 name: polymer_app
-#description:
-version: 0.0.1
+description: Generation and management of polymer application
+version: 0.0.3
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 homepage: https://github.com/lejard-h/polymer_app
+
+executables:
+  polymer_app: polymer_app
 
 environment:
   sdk: '>=1.13.0 <2.0.0'

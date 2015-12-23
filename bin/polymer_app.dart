@@ -24,7 +24,7 @@ String getAppName(ArgResults results, ArgParser parser) {
     usage(parser);
     exit(1);
   }
-  appName = results.rest[0];
+  appName = results.rest[1];
   return appName;
 }
 
@@ -136,21 +136,9 @@ createPubspec(Directory directory, String appName) {
   pubspecFile.writeAsStringSync(pubspecContent(appName));
 }
 
-void main(List<String> args) {
-  ArgParser parser = new ArgParser(allowTrailingOptions: true);
-
-  parser.addFlag('help', abbr: 'h');
-
-  ArgResults results = parser.parse(args);
-
-  if (results['help']) {
-    usage(parser);
-    return;
-  }
-
+create(ArgResults results, ArgParser parser) {
   String appName = getAppName(results, parser);
   print("Creating '${green(appName)}' application");
-
   Directory directory = getDirectory(appName, parser);
 
   createPubspec(directory, appName);
@@ -158,8 +146,35 @@ void main(List<String> args) {
   createWebDirectory(directory, appName);
 }
 
+createNewElement(ArgResults results, ArgParser parser, String elementName) {
+  if (toLispCase(elementName).split("-")?.length < 2) {
+    print("Bad element name, should be 'polymer-element'");
+    exit(1);
+  }
+  Directory dir = new Directory(".");
+  String library = toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+  createPolymerElement(elementName, dir.resolveSymbolicLinksSync() + "/lib/elements/", library);
+}
+
+void main(List<String> args) {
+  ArgParser parser = new ArgParser(allowTrailingOptions: true);
+
+  parser.addFlag('help', abbr: 'h');
+
+  ArgResults results = parser.parse(args);
+
+  if (results.rest.length == 2 && results.rest[0] == "create") {
+    create(results, parser);
+  } else if (results.rest.length == 2 && results.rest[0] == "new_element") {
+    createNewElement(results, parser, results.rest[1]);
+  }else {
+    usage(parser);
+  }
+}
+
 void usage(ArgParser parser) {
-  print('pub run polymer_app:new_app'
-      'app_name');
+  print('polymer_app \n'
+      ' - create app_name\n'
+      ' - new_element element-name');
   print(parser.usage);
 }

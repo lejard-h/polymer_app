@@ -105,7 +105,7 @@ polymerElementDartContent(String name, String appName) =>
     "library $appName.elements.${toSnakeCase(name)};\n\n"
     "import 'package:polymer/polymer.dart';\n"
     "import 'package:web_components/web_components.dart' show HtmlImport;\n\n"
-    "@PolymerRegister(${toLispCase(name)})\n"
+    "@PolymerRegister('${toLispCase(name)}')\n"
     "class ${toCamelCase(name)} extends PolymerElement {\n"
     "\t${toCamelCase(name)}.created() : super.created();\n\n"
     "\t/*\n"
