@@ -17,6 +17,10 @@
 
     polymer_app new element my-element
     
+### Create a route
+
+    polymer_app new route name path   
+
 ### Create a polymer behavior
 
     polymer_app new behavior my-behavior

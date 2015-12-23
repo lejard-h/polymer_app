@@ -17,6 +17,8 @@ import 'package:polymer_app/utils.dart';
 
 final AnsiPen green = new AnsiPen()..green(bold: true);
 
+final AnsiPen white = new AnsiPen()..white(bold: true);
+
 String getAppName(ArgResults results, ArgParser parser) {
   String appName;
   if (results.rest == null || results.rest.isEmpty) {
@@ -148,7 +150,7 @@ createNewApplication(ArgResults results, ArgParser parser, String appName) {
 createNewService(ArgResults results, ArgParser parser, String elementName) {
   Directory dir = new Directory(".");
   String library =
-  toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
   createService(
       elementName, dir.resolveSymbolicLinksSync() + "/lib/services/", library);
 }
@@ -156,7 +158,7 @@ createNewService(ArgResults results, ArgParser parser, String elementName) {
 createNewModel(ArgResults results, ArgParser parser, String elementName) {
   Directory dir = new Directory(".");
   String library =
-  toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
   createModel(
       elementName, dir.resolveSymbolicLinksSync() + "/lib/models/", library);
 }
@@ -176,11 +178,30 @@ createNewElement(ArgResults results, ArgParser parser, String elementName) {
 createNewBehavior(ArgResults results, ArgParser parser, String elementName) {
   Directory dir = new Directory(".");
   String library =
-  toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
   createPolymerBehavior(
       elementName, dir.resolveSymbolicLinksSync() + "/lib/behaviors/", library);
 }
 
+createNewRoute(
+    ArgResults results, ArgParser parser, String routeName, String path) {
+  Directory dir = new Directory(".");
+  String library =
+      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+  createRouteElement(
+      routeName, dir.resolveSymbolicLinksSync() + "/lib/elements/", library);
+
+  print(white("\nImport and add page to your root-element\n"));
+  print(green(
+          "import 'package:${toSnakeCase(library)}/elements/route/${toSnakeCase(routeName)}_route/${toSnakeCase(routeName)}_route.dart';") +
+      "\n");
+  print("List<Page> _pages = [");
+  print("...");
+  print(green(
+      "\tnew Page('${toCamelCase(routeName)}', '${toSnakeCase(path)}', document.createElement('${toLispCase(routeName + "-route")}'))"));
+  print("...");
+  print("];");
+}
 
 void main(List<String> args) {
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
@@ -188,29 +209,25 @@ void main(List<String> args) {
   parser.addFlag('help', abbr: 'h');
 
   ArgResults results = parser.parse(args);
-  if (results.rest.length == 3 &&
+
+  if (results.rest.length == 3 && results.rest[0] == "new") {
+    if (results.rest[1] == "app") {
+      return createNewApplication(results, parser, results.rest[2]);
+    } else if (results.rest[1] == "element") {
+      return createNewElement(results, parser, results.rest[2]);
+    } else if (results.rest[1] == "behavior") {
+      return createNewBehavior(results, parser, results.rest[2]);
+    } else if (results.rest[1] == "model") {
+      return createNewModel(results, parser, results.rest[2]);
+    } else if (results.rest[1] == "service") {
+      return createNewService(results, parser, results.rest[2]);
+    }
+  } else if (results.rest.length == 4 &&
       results.rest[0] == "new" &&
-      results.rest[1] == "app") {
-    createNewApplication(results, parser, results.rest[2]);
-  } else if (results.rest.length == 3 &&
-      results.rest[0] == "new" &&
-      results.rest[1] == "element") {
-    createNewElement(results, parser, results.rest[2]);
-  } else if (results.rest.length == 3 &&
-      results.rest[0] == "new" &&
-      results.rest[1] == "behavior") {
-    createNewBehavior(results, parser, results.rest[2]);
-  } else if (results.rest.length == 3 &&
-      results.rest[0] == "new" &&
-      results.rest[1] == "model") {
-    createNewModel(results, parser, results.rest[2]);
-  } else if (results.rest.length == 3 &&
-      results.rest[0] == "new" &&
-      results.rest[1] == "service") {
-    createNewService(results, parser, results.rest[2]);
-  } else {
-    usage(parser);
+      results.rest[1] == "route") {
+    return createNewRoute(results, parser, results.rest[2], results.rest[3]);
   }
+  usage(parser);
 }
 
 void usage(ArgParser parser) {
@@ -219,6 +236,7 @@ void usage(ArgParser parser) {
       ' - new element element-name\n'
       ' - new model name\n'
       ' - new behavior name\n'
-      ' - new service name\n');
+      ' - new service name\n'
+      ' - new route name path\n');
   print(parser.usage);
 }

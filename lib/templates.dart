@@ -41,10 +41,26 @@ rootElementDartContent(String appName) => _formatter.format(
     'import "package:polymer/polymer.dart";'
     'import "dart:html";'
     'import "package:web_components/web_components.dart" show HtmlImport;'
-    'import "package:polymer_app_router/polymer_app_router.dart" show PolymerRouter;'
+    'import "package:polymer_app_router/polymer_app_router.dart";'
+    'PolymerAppRoute createRoute(String text) {'
+    'PolymerAppRoute route ='
+    'document.createElement("polymer-app-route") as PolymerAppRoute;'
+    'route.innerHtml = text;'
+    'return route;'
+    '}'
     '@PolymerRegister("root-element")'
     'class RootElement extends PolymerElement {'
     'RootElement.created() : super.created();'
+    ' List<Page> _pages = ['
+    'new Page("home", "",'
+    'createRoute("<div class=\'layout vertical center-center\'>Home</div>"),'
+    'isDefault: true)'
+    '];'
+    '@Property() List<Page> get pages => _pages;'
+    'set pages(List<Page> value) {'
+    '_pages = value;'
+    'notifyPath("pages", value);'
+    '}'
     'String _selected;'
     '@Property()'
     'String get selected => _selected;'
@@ -52,16 +68,46 @@ rootElementDartContent(String appName) => _formatter.format(
     '_selected = value;'
     'notifyPath("selected", value);'
     '}'
-    '@reflectable'
+    '@reflectable '
     'void goTo(event, [_]) {'
     'HtmlElement elem = event.target;'
     'PolymerRouter.goToName(elem.text);'
     '}'
-    '@reflectable'
+    '@reflectable '
     'void goToDefault(event, [_]) {'
     'PolymerRouter.goToDefault();'
     '}'
     '}');
+
+polymerElementDartRouteContent(String name, String appName) => _formatter.format(
+    "@HtmlImport('${toSnakeCase(name)}.html')"
+    "library $appName.elements.${toSnakeCase(name)};"
+    "import 'package:polymer/polymer.dart';"
+    "import 'package:web_components/web_components.dart' show HtmlImport;"
+    'import "package:polymer_app_router/polymer_app_router.dart";'
+    "@PolymerRegister('${toLispCase(name)}')"
+    "class ${toCamelCase(name)} extends PolymerElement with PolymerAppRouteBehavior { "
+    "${toCamelCase(name)}.created() : super.created();"
+    " /* "
+    "* Optional lifecycle methods - uncomment if needed."
+    " /// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
+    "attached() {"
+    "super.attached();"
+    "}\n\n"
+    " /// Called when an instance of ${toLispCase(name)} is removed from the DOM.\n"
+    "detached() {"
+    "super.detached();"
+    "}\n\n"
+    "/// Called when an attribute (such as  a class) of an instance of ${toLispCase(name)} is added, changed, or removed.\n"
+    "attributeChanged(String name, String oldValue, String newValue) {"
+    "}\n\n"
+    " /// Called when ${toLispCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached).\n"
+    "ready() {"
+    "}\n\n"
+    "/// Called when PolymerRouter enter on ${toLispCase(name)}\n"
+    "enter(RouteEnterEvent event, [Map params]) {}\n\n"
+    " */ "
+    "}");
 
 polymerElementDartContent(String name, String appName) => _formatter.format(
     "@HtmlImport('${toSnakeCase(name)}.html')"
@@ -73,20 +119,20 @@ polymerElementDartContent(String name, String appName) => _formatter.format(
     "${toCamelCase(name)}.created() : super.created();"
     "/*"
     "* Optional lifecycle methods - uncomment if needed."
-    "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM."
+    "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
     "attached() {"
     "super.attached();"
-    "}"
-    "/// Called when an instance of ${toLispCase(name)} is removed from the DOM."
+    "}\n\n"
+    "/// Called when an instance of ${toLispCase(name)} is removed from the DOM.\n"
     "detached() {"
     "super.detached();"
-    "}"
-    "/// Called when an attribute (such as  a class) of an instance of ${toLispCase(name)} is added, changed, or removed."
+    "}\n\n"
+    "/// Called when an attribute (such as  a class) of an instance of ${toLispCase(name)} is added, changed, or removed.\n"
     "attributeChanged(String name, String oldValue, String newValue) {"
-    "}"
-    "/// Called when ${toLispCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached)."
+    "}\n\n"
+    "/// Called when ${toLispCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached).\n"
     "ready() {"
-    "}"
+    "}\n\n"
     "*/"
     "}");
 
@@ -158,7 +204,8 @@ indexHtmlContent(String appName) => "<!DOCTYPE html>\n"
     '\t</body>\n'
     '</html>\n';
 
-rootElementHtmlContent() => polymerElementHtmlContent("root-element", "");
+rootElementHtmlContent() => polymerElementHtmlContent("root-element",
+    '<polymer-app-router selected="{{selected}}" pages="{{pages}}"></polymer-app-router>');
 
 polymerElementHtmlContent(String name, [String content = ""]) =>
     '<dom-module id="${toLispCase(name)}">\n'
@@ -174,6 +221,7 @@ polymerElementCssContent() => ":host {\n"
     "\tfont-weight: 300;\n"
     "\tdisplay: block;\n"
     "\t}";
+
 pubspecContent(String appName) => "name: ${toSnakeCase(appName)}\n"
     "#description:\n"
     "version: 0.0.1\n"
@@ -183,7 +231,7 @@ pubspecContent(String appName) => "name: ${toSnakeCase(appName)}\n"
     "  sdk: '>=1.13.0 <2.0.0'\n\n"
     "dependencies:\n"
     '  polymer: "^1.0.0-rc.10"\n'
-    '  polymer_app_router: "^0.0.3"\n'
+    '  polymer_app_router: "^0.0.4"\n'
     '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
     '  web_components: "^0.12.0"\n'
     '  browser: "^0.10.0"\n'

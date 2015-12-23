@@ -54,6 +54,28 @@ createPolymerBehavior(String name, String path, String appName) {
   fileDart.writeAsStringSync(polymerBehaviorContent(name, appName));
 }
 
+createRouteElement(String name, String path, String appName) {
+  name = name + "-route";
+  Directory dir = createDirectory("${path}route/${toSnakeCase(name)}");
+
+  File elements = new File("$path/elements.dart");
+  elements.writeAsString(elements.readAsStringSync() +
+      "\n" +
+      "export 'route/${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
+
+  File fileDart =
+  createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart");
+  fileDart.writeAsStringSync(polymerElementDartRouteContent(name, appName));
+
+  File fileHtml =
+  createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.html");
+  fileHtml.writeAsStringSync(polymerElementHtmlContent(name));
+
+  File fileCss =
+  createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.css");
+  fileCss.writeAsStringSync(polymerElementCssContent());
+}
+
 createPolymerElement(String name, String path, String appName) {
   Directory dir = createDirectory("$path${toSnakeCase(name)}");
 
