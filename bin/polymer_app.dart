@@ -152,9 +152,20 @@ createNewElement(ArgResults results, ArgParser parser, String elementName) {
     exit(1);
   }
   Directory dir = new Directory(".");
-  String library = toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
-  createPolymerElement(elementName, dir.resolveSymbolicLinksSync() + "/lib/elements/", library);
+  String library =
+      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+  createPolymerElement(
+      elementName, dir.resolveSymbolicLinksSync() + "/lib/elements/", library);
 }
+
+createNewBehavior(ArgResults results, ArgParser parser, String elementName) {
+  Directory dir = new Directory(".");
+  String library =
+  toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
+  createPolymerBehavior(
+      elementName, dir.resolveSymbolicLinksSync() + "/lib/behaviors/", library);
+}
+
 
 void main(List<String> args) {
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
@@ -165,9 +176,23 @@ void main(List<String> args) {
 
   if (results.rest.length == 2 && results.rest[0] == "create") {
     create(results, parser);
-  } else if (results.rest.length == 2 && results.rest[0] == "new_element") {
-    createNewElement(results, parser, results.rest[1]);
-  }else {
+  } else if (results.rest.length == 3 &&
+      results.rest[0] == "new" &&
+      results.rest[1] == "element") {
+    createNewElement(results, parser, results.rest[2]);
+  } else if (results.rest.length == 3 &&
+      results.rest[0] == "new" &&
+      results.rest[1] == "behavior") {
+    createNewBehavior(results, parser, results.rest[2]);
+  } else if (results.rest.length == 3 &&
+      results.rest[0] == "new" &&
+      results.rest[1] == "model") {
+   // createNewElement(results, parser, results.rest[2]);
+  } else if (results.rest.length == 3 &&
+      results.rest[0] == "new" &&
+      results.rest[1] == "service") {
+  //  createNewElement(results, parser, results.rest[2]);
+  } else {
     usage(parser);
   }
 }
@@ -175,6 +200,9 @@ void main(List<String> args) {
 void usage(ArgParser parser) {
   print('polymer_app \n'
       ' - create app_name\n'
-      ' - new_element element-name');
+      ' - new element element-name\n'
+      ' - new model name\n'
+      ' - new behavior name\n'
+      ' - new service name\n');
   print(parser.usage);
 }

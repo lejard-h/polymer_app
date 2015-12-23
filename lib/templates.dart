@@ -16,8 +16,7 @@ indexHtmlContent(String appName) => "<!DOCTYPE html>\n"
     '\t</body>\n'
     '</html>\n';
 
-indexDartContent(String appName) =>
-    "import 'package:polymer/polymer.dart';\n"
+indexDartContent(String appName) => "import 'package:polymer/polymer.dart';\n"
     "import 'package:${toSnakeCase(appName)}/${toSnakeCase(appName)}.dart';\n\n"
     "main() async {\n"
     "\tawait initPolymer();\n"
@@ -137,7 +136,31 @@ polymerElementHtmlContent(String name, [String content = ""]) =>
     '</dom-module>\n';
 
 polymerElementCssContent() => ":host {\n"
-"\tfont-family: 'Roboto', 'Noto', sans-serif;\n"
-"\tfont-weight: 300;\n"
-"\tdisplay: block;\n"
-"\t}";
+    "\tfont-family: 'Roboto', 'Noto', sans-serif;\n"
+    "\tfont-weight: 300;\n"
+    "\tdisplay: block;\n"
+    "\t}";
+
+polymerBehaviorContent(String name, String appName) =>
+    'import "package:polymer/polymer.dart";\n'
+    'library $appName.elements.${toSnakeCase(name)};\n\n'
+    '@behavior\n'
+    'abstract class ${toCamelCase(name)} {\n'
+    "\t/*\n"
+    "\t* Optional lifecycle methods - uncomment if needed.\n\n"
+    "\t/// Called when an instance of ${toCamelCase(name)} is inserted into the DOM.\n"
+    "\tattached() {\n"
+    "\t\tsuper.attached();\n"
+    "\t}\n\n"
+    "\t/// Called when an instance of ${toCamelCase(name)} is removed from the DOM.\n"
+    "\tdetached() {\n"
+    "\t\tsuper.detached();\n"
+    "\t}\n\n"
+    "\t/// Called when an attribute (such as  a class) of an instance of ${toCamelCase(name)} is added, changed, or removed.\n"
+    "\tattributeChanged(String name, String oldValue, String newValue) {\n"
+    "\t}\n\n"
+    "\t/// Called when ${toCamelCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached).\n"
+    "\tready() {\n"
+    "\t}\n\n"
+    "\t*/\n"
+    '}\n';

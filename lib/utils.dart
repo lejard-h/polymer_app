@@ -26,6 +26,19 @@ File createFile(String path) {
   return file;
 }
 
+createPolymerBehavior(String name, String path, String appName) {
+  Directory dir = createDirectory("$path/${toSnakeCase(name)}");
+
+  File behaviors = new File("$path/behaviors.dart");
+  behaviors.writeAsString(behaviors.readAsStringSync() +
+      "\n" +
+      "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
+
+  File fileDart =
+  createFile("${dir.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart");
+  fileDart.writeAsStringSync(polymerBehaviorContent(name, appName));
+}
+
 createPolymerElement(String name, String path, String appName) {
   Directory dir = createDirectory("$path/${toSnakeCase(name)}");
 
