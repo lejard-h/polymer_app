@@ -8,16 +8,9 @@ import "polymer_app_manager.dart";
 import "utils.dart";
 import "dart:io";
 
-class ModelsManager extends JsonObject {
-  String rootPath;
-  String appName;
-
-  String get completePath => "$rootPath/$path";
-
-  String get path => get("directory");
-  List get models => get("list");
-  ModelsManager.fromMap(Map config) : super.fromMap(config);
-  ModelsManager.fromJson(String json) : super.fromJson(json);
+class ModelsManager extends Manager {
+  ModelsManager.fromMap(Map config, String rootPath, String appName) : super.fromMap(config, rootPath, appName);
+  ModelsManager.fromJson(String json, String rootPath, String appName) : super.fromJson(json, rootPath,appName);
 
   addToLibrary(String name) {
     File services = new File("$completePath/models.dart");
@@ -26,15 +19,23 @@ class ModelsManager extends JsonObject {
         "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
   }
 
+  createLibraryDirectory() {
+    super.createLibraryDirectory();
+    writeInDartFile("$completePath/models.dart", modelsLibTemplate());
+  }
+
   createModel(String name, [String content]) {
     if (content == null) {
       content = modelDartTemplate(name);
     }
-    createDartFile(
+    writeInDartFile(
         "$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         content);
     addToLibrary(name);
   }
+
+  modelsLibTemplate() =>"library ${toSnakeCase(appName)}.models;"
+          "// export 'model.dart';";
 
   modelDartTemplate(String name) => 'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
           'import "package:polymer_app/polymer_model.dart";'

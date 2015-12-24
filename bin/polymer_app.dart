@@ -11,12 +11,11 @@ library polymer.bin.new_element;
 
 import 'dart:io';
 import 'package:args/args.dart';
-import 'package:polymer_app/templates.dart';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:polymer_app/utils.dart';
+import "package:polymer_app/polymer_app_manager.dart";
 
 final AnsiPen green = new AnsiPen()..green(bold: true);
-
 final AnsiPen white = new AnsiPen()..white(bold: true);
 
 String getAppName(ArgResults results, ArgParser parser) {
@@ -42,158 +41,42 @@ Directory getDirectory(String appName, ArgParser parser) {
   return dir;
 }
 
-Directory createWebDirectory(Directory root, String appName) {
-  print("");
-  Directory webDirectory =
-      createDirectory("${root.resolveSymbolicLinksSync()}/web");
-
-  File indexHtmlFile =
-      createFile("${webDirectory.resolveSymbolicLinksSync()}/index.html");
-  indexHtmlFile.createSync(recursive: true);
-  indexHtmlFile.writeAsStringSync(indexHtmlContent(appName));
-
-  File indexDartFile =
-      createFile("${webDirectory.resolveSymbolicLinksSync()}/index.dart");
-  indexDartFile.createSync(recursive: true);
-  indexDartFile.writeAsStringSync(indexDartContent(appName));
-
-  return webDirectory;
+createNewApplication() {
+  print("Creating '${green(manager.name)}' application");
+  manager.createApplication();
 }
 
-Directory createModelsDirectory(Directory root, String appName) {
-  Directory modelsDirectory =
-      createDirectory("${root.resolveSymbolicLinksSync()}/models");
-  File file =
-      createFile("${modelsDirectory.resolveSymbolicLinksSync()}/models.dart");
-  file.writeAsStringSync(modelsLibContent(appName));
-  return modelsDirectory;
+createNewService(String name) {
+  print("Creating '${green(name)}' service");
+  manager.services.createService(name);
 }
 
-Directory createBehaviorsDirectory(Directory root, String appName) {
-  Directory behaviorsDirectory =
-      createDirectory("${root.resolveSymbolicLinksSync()}/behaviors");
-  File file = createFile(
-      "${behaviorsDirectory.resolveSymbolicLinksSync()}/behaviors.dart");
-  file.writeAsStringSync(behaviorsLibContent(appName));
-  return behaviorsDirectory;
+createNewModel(String name) {
+  print("Creating '${green(name)}' model");
+  manager.models.createModel(name);
 }
 
-Directory createServicesDirectory(Directory root, String appName) {
-  Directory servicesDirectory =
-      createDirectory("${root.resolveSymbolicLinksSync()}/services");
-  File file = createFile(
-      "${servicesDirectory.resolveSymbolicLinksSync()}/services.dart");
-  file.writeAsStringSync(servicesLibContent(appName));
-  return servicesDirectory;
-}
-
-Directory createElementsDirectory(Directory root, String appName) {
-  Directory elementsDirectory =
-      createDirectory("${root.resolveSymbolicLinksSync()}/elements");
-  File file = createFile(
-      "${elementsDirectory.resolveSymbolicLinksSync()}/elements.dart");
-  file.writeAsStringSync(elementsLibContent(appName));
-
-  Directory dir = createDirectory(
-      "${elementsDirectory.resolveSymbolicLinksSync()}/root_element");
-
-  File fileDart =
-      createFile("${dir.resolveSymbolicLinksSync()}/root_element.dart");
-  fileDart.writeAsStringSync(rootElementDartContent(appName));
-
-  File fileHtml =
-      createFile("${dir.resolveSymbolicLinksSync()}/root_element.html");
-  fileHtml.writeAsStringSync(rootElementHtmlContent());
-
-  File fileCss =
-      createFile("${dir.resolveSymbolicLinksSync()}/root_element.css");
-
-  fileCss.writeAsStringSync(rootElementCssContent());
-  return elementsDirectory;
-}
-
-Directory createLibDirectory(Directory root, String appName) {
-  print("");
-  Directory libDirectory =
-      createDirectory("${root.resolveSymbolicLinksSync()}/lib");
-
-  createModelsDirectory(libDirectory, appName);
-  createServicesDirectory(libDirectory, appName);
-  createBehaviorsDirectory(libDirectory, appName);
-  createElementsDirectory(libDirectory, appName);
-
-  File appNameFile = createFile(
-      "${libDirectory.resolveSymbolicLinksSync()}/${toSnakeCase(appName)}.dart");
-  appNameFile.createSync(recursive: true);
-  appNameFile.writeAsStringSync(appLibraryContent(appName));
-
-  return libDirectory;
-}
-
-createPubspec(Directory directory, String appName) {
-  print("");
-  File pubspecFile =
-      createFile("${directory.resolveSymbolicLinksSync()}/pubspec.yaml");
-  pubspecFile.createSync(recursive: true);
-  pubspecFile.writeAsStringSync(pubspecContent(appName));
-}
-
-createNewApplication(ArgResults results, ArgParser parser, String appName) {
-  print("Creating '${green(appName)}' application");
-  Directory directory = getDirectory(appName, parser);
-
-  createPubspec(directory, appName);
-  createLibDirectory(directory, appName);
-  createWebDirectory(directory, appName);
-}
-
-createNewService(ArgResults results, ArgParser parser, String elementName) {
-  Directory dir = new Directory(".");
-  String library =
-      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
-  createService(
-      elementName, dir.resolveSymbolicLinksSync() + "/lib/services/", library);
-}
-
-createNewModel(ArgResults results, ArgParser parser, String elementName) {
-  Directory dir = new Directory(".");
-  String library =
-      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
-  createModel(
-      elementName, dir.resolveSymbolicLinksSync() + "/lib/models/", library);
-}
-
-createNewElement(ArgResults results, ArgParser parser, String elementName) {
-  if (toLispCase(elementName).split("-")?.length < 2) {
+createNewElement(String name) {
+  if (toLispCase(name).split("-")?.length < 2) {
     print("Bad element name, should be 'polymer-element'");
     exit(1);
   }
-  Directory dir = new Directory(".");
-  String library =
-      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
-  createPolymerElement(
-      elementName, dir.resolveSymbolicLinksSync() + "/lib/elements/", library);
+  print("Creating '${green(name)}' element");
+  manager.elements.createElement(name);
 }
 
-createNewBehavior(ArgResults results, ArgParser parser, String elementName) {
-  Directory dir = new Directory(".");
-  String library =
-      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
-  createPolymerBehavior(
-      elementName, dir.resolveSymbolicLinksSync() + "/lib/behaviors/", library);
+createNewBehavior(String name) {
+  print("Creating '${green(name)}' behavior");
+  manager.behaviors.createBehavior(name);
 }
 
-createNewRoute(
-    ArgResults results, ArgParser parser, String routeName, String path) {
-  Directory dir = new Directory(".");
-  String library =
-      toSnakeCase(dir?.resolveSymbolicLinksSync()?.split("/")?.last);
-  createRouteElement(
-      routeName, dir.resolveSymbolicLinksSync() + "/lib/elements/", library);
+createNewRoute(String routeName, String path) {
+  print("Creating '${green(routeName)}' route");
+  manager.routes.createRoute("$routeName-route");
 
   print(white("\nImport and add page to your root-element\n"));
   print(green(
-          "import 'package:${toSnakeCase(library)}/elements/route/${toSnakeCase(routeName)}_route/${toSnakeCase(routeName)}_route.dart';") +
+          "import 'package:${toSnakeCase(manager.name)}/elements/routes/routes.dart';") +
       "\n");
   print("List<Page> _pages = [");
   print("...");
@@ -203,6 +86,8 @@ createNewRoute(
   print("];");
 }
 
+PolymerAppManager manager;
+
 void main(List<String> args) {
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
 
@@ -210,22 +95,35 @@ void main(List<String> args) {
 
   ArgResults results = parser.parse(args);
 
+  File config = new File("./polymer_app.json");
+  if (config.existsSync()) {
+    print("'polymer_app.json' found.");
+    manager = new PolymerAppManager(config.resolveSymbolicLinksSync());
+  }
+
   if (results.rest.length == 3 && results.rest[0] == "new") {
     if (results.rest[1] == "app") {
-      return createNewApplication(results, parser, results.rest[2]);
-    } else if (results.rest[1] == "element") {
-      return createNewElement(results, parser, results.rest[2]);
-    } else if (results.rest[1] == "behavior") {
-      return createNewBehavior(results, parser, results.rest[2]);
-    } else if (results.rest[1] == "model") {
-      return createNewModel(results, parser, results.rest[2]);
-    } else if (results.rest[1] == "service") {
-      return createNewService(results, parser, results.rest[2]);
+      manager =
+          new PolymerAppManager.fromJson(getDefaultJsonConfig(results.rest[2]));
+      writeInFile("./polymer_app.json", getDefaultJsonConfig(results.rest[2]));
+      return createNewApplication();
+    } else if (results.rest[1] == "element" && manager != null) {
+      return createNewElement(results.rest[2]);
+    } else if (results.rest[1] == "behavior" && manager != null) {
+      return createNewBehavior(results.rest[2]);
+    } else if (results.rest[1] == "model" && manager != null) {
+      return createNewModel(results.rest[2]);
+    } else if (results.rest[1] == "service" && manager != null) {
+      return createNewService(results.rest[2]);
     }
   } else if (results.rest.length == 4 &&
       results.rest[0] == "new" &&
-      results.rest[1] == "route") {
-    return createNewRoute(results, parser, results.rest[2], results.rest[3]);
+      results.rest[1] == "route" &&
+      manager != null) {
+    return createNewRoute(results.rest[2], results.rest[3]);
+  }
+  if (manager == null) {
+    print("No 'polymer_app.json found.");
   }
   usage(parser);
 }
@@ -240,3 +138,29 @@ void usage(ArgParser parser) {
       ' - new route name path\n');
   print(parser.usage);
 }
+
+String getDefaultJsonConfig(String appName, [String path = "./"]) => '{'
+    '"name": "$appName",'
+    '"directory": "$path",'
+    '"web-directory": "web",'
+    '"elements": {'
+    ' "list": [],'
+    '"directory": "elements"'
+    '},'
+    ' "services": {'
+    '"list": [],'
+    '"directory": "services"'
+    '},'
+    '"behaviors": {'
+    '"list": [],'
+    '"directory": "behaviors"'
+    '},'
+    '"models": {'
+    '"list": [],'
+    '"directory": "models"'
+    '},'
+    '"routes": {'
+    '"list": [],'
+    '"directory": "elements/routes"'
+    '}'
+    '}';

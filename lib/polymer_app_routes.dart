@@ -10,8 +10,8 @@ import "utils.dart";
 import "dart:io";
 
 class RoutesManager extends ElementsManager {
-  RoutesManager.fromMap(Map config) : super.fromMap(config);
-  RoutesManager.fromJson(String json) : super.fromJson(json);
+  RoutesManager.fromMap(Map config, String rootPath, String appName) : super.fromMap(config, rootPath, appName);
+  RoutesManager.fromJson(String json, String rootPath, String appName) : super.fromJson(json, rootPath,appName);
 
   addToLibrary(String name) {
     File services = new File("$completePath/routes.dart");
@@ -19,6 +19,16 @@ class RoutesManager extends ElementsManager {
         "\n" +
         "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
   }
+
+  createLibraryDirectory() {
+    Directory dir = createDirectory("$rootPath/$path");
+    completePath = dir.resolveSymbolicLinksSync();
+    writeInDartFile("$completePath/routes.dart", routesLibTemplate());
+  }
+
+  routesLibTemplate() =>
+      "library ${toSnakeCase(appName)}.routes;"
+          "// export 'route.dart';";
 
   createRoute(String name) {
     writeInDartFile(

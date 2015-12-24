@@ -8,16 +8,11 @@ import "polymer_app_manager.dart";
 import "utils.dart";
 import "dart:io";
 
-class BehaviorsManager extends JsonObject {
-  String rootPath;
-  String appName;
+class BehaviorsManager extends Manager {
 
-  String get completePath => "$rootPath/$path";
+  BehaviorsManager.fromMap(Map config, String rootPath, String appName) : super.fromMap(config, rootPath, appName);
 
-  String get path => get("directory");
-  List get behaviors => get("list");
-  BehaviorsManager.fromMap(Map config) : super.fromMap(config);
-  BehaviorsManager.fromJson(String json) : super.fromJson(json);
+  BehaviorsManager.fromJson(String json, String rootPath, String appName) : super.fromJson(json, rootPath,appName);
 
   addToLibrary(String name) {
     File services = new File("$completePath/behaviors.dart");
@@ -26,15 +21,24 @@ class BehaviorsManager extends JsonObject {
         "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
   }
 
+  createLibraryDirectory() {
+    super.createLibraryDirectory();
+    writeInDartFile("$completePath/behaviors.dart", behaviorsLibTemplate());
+  }
+
   createBehavior(String name, [String content]) {
     if (content == null) {
       content = behaviorDartTemplate(name);
     }
-    createDartFile(
+    writeInDartFile(
         "$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         content);
     addToLibrary(name);
   }
+
+  behaviorsLibTemplate() =>
+      "library ${toSnakeCase(appName)}.behaviors;"
+          "// export 'behavior.dart';";
 
   behaviorDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.elements.${toSnakeCase(name)};'

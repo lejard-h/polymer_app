@@ -7,48 +7,56 @@ library polymer_app.manager;
 import 'dart:io';
 import "utils.dart";
 import "dart:convert";
+
 import "polymer_app_services.dart";
 import "polymer_app_models.dart";
 import "polymer_app_behaviors.dart";
+import "polymer_app_elements.dart";
+import "polymer_app_routes.dart";
+import "utils.dart";
 
 abstract class JsonObject {
   Map _obj;
 
   JsonObject();
+
   JsonObject.fromMap(this._obj);
+
   JsonObject.fromJson(String json) {
     _obj = JSON.decode(json);
   }
 
   get(String key) => _obj[key];
+
   set(String key, value) => _obj[key] = value;
 
   Map get toMap => _obj;
+
   String toString() => toMap.toString();
 }
 
-class ElementsManager extends JsonObject {
+class Manager extends JsonObject {
   String rootPath;
   String appName;
 
-  String get completePath => "$rootPath/$path";
+  String completePath;
 
   String get path => get("directory");
-  List get elements => get("list");
-  ElementsManager.fromMap(Map config) : super.fromMap(config);
-  ElementsManager.fromJson(String json) : super.fromJson(json);
-}
 
-class RoutesManager extends ElementsManager {
-  String rootPath;
-  String appName;
+  List get list => get("list");
 
-  String get completePath => "$rootPath/$path";
+  Manager.fromMap(Map config, this.rootPath, this.appName) : super.fromMap(config) {
+    completePath = "$rootPath/$path";
+  }
 
-  String get path => get("directory");
-  List get routes => get("list");
-  RoutesManager.fromMap(Map config) : super.fromMap(config);
-  RoutesManager.fromJson(String json) : super.fromJson(json);
+  Manager.fromJson(String json, this.rootPath, this.appName) : super.fromJson(json) {
+    completePath = "$rootPath/$path";
+  }
+
+  createLibraryDirectory() {
+    Directory dir = createDirectory(completePath);
+    completePath = dir.resolveSymbolicLinksSync();
+  }
 }
 
 class PolymerAppManager extends JsonObject {
@@ -70,21 +78,13 @@ class PolymerAppManager extends JsonObject {
     if (toMap == null) {
       throw "No config found.";
     }
-    _elements = new ElementsManager.fromMap(get("elements"))
-      ..appName = name
-      ..rootPath = rootDirectory;
-    _behaviors = new BehaviorsManager.fromMap(get("behaviors"))
-      ..appName = name
-      ..rootPath = rootDirectory;
-    _services = new ServicesManager.fromMap(get("services"))
-      ..appName = name
-      ..rootPath = rootDirectory;
-    _models = new ModelsManager.fromMap(get("models"))
-      ..appName = name
-      ..rootPath = rootDirectory;
-    _routes = new RoutesManager.fromMap(get("routes"))
-      ..appName = name
-      ..rootPath = rootDirectory;
+    print("appName => ${white("$name")}");
+    print("root directory => ${white("$rootDirectory")}");
+    _elements = new ElementsManager.fromMap(get("elements"), rootDirectory + "/lib", name);
+    _behaviors = new BehaviorsManager.fromMap(get("behaviors"), rootDirectory + "/lib", name);
+    _services = new ServicesManager.fromMap(get("services"), rootDirectory + "/lib", name);
+    _models = new ModelsManager.fromMap(get("models"), rootDirectory + "/lib", name);
+    _routes = new RoutesManager.fromMap(get("routes"), rootDirectory + "/lib", name);
   }
 
   _fromJson(String configJson) {
@@ -102,12 +102,217 @@ class PolymerAppManager extends JsonObject {
   }
 
   String get rootDirectory => get("directory");
+
   String get name => get("name");
-  String get webDirectory => get("web-directory");
+
+  String get webDirectory => "$rootDirectory/${get("web-directory")}";
 
   RoutesManager get routes => _routes;
+
   ModelsManager get models => _models;
+
   ServicesManager get services => _services;
+
   BehaviorsManager get behaviors => _behaviors;
+
   ElementsManager get elements => _elements;
+
+  createApplication() {
+    createPubspec();
+    createLibrary();
+    createIndex();
+    createRootElement();
+  }
+
+  createLibrary() {
+    print("");
+    Directory libDirectory = createDirectory("$rootDirectory/lib");
+
+    elements.createLibraryDirectory();
+    behaviors.createLibraryDirectory();
+    services.createLibraryDirectory();
+    models.createLibraryDirectory();
+    routes.createLibraryDirectory();
+
+    writeInDartFile(
+        "${libDirectory.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart",
+        appLibraryTemplate());
+  }
+
+  createPubspec() {
+    print("");
+    File file = new File("$rootDirectory/pubspec.yaml");
+    if (file.existsSync()) {
+      throw "Please create an empty folder";
+    }
+    writeInFile("$rootDirectory/pubspec.yaml", pubspecTemplate());
+  }
+
+  createIndex() {
+    print("");
+    writeInFile("$webDirectory/index.html", indexHtmlTemplate());
+    writeInDartFile("$webDirectory/index.dart", indexDartTemplate());
+  }
+
+  createRootElement() {
+    elements.createElement("root-element", rootElementDartTemplate(), null,
+        rootElementCssTemplate(), rootElementHtmlTemplate());
+  }
+
+  rootElementHtmlTemplate() => '<div header> '
+      '<span title>{{selected}}</span>'
+      '<span flex ></span> '
+      '<template is="dom-repeat" items="{{pages}}"> '
+      '<a href="#" on-click="goTo">{{item.name}}</a>'
+      '</template>'
+      '</div> '
+      '<div content> '
+      '<polymer-app-router selected="{{selected}}" pages="{{pages}}">'
+      '</polymer-app-router>'
+      '</div>';
+
+  rootElementCssTemplate() => ":host { "
+      "font-family: 'Roboto', 'Noto', sans-serif; "
+      "font-weight: 300;"
+      "display: block;"
+      "height: 100vh;"
+      "} "
+      "*[flex] {"
+      "display: flex;"
+      "flex: 1;"
+      "}"
+      "div[header] span[title] {"
+      "margin: 10px;"
+      "color: white;"
+      "font-weight: 300;"
+      "text-transform: capitalize;"
+      "}"
+      "div[header] {"
+      "display: flex;"
+      "flex-direction: row;"
+      "align-items: center;"
+      "position: fixed;"
+      "top: 0;"
+      "width: 100%;"
+      "height: 45px;"
+      "background-color: #b24830;"
+      "}"
+      "div[header] a {"
+      "margin: 10px;"
+      "color: white;"
+      "font-size: 12px;"
+      "font-weight: 300;"
+      "text-decoration: none;"
+      "text-transform: capitalize;"
+      "}"
+      "div[content] {"
+      "background-color: #efefef;"
+      "padding-top: 60px;"
+      "padding-right: 15px;"
+      "padding-left: 15px;"
+      "height: 100vh;"
+      "}";
+
+  rootElementDartTemplate() => '@HtmlImport("root_element.html")'
+      "library $name.elements.root_element;"
+      'import "package:polymer/polymer.dart";'
+      'import "dart:html";'
+      'import "package:web_components/web_components.dart" show HtmlImport;'
+      'import "package:polymer_app_router/polymer_app_router.dart";'
+      'PolymerAppRoute createRoute(String text) {'
+      'PolymerAppRoute route ='
+      'document.createElement("polymer-app-route") as PolymerAppRoute;'
+      'route.innerHtml = text;'
+      'return route;'
+      '}'
+      '@PolymerRegister("root-element")'
+      'class RootElement extends PolymerElement {'
+      'RootElement.created() : super.created();'
+      ' List<Page> _pages = ['
+      'new Page("home", "",'
+      'createRoute("<h2>Home</h2>"),'
+      'isDefault: true)'
+      '];'
+      '@Property() List<Page> get pages => _pages;'
+      'set pages(List<Page> value) {'
+      '_pages = value;'
+      'notifyPath("pages", value);'
+      '}'
+      'String _selected;'
+      '@Property()'
+      'String get selected => _selected;'
+      'set selected(String value) {'
+      '_selected = value;'
+      'notifyPath("selected", value);'
+      '}'
+      '@reflectable '
+      'void goTo(MouseEvent event, [_]) {'
+      'event.stopPropagation();'
+      'event.preventDefault();'
+      'HtmlElement elem = event.target;'
+      'PolymerRouter.goToName(elem.text);'
+      '}'
+      '@reflectable '
+      'void goToDefault(MouseEvent event, [_]) {'
+      'event.stopPropagation();'
+      'event.preventDefault();'
+      'PolymerRouter.goToDefault();'
+      '}'
+      '}';
+
+  indexHtmlTemplate() => "<!DOCTYPE html>\n"
+      "<html>\n"
+      "\t<head>\n"
+      '\t\t<meta charset="utf-8">\n'
+      '\t\t<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">\n'
+      '\t\t<title>$name</title>\n'
+      '\t\t<script src="packages/web_components/webcomponents-lite.min.js"></script>\n'
+      '\t\t<script src="packages/web_components/dart_support.js"></script>\n'
+      "\t\t<style>body {margin:0;}</style>\n"
+      '\t</head>\n'
+      '\t<body unresolved class="fullbleed layout vertical">\n'
+      '\t\t<root-element></root-element>\n'
+      '\t\t<script type="application/dart" src="index.dart"></script>\n'
+      '\t\t<script src="packages/browser/dart.js"></script>\n'
+      '\t</body>\n'
+      '</html>\n';
+
+  indexDartTemplate() => "import 'package:polymer/polymer.dart';"
+      "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
+      "main() async {"
+      "await initPolymer();"
+      "}";
+
+  appLibraryTemplate() => "library ${toSnakeCase(name)};"
+      "export 'elements/elements.dart';"
+      "export 'elements/routes/routes.dart';"
+      "export 'behaviors/behaviors.dart';"
+      "export 'models/models.dart';"
+      "export 'services/services.dart';";
+
+  pubspecTemplate() => "name: ${toSnakeCase(name)}\n"
+      "#description:\n"
+      "version: 0.0.1\n"
+      "#author:\n"
+      "#homepage:\n\n"
+      "environment:\n"
+      "  sdk: '>=1.13.0 <2.0.0'\n\n"
+      "dependencies:\n"
+      '  polymer: "^1.0.0-rc.10"\n'
+      '  polymer_app_router: "^0.0.4"\n'
+      '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
+      '  web_components: "^0.12.0"\n'
+      '  browser: "^0.10.0"\n'
+      '  reflectable: "^0.5.1"\n\n'
+      'transformers:\n'
+      '  - web_components:\n'
+      '      entry_points:\n'
+      '      - web/index.html\n'
+      '  - reflectable:\n'
+      '      entry_points:\n'
+      '      - web/index.dart\n'
+      '  - \$dart2js:\n'
+      '      minify: true\n'
+      "      commandLineOptions: ['--trust-type-annotations', '--trust-primitives', '--enable-experimental-mirrors']\n"
+      '  - dart_to_js_script_rewriter\n';
 }
