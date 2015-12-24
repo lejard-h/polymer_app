@@ -35,49 +35,53 @@ servicesLibContent(String appName) =>
     _formatter.format("library ${toSnakeCase(appName)}.services;"
         "// export 'service.dart';");
 
-rootElementDartContent(String appName) => _formatter.format(
-    '@HtmlImport("root_element.html")'
-    "library $appName.elements.root_element;"
-    'import "package:polymer/polymer.dart";'
-    'import "dart:html";'
-    'import "package:web_components/web_components.dart" show HtmlImport;'
-    'import "package:polymer_app_router/polymer_app_router.dart";'
-    'PolymerAppRoute createRoute(String text) {'
-    'PolymerAppRoute route ='
-    'document.createElement("polymer-app-route") as PolymerAppRoute;'
-    'route.innerHtml = text;'
-    'return route;'
-    '}'
-    '@PolymerRegister("root-element")'
-    'class RootElement extends PolymerElement {'
-    'RootElement.created() : super.created();'
-    ' List<Page> _pages = ['
-    'new Page("home", "",'
-    'createRoute("<div class=\'layout vertical center-center\'>Home</div>"),'
-    'isDefault: true)'
-    '];'
-    '@Property() List<Page> get pages => _pages;'
-    'set pages(List<Page> value) {'
-    '_pages = value;'
-    'notifyPath("pages", value);'
-    '}'
-    'String _selected;'
-    '@Property()'
-    'String get selected => _selected;'
-    'set selected(String value) {'
-    '_selected = value;'
-    'notifyPath("selected", value);'
-    '}'
-    '@reflectable '
-    'void goTo(event, [_]) {'
-    'HtmlElement elem = event.target;'
-    'PolymerRouter.goToName(elem.text);'
-    '}'
-    '@reflectable '
-    'void goToDefault(event, [_]) {'
-    'PolymerRouter.goToDefault();'
-    '}'
-    '}');
+rootElementDartContent(String appName) =>
+    _formatter.format('@HtmlImport("root_element.html")'
+        "library $appName.elements.root_element;"
+        'import "package:polymer/polymer.dart";'
+        'import "dart:html";'
+        'import "package:web_components/web_components.dart" show HtmlImport;'
+        'import "package:polymer_app_router/polymer_app_router.dart";'
+        'PolymerAppRoute createRoute(String text) {'
+        'PolymerAppRoute route ='
+        'document.createElement("polymer-app-route") as PolymerAppRoute;'
+        'route.innerHtml = text;'
+        'return route;'
+        '}'
+        '@PolymerRegister("root-element")'
+        'class RootElement extends PolymerElement {'
+        'RootElement.created() : super.created();'
+        ' List<Page> _pages = ['
+        'new Page("home", "",'
+        'createRoute("<h2>Home</h2>"),'
+        'isDefault: true)'
+        '];'
+        '@Property() List<Page> get pages => _pages;'
+        'set pages(List<Page> value) {'
+        '_pages = value;'
+        'notifyPath("pages", value);'
+        '}'
+        'String _selected;'
+        '@Property()'
+        'String get selected => _selected;'
+        'set selected(String value) {'
+        '_selected = value;'
+        'notifyPath("selected", value);'
+        '}'
+        '@reflectable '
+        'void goTo(MouseEvent event, [_]) {'
+        'event.stopPropagation();'
+        'event.preventDefault();'
+        'HtmlElement elem = event.target;'
+        'PolymerRouter.goToName(elem.text);'
+        '}'
+        '@reflectable '
+        'void goToDefault(MouseEvent event, [_]) {'
+        'event.stopPropagation();'
+        'event.preventDefault();'
+        'PolymerRouter.goToDefault();'
+        '}'
+        '}');
 
 polymerElementDartRouteContent(String name, String appName) => _formatter.format(
     "@HtmlImport('${toSnakeCase(name)}.html')"
@@ -85,11 +89,10 @@ polymerElementDartRouteContent(String name, String appName) => _formatter.format
     "import 'package:polymer/polymer.dart';"
     "import 'package:web_components/web_components.dart' show HtmlImport;"
     'import "package:polymer_app_router/polymer_app_router.dart";'
+    'import "package:route_hierarchical/client.dart";'
     "@PolymerRegister('${toLispCase(name)}')"
     "class ${toCamelCase(name)} extends PolymerElement with PolymerAppRouteBehavior { "
     "${toCamelCase(name)}.created() : super.created();"
-    " /* "
-    "* Optional lifecycle methods - uncomment if needed."
     " /// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
     "attached() {"
     "super.attached();"
@@ -106,7 +109,6 @@ polymerElementDartRouteContent(String name, String appName) => _formatter.format
     "}\n\n"
     "/// Called when PolymerRouter enter on ${toLispCase(name)}\n"
     "enter(RouteEnterEvent event, [Map params]) {}\n\n"
-    " */ "
     "}");
 
 polymerElementDartContent(String name, String appName) => _formatter.format(
@@ -117,8 +119,6 @@ polymerElementDartContent(String name, String appName) => _formatter.format(
     "@PolymerRegister('${toLispCase(name)}')"
     "class ${toCamelCase(name)} extends PolymerElement {"
     "${toCamelCase(name)}.created() : super.created();"
-    "/*"
-    "* Optional lifecycle methods - uncomment if needed."
     "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
     "attached() {"
     "super.attached();"
@@ -133,7 +133,6 @@ polymerElementDartContent(String name, String appName) => _formatter.format(
     "/// Called when ${toLispCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached).\n"
     "ready() {"
     "}\n\n"
-    "*/"
     "}");
 
 polymerBehaviorContent(String name, String appName) => _formatter.format(
@@ -141,8 +140,6 @@ polymerBehaviorContent(String name, String appName) => _formatter.format(
     'import "package:polymer/polymer.dart";'
     '@behavior'
     'abstract class ${toCamelCase(name)} {'
-    "/*"
-    "* Optional lifecycle methods - uncomment if needed."
     "/// Called when an instance of ${toCamelCase(name)} is inserted into the DOM."
     "attached() {"
     "super.attached();"
@@ -157,7 +154,6 @@ polymerBehaviorContent(String name, String appName) => _formatter.format(
     "/// Called when ${toCamelCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached)."
     "ready() {"
     "}"
-    "*/"
     '}');
 
 factoryContent(String name, String appName) => _formatter
@@ -196,6 +192,7 @@ indexHtmlContent(String appName) => "<!DOCTYPE html>\n"
     '\t\t<title>$appName</title>\n'
     '\t\t<script src="packages/web_components/webcomponents-lite.min.js"></script>\n'
     '\t\t<script src="packages/web_components/dart_support.js"></script>\n'
+    "\t\t<style>body {margin:0;}</style>\n"
     '\t</head>\n'
     '\t<body unresolved class="fullbleed layout vertical">\n'
     '\t\t<root-element></root-element>\n'
@@ -204,17 +201,70 @@ indexHtmlContent(String appName) => "<!DOCTYPE html>\n"
     '\t</body>\n'
     '</html>\n';
 
-rootElementHtmlContent() => polymerElementHtmlContent("root-element",
-    '<polymer-app-router selected="{{selected}}" pages="{{pages}}"></polymer-app-router>');
+rootElementHtmlContent() => polymerElementHtmlContent(
+    "root-element",
+    '<div header> '
+    '<span title>{{selected}}</span>'
+    '<span flex ></span> '
+    '<template is="dom-repeat" items="{{pages}}"> '
+    '<a href="#" on-click="goTo">{{item.name}}</a>'
+    '</template>'
+    '</div> '
+    '<div content> '
+    '<polymer-app-router selected="{{selected}}" pages="{{pages}}">'
+    '</polymer-app-router>'
+    '</div>');
 
 polymerElementHtmlContent(String name, [String content = ""]) =>
     '<dom-module id="${toLispCase(name)}">\n'
+    '\t<link rel="import" type="css" href="${toSnakeCase(name)}.css">\n'
     '\t<template>\n'
-    '\t\t<link rel="import" type="css" href="${toSnakeCase(name)}.css">\n'
     '\t\t<!-- local DOM for your element -->\n'
     '\t\t$content\n'
     '\t</template>\n'
     '</dom-module>\n';
+
+rootElementCssContent() => ":host { "
+    "font-family: 'Roboto', 'Noto', sans-serif; "
+    "font-weight: 300;"
+    "display: block;"
+    "height: 100vh;"
+    "} "
+    "*[flex] {"
+    "display: flex;"
+    "flex: 1;"
+    "}"
+    "div[header] span[title] {"
+    "margin: 10px;"
+    "color: white;"
+    "font-weight: 300;"
+    "text-transform: capitalize;"
+    "}"
+    "div[header] {"
+    "display: flex;"
+    "flex-direction: row;"
+    "align-items: center;"
+    "position: fixed;"
+    "top: 0;"
+    "width: 100%;"
+    "height: 45px;"
+    "background-color: #b24830;"
+    "}"
+    "div[header] a {"
+    "margin: 10px;"
+    "color: white;"
+    "font-size: 12px;"
+    "font-weight: 300;"
+    "text-decoration: none;"
+    "text-transform: capitalize;"
+    "}"
+    "div[content] {"
+    "background-color: #efefef;"
+    "padding-top: 60px;"
+    "padding-right: 15px;"
+    "padding-left: 15px;"
+    "height: 100vh;"
+    "}";
 
 polymerElementCssContent() => ":host {\n"
     "\tfont-family: 'Roboto', 'Noto', sans-serif;\n"

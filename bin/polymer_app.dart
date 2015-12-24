@@ -108,7 +108,7 @@ Directory createElementsDirectory(Directory root, String appName) {
   File fileCss =
       createFile("${dir.resolveSymbolicLinksSync()}/root_element.css");
 
-  fileCss.writeAsStringSync(polymerElementCssContent());
+  fileCss.writeAsStringSync(rootElementCssContent());
   return elementsDirectory;
 }
 
