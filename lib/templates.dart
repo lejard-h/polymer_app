@@ -156,34 +156,6 @@ polymerBehaviorContent(String name, String appName) => _formatter.format(
     "}"
     '}');
 
-factoryContent(String name, String appName) => _formatter
-    .format('library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
-        "import 'package:polymer_app/http_service.dart';"
-        "class ${toCamelCase(name)} {"
-        "static ${toCamelCase(name)} _cache;"
-        "HttpService http = new HttpService();"
-        "factory ${toCamelCase(name)}() {"
-        "if (_cache == null) {"
-        "_cache = new ${toCamelCase(name)}._internal();"
-        "}"
-        "return _cache;"
-        "}"
-        "${toCamelCase(name)}._internal();"
-        "}");
-
-modelContent(String name, String appName) => _formatter
-    .format('library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
-        'import "package:polymer_app/polymer_model.dart";'
-        'class ${toCamelCase(name)} extends PolymerModel {'
-        '@reflectable '
-        'String foo;'
-        '${toCamelCase(name)}(this.foo);'
-        '_fromJson(Map json) {'
-        'this.foo = json["json"];'
-        '}'
-        'Map get toMap => {"foo": foo};'
-        '}');
-
 indexHtmlContent(String appName) => "<!DOCTYPE html>\n"
     "<html>\n"
     "\t<head>\n"

@@ -7,10 +7,8 @@ library polymer_app.behaviors;
 import "polymer_app_manager.dart";
 import "utils.dart";
 import "dart:io";
-import "package:dart_style/dart_style.dart";
 
 class BehaviorsManager extends JsonObject {
-  DartFormatter _formatter = new DartFormatter();
   String rootPath;
   String appName;
 
@@ -38,7 +36,7 @@ class BehaviorsManager extends JsonObject {
     addToLibrary(name);
   }
 
-  behaviorDartTemplate(String name) => _formatter.format(
+  behaviorDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.elements.${toSnakeCase(name)};'
       'import "package:polymer/polymer.dart";'
       '@behavior'
@@ -57,5 +55,5 @@ class BehaviorsManager extends JsonObject {
       "/// Called when ${toCamelCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached)."
       "ready() {"
       "}"
-      '}');
+      '}';
 }

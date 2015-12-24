@@ -7,10 +7,8 @@ library polymer_app.models;
 import "polymer_app_manager.dart";
 import "utils.dart";
 import "dart:io";
-import "package:dart_style/dart_style.dart";
 
 class ModelsManager extends JsonObject {
-  DartFormatter _formatter = new DartFormatter();
   String rootPath;
   String appName;
 
@@ -38,8 +36,7 @@ class ModelsManager extends JsonObject {
     addToLibrary(name);
   }
 
-  modelDartTemplate(String name) => _formatter
-      .format('library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
+  modelDartTemplate(String name) => 'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
           'import "package:polymer_app/polymer_model.dart";'
           'class ${toCamelCase(name)} extends PolymerModel {'
           '@reflectable '
@@ -49,5 +46,5 @@ class ModelsManager extends JsonObject {
           'this.foo = json["json"];'
           '}'
           'Map get toMap => {"foo": foo};'
-          '}');
+          '}';
 }

@@ -7,10 +7,8 @@ library polymer_app.services;
 import "polymer_app_manager.dart";
 import "utils.dart";
 import "dart:io";
-import "package:dart_style/dart_style.dart";
 
 class ServicesManager extends JsonObject {
-  DartFormatter _formatter = new DartFormatter();
   String rootPath;
   String appName;
 
@@ -37,8 +35,7 @@ class ServicesManager extends JsonObject {
     addToLibrary(name);
   }
 
-  serviceDartTemplate(String name) => _formatter
-      .format('library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
+  serviceDartTemplate(String name) => 'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
           "import 'package:polymer_app/http_service.dart';"
           "class ${toCamelCase(name)} {"
           "static ${toCamelCase(name)} _cache;"
@@ -50,5 +47,5 @@ class ServicesManager extends JsonObject {
           "return _cache;"
           "}"
           "${toCamelCase(name)}._internal();"
-          "}");
+          "}";
 }
