@@ -17,8 +17,7 @@ class ServicesManager extends Manager {
       content = serviceDartTemplate(name);
     }
     writeInDartFile(
-        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart", content);
-    addToLibrary(name);
+        "$libraryPath/${toSnakeCase(name)}.dart", content);
   }
 
   String get libraryTemplate => "library ${toSnakeCase(appName)}.services;"

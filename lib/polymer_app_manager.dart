@@ -48,7 +48,7 @@ class Manager {
   }
 
   addToLibrary(String name) {
-    print("Add $name to library.");
+    print("Add ${green(name)} to library.");
     File lib = new File("$libraryPath/$libraryName.dart");
     if (!lib.existsSync()) {
       lib.createSync(recursive: true);
@@ -155,6 +155,7 @@ class PolymerAppManager extends JsonObject {
   createRootElement() {
     elements.createElement("root-element", rootElementDartTemplate(), null,
         rootElementCssTemplate(), rootElementHtmlTemplate());
+    elements.addToLibrary("root-element");
   }
 
   rootElementHtmlTemplate() => '<div header> '
@@ -283,7 +284,7 @@ class PolymerAppManager extends JsonObject {
 
   appLibraryTemplate() => "library ${toSnakeCase(name)};"
       "export 'elements/elements.dart';"
-      "export 'elements/routes/routes.dart';"
+      "export 'routes/routes.dart';"
       "export 'behaviors/behaviors.dart';"
       "export 'models/models.dart';"
       "export 'services/services.dart';";

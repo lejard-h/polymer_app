@@ -61,12 +61,26 @@ createNewApplication(ArgResults results) {
 
 createNewService(String name) {
   print("Creating '${green(name)}' service");
-  manager.services.createService(name);
+
+  ServicesManager services =
+      manager?.services ?? new ServicesManager(name, outputFolderPath);
+
+  services.createService(name);
+  if (manager != null) {
+    services.addToLibrary(name);
+  }
+
 }
 
 createNewModel(String name) {
   print("Creating '${green(name)}' model");
-  manager.models.createModel(name);
+  ModelsManager models =
+      manager?.models ?? new ModelsManager(name, outputFolderPath);
+
+  models.createModel(name);
+  if (manager != null) {
+    models.addToLibrary(name);
+  }
 }
 
 createNewElement(String name) {
@@ -86,35 +100,35 @@ createNewElement(String name) {
 }
 
 createNewBehavior(String name) {
+  BehaviorsManager behaviors = manager?.behaviors ?? new BehaviorsManager(name, outputFolderPath);
+  print(outputFolderPath);
+
   print("Creating '${green(name)}' behavior");
-  manager.behaviors.createBehavior(name);
+  behaviors.createBehavior(name);
+  if (manager != null) {
+    behaviors.addToLibrary(name);
+  }
 }
 
 createNewRoute(String routeName, String path) {
   print("Creating '${green(routeName)}' route");
-  manager.routes.createRoute("$routeName-route");
 
+  RoutesManager routes = manager?.routes ?? new RoutesManager("$routeName-route", outputFolderPath);
+
+  routes.createRoute("$routeName-route");
   print(white("\nImport and add page to your root-element\n"));
-  print(green(
-          "import 'package:${toSnakeCase(manager.name)}/elements/routes/routes.dart';") +
-      "\n");
+  if (manager != null) {
+    routes.addToLibrary("$routeName-route");
+    print(green(
+        "import 'package:${toSnakeCase(manager.name)}/routes/routes.dart';") +
+        "\n");
+  }
   print("List<Page> _pages = [");
   print("...");
   print(green(
       "\tnew Page('${toCamelCase(routeName)}', '${toSnakeCase(path)}', document.createElement('${toLispCase(routeName + "-route")}'))"));
   print("...");
   print("];");
-}
-
-generateConfig(String name) {
-  if (config.existsSync()) {
-    manager = new PolymerAppManager(config.resolveSymbolicLinksSync(),
-        outputFolder.resolveSymbolicLinksSync());
-  } else {
-    print(getDefaultJsonConfig(name));
-    manager = new PolymerAppManager.fromJson(
-        getDefaultJsonConfig(name), outputFolder.resolveSymbolicLinksSync());
-  }
 }
 
 void main(List<String> args) {
@@ -126,10 +140,22 @@ void main(List<String> args) {
   try {
     ArgResults results = parser.parse(args);
     outputFolderPath = results["output-folder"];
-    outputFolder = createDirectory(outputFolderPath);
+    outputFolder = new Directory(outputFolderPath);
+    if (!outputFolder.existsSync()) {
+      outputFolder.createSync(recursive: true);
+    }
     config = new File("$outputFolderPath/polymer_app.json");
 
+    if (config.existsSync()) {
+      manager = new PolymerAppManager(config.resolveSymbolicLinksSync(),
+          outputFolder.resolveSymbolicLinksSync());
+    }
+
     if (isCommandNew(results.rest, "app")) {
+      if (manager == null) {
+        manager = new PolymerAppManager.fromJson(
+            getDefaultJsonConfig(results.rest[2]), outputFolder.resolveSymbolicLinksSync());
+      }
       return createNewApplication(results);
     } else if (isCommandNew(results.rest)) {
       if (results.rest[1] == "element") {
@@ -142,7 +168,11 @@ void main(List<String> args) {
         return createNewService(results.rest[2]);
       } else if (results.rest.length == 4 && results.rest[1] == "route") {
         return createNewRoute(results.rest[2], results.rest[3]);
+      } else {
+        usage(parser);
       }
+    } else {
+      usage(parser);
     }
   } catch (e) {
     print(e);

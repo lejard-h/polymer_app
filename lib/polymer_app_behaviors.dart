@@ -17,9 +17,8 @@ class BehaviorsManager extends Manager {
       content = behaviorDartTemplate(name);
     }
     writeInDartFile(
-        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
+        "$libraryPath/${toSnakeCase(name)}.dart",
         content);
-    addToLibrary(name);
   }
 
   String get libraryTemplate =>
@@ -29,20 +28,20 @@ class BehaviorsManager extends Manager {
   behaviorDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.elements.${toSnakeCase(name)};'
       'import "package:polymer/polymer.dart";'
-      '@behavior'
-      'abstract class ${toCamelCase(name)} {'
-      "/// Called when an instance of ${toCamelCase(name)} is inserted into the DOM."
+      '@behavior\n'
+      'abstract class ${toCamelCase(name)} {\n\n'
+      "/// Called when an instance of ${toCamelCase(name)} is inserted into the DOM.\n"
       "attached() {"
       "super.attached();"
-      "}"
-      "/// Called when an instance of ${toCamelCase(name)} is removed from the DOM."
+      "}\n\n"
+      "/// Called when an instance of ${toCamelCase(name)} is removed from the DOM.\n"
       "detached() {"
       "super.detached();"
-      "}"
-      "/// Called when an attribute (such as  a class) of an instance of ${toCamelCase(name)} is added, changed, or removed."
+      "}\n\n"
+      "/// Called when an attribute (such as  a class) of an instance of ${toCamelCase(name)} is added, changed, or removed.\n"
       "attributeChanged(String name, String oldValue, String newValue) {"
-      "}"
-      "/// Called when ${toCamelCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached)."
+      "}\n\n"
+      "/// Called when ${toCamelCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached).\n"
       "ready() {"
       "}"
       '}';
