@@ -48,3 +48,8 @@ writeInFile(String path, String content) {
   File fileDart = createFile(path);
   fileDart.writeAsStringSync(content);
 }
+
+
+bool isCommandNew(commands, [String arg]) => commands?.length >= 2 &&
+    commands[0] == "new" &&
+    (arg == null || commands[1] == arg);

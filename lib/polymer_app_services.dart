@@ -9,33 +9,19 @@ import "utils.dart";
 import "dart:io";
 
 class ServicesManager extends Manager {
-  ServicesManager.fromMap(Map config, String rootPath, String appName) : super.fromMap(config, rootPath, appName);
-  ServicesManager.fromJson(String json, String rootPath, String appName) : super.fromJson(json, rootPath,appName);
-
-  addToLibrary(String name) {
-    File services = new File("$completePath/services.dart");
-    services.writeAsString(services.readAsStringSync() +
-        "\n" +
-        "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
-  }
-
-  createLibraryDirectory() {
-    super.createLibraryDirectory();
-    writeInDartFile("$completePath/services.dart", servicesLibTemplate());
-  }
+  ServicesManager(String appName, String libraryPath)
+      : super(appName, libraryPath, "services");
 
   createService(String name, [String content]) {
     if (content == null) {
       content = serviceDartTemplate(name);
     }
     writeInDartFile(
-        "$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
-        content);
+        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart", content);
     addToLibrary(name);
   }
 
-  servicesLibTemplate() =>
-      "library ${toSnakeCase(appName)}.services;"
+  String get libraryTemplate => "library ${toSnakeCase(appName)}.services;"
       "// export 'service.dart';";
 
   serviceDartTemplate(String name) =>

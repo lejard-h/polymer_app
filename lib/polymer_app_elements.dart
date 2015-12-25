@@ -9,26 +9,14 @@ import "utils.dart";
 import "dart:io";
 
 class ElementsManager extends Manager {
-  ElementsManager.fromMap(Map config, String rootPath, String appName) : super.fromMap(config, rootPath, appName);
-  ElementsManager.fromJson(String json, String rootPath, String appName) : super.fromJson(json, rootPath,appName);
-
-  addToLibrary(String name) {
-    File services = new File("$completePath/elements.dart");
-    services.writeAsString(services.readAsStringSync() +
-        "\n" +
-        "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
-  }
-
-  createLibraryDirectory() {
-    super.createLibraryDirectory();
-    writeInDartFile("$completePath/elements.dart", elementsLibTemplate());
-  }
+  ElementsManager(String appName, String libraryPath)
+      : super(appName, libraryPath, "elements");
 
   createElement(String name,
       [String dartContent,
       String htmlContent,
       String cssContent,
-      String innerHtmlContent]) {
+      String innerHtmlContent = ""]) {
     if (dartContent == null) {
       dartContent = elementDartTemplate(name);
     }
@@ -39,25 +27,24 @@ class ElementsManager extends Manager {
       cssContent = elementCssTemplate(name);
     }
     writeInDartFile(
-        "$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
+        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         dartContent);
-    writeInFile("$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
+    writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
         htmlContent);
-    writeInFile("$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
+    writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
         cssContent);
-    addToLibrary(name);
   }
 
-  elementsLibTemplate() => "library ${toSnakeCase(appName)}.elements;"
-          "//export 'element/element.dart';";
+  String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;"
+      "//export 'element/element.dart';";
 
   elementDartTemplate(String name) => "@HtmlImport('${toSnakeCase(name)}.html')"
-      "library $appName.elements.${toSnakeCase(name)};"
+      "library ${toSnakeCase(appName)}.elements.${toSnakeCase(name)};"
       "import 'package:polymer/polymer.dart';"
       "import 'package:web_components/web_components.dart' show HtmlImport;"
       "@PolymerRegister('${toLispCase(name)}')"
       "class ${toCamelCase(name)} extends PolymerElement {"
-      "${toCamelCase(name)}.created() : super.created();"
+      "${toCamelCase(name)}.created() : super.created();\n\n"
       "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
       "attached() {"
       "super.attached();"

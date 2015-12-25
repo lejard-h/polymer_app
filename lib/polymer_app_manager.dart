@@ -35,27 +35,27 @@ abstract class JsonObject {
   String toString() => toMap.toString();
 }
 
-class Manager extends JsonObject {
-  String rootPath;
+class Manager {
   String appName;
+  String libraryPath;
+  String libraryName;
+  String get libraryTemplate => "";
 
-  String completePath;
-
-  String get path => get("directory");
-
-  List get list => get("list");
-
-  Manager.fromMap(Map config, this.rootPath, this.appName) : super.fromMap(config) {
-    completePath = "$rootPath/$path";
-  }
-
-  Manager.fromJson(String json, this.rootPath, this.appName) : super.fromJson(json) {
-    completePath = "$rootPath/$path";
-  }
+  Manager(this.appName, this.libraryPath, this.libraryName);
 
   createLibraryDirectory() {
-    Directory dir = createDirectory(completePath);
-    completePath = dir.resolveSymbolicLinksSync();
+    writeInDartFile("$libraryPath/$libraryName.dart", libraryTemplate);
+  }
+
+  addToLibrary(String name) {
+    print("Add $name to library.");
+    File lib = new File("$libraryPath/$libraryName.dart");
+    if (!lib.existsSync()) {
+      lib.createSync(recursive: true);
+    }
+    lib.writeAsString(lib.readAsStringSync() +
+        "\n" +
+        "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
   }
 }
 
@@ -66,11 +66,29 @@ class PolymerAppManager extends JsonObject {
   ModelsManager _models;
   RoutesManager _routes;
 
-  PolymerAppManager.fromJson(String configJson) : super.fromJson(configJson) {
+
+  String pathOutput;
+  String get libraryPath => get("library_path");
+  String get elementsPath => "$pathOutput/$libraryPath/${get("elements_path")}";
+  String get behaviorsPath => "$pathOutput/$libraryPath/${get("behaviors_path")}";
+  String get servicesPath => "$pathOutput/$libraryPath/${get("services_path")}";
+  String get routesPath => "$pathOutput/$libraryPath/${get("routes_path")}";
+  String get modelsPath => "$pathOutput/$libraryPath/${get("models_path")}";
+  String get name => get("name");
+  String get webPath => get("web_path");
+  RoutesManager get routes => _routes;
+  ModelsManager get models => _models;
+  ServicesManager get services => _services;
+  BehaviorsManager get behaviors => _behaviors;
+  ElementsManager get elements => _elements;
+
+
+
+  PolymerAppManager.fromJson(String configJson, [this.pathOutput = "./"]) : super.fromJson(configJson) {
     _parseConfig();
   }
 
-  PolymerAppManager.fromMap(Map config) : super.fromMap(config) {
+  PolymerAppManager.fromMap(Map config, [this.pathOutput = "./"]) : super.fromMap(config) {
     _parseConfig();
   }
 
@@ -78,13 +96,11 @@ class PolymerAppManager extends JsonObject {
     if (toMap == null) {
       throw "No config found.";
     }
-    print("appName => ${white("$name")}");
-    print("root directory => ${white("$rootDirectory")}");
-    _elements = new ElementsManager.fromMap(get("elements"), rootDirectory + "/lib", name);
-    _behaviors = new BehaviorsManager.fromMap(get("behaviors"), rootDirectory + "/lib", name);
-    _services = new ServicesManager.fromMap(get("services"), rootDirectory + "/lib", name);
-    _models = new ModelsManager.fromMap(get("models"), rootDirectory + "/lib", name);
-    _routes = new RoutesManager.fromMap(get("routes"), rootDirectory + "/lib", name);
+    _elements = new ElementsManager(name, elementsPath);
+  _behaviors = new BehaviorsManager(name, behaviorsPath);
+    _services = new ServicesManager(name, servicesPath);
+    _models = new ModelsManager(name, modelsPath);
+    _routes = new RoutesManager(name, routesPath);
   }
 
   _fromJson(String configJson) {
@@ -92,30 +108,14 @@ class PolymerAppManager extends JsonObject {
     _parseConfig();
   }
 
-  PolymerAppManager([String configPath = "./polymer_app.json"]) : super() {
+  PolymerAppManager([String configPath = "./polymer_app.json", this.pathOutput = './']) : super() {
     File configFile = new File(configPath);
     if (!configFile.existsSync()) {
-      throw "polymer_app.json not found.";
+      throw "'polymer_app.json' not found.";
     }
 
     _fromJson(configFile.readAsStringSync());
   }
-
-  String get rootDirectory => get("directory");
-
-  String get name => get("name");
-
-  String get webDirectory => "$rootDirectory/${get("web-directory")}";
-
-  RoutesManager get routes => _routes;
-
-  ModelsManager get models => _models;
-
-  ServicesManager get services => _services;
-
-  BehaviorsManager get behaviors => _behaviors;
-
-  ElementsManager get elements => _elements;
 
   createApplication() {
     createPubspec();
@@ -126,8 +126,6 @@ class PolymerAppManager extends JsonObject {
 
   createLibrary() {
     print("");
-    Directory libDirectory = createDirectory("$rootDirectory/lib");
-
     elements.createLibraryDirectory();
     behaviors.createLibraryDirectory();
     services.createLibraryDirectory();
@@ -135,23 +133,23 @@ class PolymerAppManager extends JsonObject {
     routes.createLibraryDirectory();
 
     writeInDartFile(
-        "${libDirectory.resolveSymbolicLinksSync()}/${toSnakeCase(name)}.dart",
+        "$pathOutput/$libraryPath/${toSnakeCase(name)}.dart",
         appLibraryTemplate());
   }
 
   createPubspec() {
     print("");
-    File file = new File("$rootDirectory/pubspec.yaml");
+    File file = new File("$pathOutput//pubspec.yaml");
     if (file.existsSync()) {
       throw "Please create an empty folder";
     }
-    writeInFile("$rootDirectory/pubspec.yaml", pubspecTemplate());
+    writeInFile("$pathOutput//pubspec.yaml", pubspecTemplate());
   }
 
   createIndex() {
     print("");
-    writeInFile("$webDirectory/index.html", indexHtmlTemplate());
-    writeInDartFile("$webDirectory/index.dart", indexDartTemplate());
+    writeInFile("$pathOutput/$webPath/index.html", indexHtmlTemplate());
+    writeInDartFile("$pathOutput/$webPath/index.dart", indexDartTemplate());
   }
 
   createRootElement() {

@@ -10,33 +10,19 @@ import "dart:io";
 
 class BehaviorsManager extends Manager {
 
-  BehaviorsManager.fromMap(Map config, String rootPath, String appName) : super.fromMap(config, rootPath, appName);
-
-  BehaviorsManager.fromJson(String json, String rootPath, String appName) : super.fromJson(json, rootPath,appName);
-
-  addToLibrary(String name) {
-    File services = new File("$completePath/behaviors.dart");
-    services.writeAsString(services.readAsStringSync() +
-        "\n" +
-        "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
-  }
-
-  createLibraryDirectory() {
-    super.createLibraryDirectory();
-    writeInDartFile("$completePath/behaviors.dart", behaviorsLibTemplate());
-  }
+  BehaviorsManager(String appName, String libraryPath) : super(appName, libraryPath, "behaviors");
 
   createBehavior(String name, [String content]) {
     if (content == null) {
       content = behaviorDartTemplate(name);
     }
     writeInDartFile(
-        "$completePath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
+        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         content);
     addToLibrary(name);
   }
 
-  behaviorsLibTemplate() =>
+  String get libraryTemplate =>
       "library ${toSnakeCase(appName)}.behaviors;"
           "// export 'behavior.dart';";
 
