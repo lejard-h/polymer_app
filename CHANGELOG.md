@@ -1,8 +1,12 @@
 # Changelog
 
+## 0.1.1
+- Material Design Template for new app
+- Add 'new config' command
+
 ## 0.1.0
 - Refactor Manager
-- Implement -output-folder option
+- Implement --output-folder option
 
 ## 0.0.7
 - Implement 'polymer_app.json' config

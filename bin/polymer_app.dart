@@ -160,7 +160,9 @@ void main(List<String> args) {
       }
       return createNewApplication(results, material: materialDesign);
     } else if (isCommandNew(results.rest)) {
-      if (results.rest[1] == "element") {
+      if (results.rest[1] == "config") {
+        return createNewConfig(results.rest[2]);
+      } else if (results.rest[1] == "element") {
         return createNewElement(results.rest[2]);
       } else if (results.rest[1] == "behavior") {
         return createNewBehavior(results.rest[2]);
@@ -189,8 +191,14 @@ void usage(ArgParser parser) {
       'new model name\n'
       'new behavior name\n'
       'new service name\n'
-      'new route name path\n');
+      'new route name path\n'
+      'new config name\n');
   print(parser.usage);
+}
+
+createNewConfig(String appName) {
+  writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
+      getDefaultJsonConfig(appName));
 }
 
 String getDefaultJsonConfig(String appName, [String path = "lib"]) => '{'
