@@ -39,6 +39,7 @@ class Manager {
   String appName;
   String libraryPath;
   String libraryName;
+
   String get libraryTemplate => "";
 
   Manager(this.appName, this.libraryPath, this.libraryName);
@@ -66,29 +67,42 @@ class PolymerAppManager extends JsonObject {
   ModelsManager _models;
   RoutesManager _routes;
 
-
   String pathOutput;
+
   String get libraryPath => get("library_path");
+
   String get elementsPath => "$pathOutput/$libraryPath/${get("elements_path")}";
-  String get behaviorsPath => "$pathOutput/$libraryPath/${get("behaviors_path")}";
+
+  String get behaviorsPath =>
+      "$pathOutput/$libraryPath/${get("behaviors_path")}";
+
   String get servicesPath => "$pathOutput/$libraryPath/${get("services_path")}";
+
   String get routesPath => "$pathOutput/$libraryPath/${get("routes_path")}";
+
   String get modelsPath => "$pathOutput/$libraryPath/${get("models_path")}";
+
   String get name => get("name");
+
   String get webPath => get("web_path");
+
   RoutesManager get routes => _routes;
+
   ModelsManager get models => _models;
+
   ServicesManager get services => _services;
+
   BehaviorsManager get behaviors => _behaviors;
+
   ElementsManager get elements => _elements;
 
-
-
-  PolymerAppManager.fromJson(String configJson, [this.pathOutput = "./"]) : super.fromJson(configJson) {
+  PolymerAppManager.fromJson(String configJson, [this.pathOutput = "./"])
+      : super.fromJson(configJson) {
     _parseConfig();
   }
 
-  PolymerAppManager.fromMap(Map config, [this.pathOutput = "./"]) : super.fromMap(config) {
+  PolymerAppManager.fromMap(Map config, [this.pathOutput = "./"])
+      : super.fromMap(config) {
     _parseConfig();
   }
 
@@ -97,7 +111,7 @@ class PolymerAppManager extends JsonObject {
       throw "No config found.";
     }
     _elements = new ElementsManager(name, elementsPath);
-  _behaviors = new BehaviorsManager(name, behaviorsPath);
+    _behaviors = new BehaviorsManager(name, behaviorsPath);
     _services = new ServicesManager(name, servicesPath);
     _models = new ModelsManager(name, modelsPath);
     _routes = new RoutesManager(name, routesPath);
@@ -108,7 +122,9 @@ class PolymerAppManager extends JsonObject {
     _parseConfig();
   }
 
-  PolymerAppManager([String configPath = "./polymer_app.json", this.pathOutput = './']) : super() {
+  PolymerAppManager(
+      [String configPath = "./polymer_app.json", this.pathOutput = './'])
+      : super() {
     File configFile = new File(configPath);
     if (!configFile.existsSync()) {
       throw "'polymer_app.json' not found.";
@@ -117,14 +133,14 @@ class PolymerAppManager extends JsonObject {
     _fromJson(configFile.readAsStringSync());
   }
 
-  createApplication() {
-    createPubspec();
-    createLibrary();
+  createApplication({material: false}) {
+    createPubspec(material: material);
+    createLibrary(material: material);
     createIndex();
-    createRootElement();
+    createRootElement(material: material);
   }
 
-  createLibrary() {
+  createLibrary({material: false}) {
     print("");
     elements.createLibraryDirectory();
     behaviors.createLibraryDirectory();
@@ -132,18 +148,21 @@ class PolymerAppManager extends JsonObject {
     models.createLibraryDirectory();
     routes.createLibraryDirectory();
 
-    writeInDartFile(
-        "$pathOutput/$libraryPath/${toSnakeCase(name)}.dart",
-        appLibraryTemplate());
+    if (material) {
+      writeInDartFile(
+          "$pathOutput/$libraryPath/material.dart", materialLibrary());
+    }
+    writeInDartFile("$pathOutput/$libraryPath/${toSnakeCase(name)}.dart",
+        appLibraryTemplate(material: material));
   }
 
-  createPubspec() {
+  createPubspec({material: false}) {
     print("");
     File file = new File("$pathOutput//pubspec.yaml");
     if (file.existsSync()) {
       throw "Please create an empty folder";
     }
-    writeInFile("$pathOutput//pubspec.yaml", pubspecTemplate());
+    writeInFile("$pathOutput//pubspec.yaml", pubspecTemplate(material: material));
   }
 
   createIndex() {
@@ -152,9 +171,17 @@ class PolymerAppManager extends JsonObject {
     writeInDartFile("$pathOutput/$webPath/index.dart", indexDartTemplate());
   }
 
-  createRootElement() {
-    elements.createElement("root-element", rootElementDartTemplate(), null,
-        rootElementCssTemplate(), rootElementHtmlTemplate());
+  createRootElement({material: false}) {
+    elements.createElement(
+        "root-element",
+        material
+            ? rootMaterialElementDartTemplate()
+            : rootElementDartTemplate(),
+        null,
+        rootElementCssTemplate(),
+        material
+            ? rootMaterialElementHtmlTemplate()
+            : rootElementHtmlTemplate());
     elements.addToLibrary("root-element");
   }
 
@@ -175,6 +202,9 @@ class PolymerAppManager extends JsonObject {
       "font-weight: 300;"
       "display: block;"
       "height: 100vh;"
+      "/* Material Template */"
+      "--paper-toolbar-background: #b24830;"
+      "/*********************/"
       "} "
       "*[flex] {"
       "display: flex;"
@@ -210,10 +240,22 @@ class PolymerAppManager extends JsonObject {
       "padding-right: 15px;"
       "padding-left: 15px;"
       "height: 100vh;"
-      "}";
+      "}"
+      "/* Material Template */"
+      ".content {"
+      "padding: 10px;"
+      "background-color: #efefef;"
+      "}"
+      ".menu-item {"
+      "cursor: pointer;"
+      "}"
+      "#nav {"
+      "border-right: 1px solid #e0e0e0;"
+      "}"
+      "/*********************/";
 
   rootElementDartTemplate() => '@HtmlImport("root_element.html")'
-      "library $name.elements.root_element;"
+      "library ${toSnakeCase(name)}.elements.root_element;"
       'import "package:polymer/polymer.dart";'
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
@@ -282,14 +324,15 @@ class PolymerAppManager extends JsonObject {
       "await initPolymer();"
       "}";
 
-  appLibraryTemplate() => "library ${toSnakeCase(name)};"
-      "export 'elements/elements.dart';"
-      "export 'routes/routes.dart';"
-      "export 'behaviors/behaviors.dart';"
-      "export 'models/models.dart';"
-      "export 'services/services.dart';";
+  appLibraryTemplate({material: false}) => "library ${toSnakeCase(name)};"
+      "export '${get("elements_path")}/elements.dart';"
+      "export '${get("routes_path")}/routes.dart';"
+      "export '${get("behaviors_path")}/behaviors.dart';"
+      "export '${get("models_path")}/models.dart';"
+      "export '${get("service_path")}/services.dart';"
+      "${material ? "export 'material.dart';" : ""}";
 
-  pubspecTemplate() => "name: ${toSnakeCase(name)}\n"
+  pubspecTemplate({material: false}) => "name: ${toSnakeCase(name)}\n"
       "#description:\n"
       "version: 0.0.1\n"
       "#author:\n"
@@ -298,6 +341,7 @@ class PolymerAppManager extends JsonObject {
       "  sdk: '>=1.13.0 <2.0.0'\n\n"
       "dependencies:\n"
       '  polymer: "^1.0.0-rc.10"\n'
+      '${material ? "  polymer_elements: '^1.0.0-rc.5'\n" : ""}'
       '  polymer_app_router: "^0.0.4"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
       '  web_components: "^0.12.0"\n'
@@ -314,4 +358,104 @@ class PolymerAppManager extends JsonObject {
       '      minify: true\n'
       "      commandLineOptions: ['--trust-type-annotations', '--trust-primitives', '--enable-experimental-mirrors']\n"
       '  - dart_to_js_script_rewriter\n';
+
+  rootMaterialElementDartTemplate() => '@HtmlImport("root_element.html")'
+      "library ${toSnakeCase(name)}.elements.root_element;"
+      'import "package:polymer/polymer.dart";'
+      'import "dart:html";'
+      'import "package:web_components/web_components.dart" show HtmlImport;'
+      'import "package:polymer_app_router/polymer_app_router.dart";'
+      'import "package:${toSnakeCase(name)}/${get("routes_path")}/routes.dart";'
+      'import "package:${toSnakeCase(name)}/material.dart";'
+      'PolymerAppRoute createRoute(String text) {'
+      'PolymerAppRoute route ='
+      'document.createElement("polymer-app-route") as PolymerAppRoute;'
+      'route.innerHtml = text;'
+      'return route;'
+      '}'
+      '@PolymerRegister("root-element")'
+      'class RootElement extends PolymerElement {'
+      'RootElement.created() : super.created();'
+      "PaperDrawerPanel get drawer => \$['drawerPanel'];"
+      ' List<Page> _pages = ['
+      'new Page("home", "",'
+      'createRoute("<h2>Home</h2>"),'
+      'isDefault: true)'
+      '];'
+      '@Property() List<Page> get pages => _pages;'
+      'set pages(List<Page> value) {'
+      '_pages = value;'
+      'notifyPath("pages", value);'
+      '}'
+      'String _selected;'
+      '@Property()'
+      'String get selected => _selected;'
+      'set selected(String value) {'
+      '_selected = value;'
+      'notifyPath("selected", value);'
+      '}'
+      '@reflectable '
+      'void goTo(MouseEvent event, [_]) {'
+      'event.stopPropagation();'
+      'event.preventDefault();'
+      'HtmlElement elem = event.target;'
+      'drawer.closeDrawer();'
+      'PolymerRouter.goToName(elem?.attributes["hash"]);'
+      '}'
+      '@reflectable '
+      'void goToDefault(MouseEvent event, [_]) {'
+      'event.stopPropagation();'
+      'event.preventDefault();'
+      'drawer.closeDrawer();'
+      'PolymerRouter.goToDefault();'
+      '}'
+      '}';
+
+  rootMaterialElementHtmlTemplate() =>
+      '<paper-drawer-panel id="drawerPanel" responsive-width="1280px" transition>'
+      '<div class="nav layout vertical" drawer id="nav">'
+      '<!-- Nav Content -->'
+      '<template is="dom-if" if="{{!navHeaderIsValid}}">'
+      '<paper-toolbar>'
+      '<span class="title">Polymer App Test</span>'
+      '</paper-toolbar>'
+      '</template>'
+      '<paper-menu id="menu" selected="{{visibleMenuIdx}}" valueattr="hash" class="flex">'
+      '<template is="dom-repeat" items="{{pages}}">'
+      '<paper-item class="menu-item" hash\$={{item.name}} on-click="goTo">'
+      '<span class="layout horizontal">'
+      '<span class="flex">{{item.name}}</span>'
+      '</span>'
+      '</paper-item>'
+      '</template>'
+      '</paper-menu>'
+      '</div>'
+      '<paper-header-panel class="main" main mode="waterfall" style="z-index: 0">'
+      '<!-- Main Toolbar -->'
+      '<paper-toolbar>'
+      '<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>'
+      '<div class="flex">{{selected}}</div>'
+      '</paper-toolbar>'
+      '<!-- Main Content -->'
+      '<div class="content layout horizontal fit">'
+      '<polymer-app-router selected="{{selected}}" pages="{{pages}}"></polymer-app-router>'
+      '</div>'
+      '</paper-header-panel>'
+      '</paper-drawer-panel>';
+
+  materialLibrary() => "library polymer_app_test.material;\n\n"
+      "export 'package:polymer_elements/iron_icon.dart';"
+      "export 'package:polymer_elements/iron_icons.dart';"
+      "export 'package:polymer_elements/iron_media_query.dart';"
+      "export 'package:polymer_elements/neon_animated_pages.dart';"
+      "export 'package:polymer_elements/paper_drawer_panel.dart';"
+      "export 'package:polymer_elements/paper_header_panel.dart';"
+      "export 'package:polymer_elements/paper_icon_button.dart';"
+      "export 'package:polymer_elements/paper_item.dart';"
+      "export 'package:polymer_elements/paper_material.dart';"
+      "export 'package:polymer_elements/paper_menu.dart';"
+      "export 'package:polymer_elements/paper_tab.dart';"
+      "export 'package:polymer_elements/paper_tabs.dart';"
+      "export 'package:polymer_elements/paper_toolbar.dart';"
+      "export 'package:polymer_elements/paper_toast.dart';";
 }

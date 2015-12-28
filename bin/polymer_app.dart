@@ -51,12 +51,12 @@ Directory getDirectory(String appName, ArgParser parser) {
   return dir;
 }
 
-createNewApplication(ArgResults results) {
+createNewApplication(ArgResults results, { material: false}) {
   String appName = results.rest[2];
   print("Creating '${green(appName)}' application");
   writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
       getDefaultJsonConfig(appName));
-  manager.createApplication();
+  manager.createApplication(material: material);
 }
 
 createNewService(String name) {
@@ -119,9 +119,9 @@ createNewRoute(String routeName, String path) {
   print(white("\nImport and add page to your root-element\n"));
   if (manager != null) {
     routes.addToLibrary("$routeName-route");
-    print(green(
+   /* print(green(
         "import 'package:${toSnakeCase(manager.name)}/routes/routes.dart';") +
-        "\n");
+        "\n");*/
   }
   print("List<Page> _pages = [");
   print("...");
@@ -136,9 +136,11 @@ void main(List<String> args) {
 
   parser.addOption('output-folder', abbr: "o", defaultsTo: "./");
   parser.addFlag('help', abbr: 'h');
+  parser.addFlag('material', abbr: 'm', defaultsTo: false);
 
   try {
     ArgResults results = parser.parse(args);
+    bool materialDesign = results["material"];
     outputFolderPath = results["output-folder"];
     outputFolder = new Directory(outputFolderPath);
     if (!outputFolder.existsSync()) {
@@ -156,9 +158,11 @@ void main(List<String> args) {
         manager = new PolymerAppManager.fromJson(
             getDefaultJsonConfig(results.rest[2]), outputFolder.resolveSymbolicLinksSync());
       }
-      return createNewApplication(results);
+      return createNewApplication(results, material: materialDesign);
     } else if (isCommandNew(results.rest)) {
-      if (results.rest[1] == "element") {
+      if (results.rest[1] == "config") {
+        return createNewConfig(results.rest[2]);
+      } else if (results.rest[1] == "element") {
         return createNewElement(results.rest[2]);
       } else if (results.rest[1] == "behavior") {
         return createNewBehavior(results.rest[2]);
@@ -187,8 +191,14 @@ void usage(ArgParser parser) {
       'new model name\n'
       'new behavior name\n'
       'new service name\n'
-      'new route name path\n');
+      'new route name path\n'
+      'new config name\n');
   print(parser.usage);
+}
+
+createNewConfig(String appName) {
+  writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
+      getDefaultJsonConfig(appName));
 }
 
 String getDefaultJsonConfig(String appName, [String path = "lib"]) => '{'
