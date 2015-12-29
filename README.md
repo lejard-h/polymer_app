@@ -20,7 +20,6 @@
 ### Create a polymer app
 
     polymer_app new app awesome_app
-    cd awesome_app
     pub get
     pub serve
 
