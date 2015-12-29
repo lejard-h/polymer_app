@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+- Clean some code
+- Add github buttons
+
 ## 0.1.1
 - Material Design Template for new app
 - Add 'new config' command

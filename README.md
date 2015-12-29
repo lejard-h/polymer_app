@@ -72,4 +72,7 @@
            Map queryParameters,
            bool forceReload: false})
    
-See [polymer_app_router](https://github.com/lejard-h/polymer_app_router) for more documentation. 
+## TODO
+
+ * Auto serialization/deserialization for ```PolymerModel``` and ```HttpService```
+ * Implemente a ```@Route``` notation for Routing
