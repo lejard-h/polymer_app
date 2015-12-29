@@ -67,7 +67,7 @@ createNewService(String name) {
 
   services.createService(name);
   if (manager != null) {
-    services.addToLibrary(name);
+    services.addToLibrary("$name-service");
   }
 
 }
@@ -79,7 +79,7 @@ createNewModel(String name) {
 
   models.createModel(name);
   if (manager != null) {
-    models.addToLibrary(name);
+    models.addToLibrary("$name-model");
   }
 }
 
@@ -106,16 +106,16 @@ createNewBehavior(String name) {
   print("Creating '${green(name)}' behavior");
   behaviors.createBehavior(name);
   if (manager != null) {
-    behaviors.addToLibrary(name);
+    behaviors.addToLibrary("$name-behavior");
   }
 }
 
 createNewRoute(String routeName, String path) {
   print("Creating '${green(routeName)}' route");
 
-  RoutesManager routes = manager?.routes ?? new RoutesManager("$routeName-route", outputFolderPath);
+  RoutesManager routes = manager?.routes ?? new RoutesManager(routeName, outputFolderPath);
 
-  routes.createRoute("$routeName-route");
+  routes.createRoute(routeName);
   print(white("\nImport and add page to your root-element\n"));
   if (manager != null) {
     routes.addToLibrary("$routeName-route");
@@ -126,7 +126,7 @@ createNewRoute(String routeName, String path) {
   print("List<Page> _pages = [");
   print("...");
   print(green(
-      "\tnew Page('${toCamelCase(routeName)}', '${toSnakeCase(path)}', document.createElement('${toLispCase(routeName + "-route")}'))"));
+      "\tnew Page('${toCamelCase(routeName)}', '${toSnakeCase(path)}', document.createElement('${toLispCase(routeName + "-route")}') as PolymerAppRouteBehavior)"));
   print("...");
   print("];");
 }

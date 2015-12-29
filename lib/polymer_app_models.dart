@@ -12,6 +12,7 @@ class ModelsManager extends Manager {
       : super(appName, libraryPath, "models");
 
   createModel(String name, [String content]) {
+    name = "$name-model";
     if (content == null) {
       content = modelDartTemplate(name);
     }
@@ -23,13 +24,15 @@ class ModelsManager extends Manager {
       "// export 'model.dart';";
 
   modelDartTemplate(String name) =>
-      'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
+      'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};\n\n'
+      'import "package:polymer/polymer.dart";'
       'import "package:polymer_app/polymer_model.dart";'
       'class ${toCamelCase(name)} extends PolymerModel {'
       '@reflectable '
       'String foo;'
       '${toCamelCase(name)}(this.foo);'
-      '_fromJson(Map json) {'
+      '${toCamelCase(name)}.fromJson(json) : super.fromJson(json);'
+      'fromMap(Map json) {'
       'this.foo = json["json"];'
       '}'
       'Map get toMap => {"foo": foo};'

@@ -13,6 +13,7 @@ class RoutesManager extends Manager {
 
   RoutesManager(String appName, String libraryPath)
       : super(appName, libraryPath, "routes") {
+    appName = "$appName-route";
     elements = new ElementsManager(appName, libraryPath);
   }
 

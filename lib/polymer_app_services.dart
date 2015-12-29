@@ -12,6 +12,7 @@ class ServicesManager extends Manager {
       : super(appName, libraryPath, "services");
 
   createService(String name, [String content]) {
+    name = "$name-service";
     if (content == null) {
       content = serviceDartTemplate(name);
     }

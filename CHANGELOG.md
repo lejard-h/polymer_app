@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+- fix route creation
+- fix model creation
+- fix material toolbar
+
 ## 0.1.2
 - Clean some code
 - Add github buttons

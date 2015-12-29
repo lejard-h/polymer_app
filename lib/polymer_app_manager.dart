@@ -277,19 +277,12 @@ class PolymerAppManager extends JsonObject {
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
       'import "package:polymer_app_router/polymer_app_router.dart";'
-      'PolymerAppRoute createRoute(String text) {'
-      'PolymerAppRoute route ='
-      'document.createElement("polymer-app-route") as PolymerAppRoute;'
-      'route.innerHtml = text;'
-      'return route;'
-      '}'
+      'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement {'
       'RootElement.created() : super.created();'
       ' List<Page> _pages = ['
-      'new Page("home", "",'
-      'createRoute("<h2>Home</h2>"),'
-      'isDefault: true)'
+      'new Page("Home", "", document.createElement("home-route") as PolymerAppRouteBehavior, isDefault: true)'
       '];'
       '@Property() List<Page> get pages => _pages;'
       'set pages(List<Page> value) {'
@@ -341,9 +334,9 @@ class PolymerAppManager extends JsonObject {
       "await initPolymer();"
       "}";
 
-  appLibraryTemplate({material: false}) => "library ${toSnakeCase(name)};"
-      "export '${get("elements_path")}/elements.dart';"
+  appLibraryTemplate({material: false}) => "library ${toSnakeCase(name)};\n\n"
       "export '${get("routes_path")}/routes.dart';"
+      "export '${get("elements_path")}/elements.dart';"
       "export '${get("behaviors_path")}/behaviors.dart';"
       "export '${get("models_path")}/models.dart';"
       "export '${get("services_path")}/services.dart';"
@@ -358,7 +351,7 @@ class PolymerAppManager extends JsonObject {
       "  sdk: '>=1.13.0 <2.0.0'\n\n"
       "dependencies:\n"
       '  polymer: "^1.0.0-rc.10"\n'
-      '  polymer_app: "^0.1.1"\n'
+      '  polymer_app: "^0.1.3"\n'
       '${material ? "  polymer_elements: '^1.0.0-rc.5'\n" : ""}'
       '  polymer_app_router: "^0.0.5"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
@@ -390,14 +383,13 @@ class PolymerAppManager extends JsonObject {
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
       'import "package:polymer_app_router/polymer_app_router.dart";'
-      'import "package:${toSnakeCase(name)}/${get("routes_path")}/routes.dart";'
-      'import "package:${toSnakeCase(name)}/material.dart";\n'
+      'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement {'
       'RootElement.created() : super.created();\n\n'
       "PaperDrawerPanel get drawer => \$['drawerPanel'];"
       ' List<Page> _pages = ['
-      'new Page("Home", "", document.createElement("home-route"), isDefault: true)'
+      'new Page("Home", "", document.createElement("home-route") as PolymerAppRouteBehavior, isDefault: true)'
       '];'
       '@Property() List<Page> get pages => _pages;'
       'set pages(List<Page> value) {'
@@ -432,11 +424,9 @@ class PolymerAppManager extends JsonObject {
       '<paper-drawer-panel id="drawerPanel" responsive-width="1280px" transition>'
       '<div class="nav layout vertical" drawer id="nav">'
       '<!-- Nav Content -->'
-      '<template is="dom-if" if="{{!navHeaderIsValid}}">'
       '<paper-toolbar>'
-      '<span class="title">Polymer App Test</span>'
+      '<span>Polymer App Test</span>'
       '</paper-toolbar>'
-      '</template>'
       '<paper-menu id="menu" selected="{{visibleMenuIdx}}" valueattr="hash" class="flex">'
       '<template is="dom-repeat" items="{{pages}}">'
       '<paper-item class="menu-item" hash\$={{item.name}} on-click="goTo">'

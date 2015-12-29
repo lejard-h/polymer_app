@@ -6,13 +6,20 @@ import "package:polymer/polymer.dart";
 import "dart:convert";
 
 abstract class PolymerModel extends JsProxy {
-  PolymerModel.fromJson(String json) {
-    _fromJson(JSON.decode(json));
+  PolymerModel.fromJson(json) {
+    if (json is String) {
+      json = JSON.decode(json) as Map;
+    }
+    if (json is Map) {
+      fromMap(json);
+    } else {
+      throw "Invalid Json format.";
+    }
   }
 
   PolymerModel();
 
-  _fromJson(Map json);
+  fromMap(Map json);
 
   Map get toMap;
 
