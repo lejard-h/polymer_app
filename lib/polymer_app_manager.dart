@@ -13,7 +13,6 @@ import "polymer_app_models.dart";
 import "polymer_app_behaviors.dart";
 import "polymer_app_elements.dart";
 import "polymer_app_routes.dart";
-import "utils.dart";
 
 abstract class JsonObject {
   Map _obj;
@@ -191,9 +190,18 @@ class PolymerAppManager extends JsonObject {
   }
 
   createHomeRoute() {
-    routes.createRoute("Home", htmlTemplate: githubButton);
-    routes.addToLibrary("home-route");
+    routes.createRoute("Home",
+        htmlTemplate: githubButton, cssTemplate: routeHomeCssTemplate);
+    routes.addToLibrary(toSnakeCase("Home-route"));
   }
+
+  String get routeHomeCssTemplate => ":host {"
+      "display: flex;"
+      "flex-direction: column;"
+      "align-items: center;"
+      "flex: 1;"
+      "height: 100%;"
+      "}";
 
   rootElementHtmlTemplate() => '<div header> '
       '<span title>{{selected}}</span>'
@@ -253,7 +261,6 @@ class PolymerAppManager extends JsonObject {
       "}"
       "/* Material Template */"
       ".content {"
-      "padding: 10px;"
       "background-color: #efefef;"
       "}"
       ".menu-item {"
@@ -351,8 +358,9 @@ class PolymerAppManager extends JsonObject {
       "  sdk: '>=1.13.0 <2.0.0'\n\n"
       "dependencies:\n"
       '  polymer: "^1.0.0-rc.10"\n'
+      '  polymer_app: "^0.1.1"\n'
       '${material ? "  polymer_elements: '^1.0.0-rc.5'\n" : ""}'
-      '  polymer_app_router: "^0.0.4"\n'
+      '  polymer_app_router: "^0.0.5"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
       '  web_components: "^0.12.0"\n'
       '  browser: "^0.10.0"\n'
@@ -369,10 +377,10 @@ class PolymerAppManager extends JsonObject {
       "      commandLineOptions: ['--trust-type-annotations', '--trust-primitives', '--enable-experimental-mirrors']\n"
       '  - dart_to_js_script_rewriter\n';
 
-  String get githubButton => '<div style="display: flex; flex-direction: row">'
-      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-icon=\"octicon-eye\" data-count-href=\"/lejard-h/polymer_app/watchers\" data-count-api=\"/repos/lejard-h/polymer_app#subscribers_count\" data-count-aria-label=\"# watchers on GitHub\" aria-label=\"Watch lejard-h/polymer_app on GitHub\">Watch</a>'
-      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-icon=\"octicon-star\" data-count-href=\"/lejard-h/polymer_app/stargazers\" data-count-api=\"/repos/lejard-h/polymer_app#stargazers_count\" data-count-aria-label=\"# stargazers on GitHub\" aria-label=\"Star lejard-h/polymer_app on GitHub\">Star</a>'
-      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app/issues\" data-icon=\"octicon-issue-opened\" data-count-api=\"/repos/lejard-h/polymer_app#open_issues_count\" data-count-aria-label=\"# issues on GitHub\" aria-label=\"Issue lejard-h/polymer_app on GitHub\">Issue</a>'
+  String get githubButton => '<div style="display: flex; display: flex;flex: 1;align-items: center;">'
+      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-style=\"mega\" data-icon=\"octicon-eye\" data-count-href=\"/lejard-h/polymer_app/watchers\" data-count-api=\"/repos/lejard-h/polymer_app#subscribers_count\" data-count-aria-label=\"# watchers on GitHub\" aria-label=\"Watch lejard-h/polymer_app on GitHub\">Watch</a>'
+      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-style=\"mega\" data-icon=\"octicon-star\" data-count-href=\"/lejard-h/polymer_app/stargazers\" data-count-api=\"/repos/lejard-h/polymer_app#stargazers_count\" data-count-aria-label=\"# stargazers on GitHub\" aria-label=\"Star lejard-h/polymer_app on GitHub\">Star</a>'
+      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app/issues\" data-style=\"mega\" data-icon=\"octicon-issue-opened\" data-count-api=\"/repos/lejard-h/polymer_app#open_issues_count\" data-count-aria-label=\"# issues on GitHub\" aria-label=\"Issue lejard-h/polymer_app on GitHub\">Issue</a>'
       '<script async defer id=\"github-bjs\" src=\"https://buttons.github.io/buttons.js\"></script>'
       '</div>';
 

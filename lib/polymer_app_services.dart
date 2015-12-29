@@ -6,7 +6,6 @@ library polymer_app.services;
 
 import "polymer_app_manager.dart";
 import "utils.dart";
-import "dart:io";
 
 class ServicesManager extends Manager {
   ServicesManager(String appName, String libraryPath)

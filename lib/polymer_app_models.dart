@@ -6,7 +6,6 @@ library polymer_app.models;
 
 import "polymer_app_manager.dart";
 import "utils.dart";
-import "dart:io";
 
 class ModelsManager extends Manager {
   ModelsManager(String appName, String libraryPath)

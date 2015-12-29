@@ -7,7 +7,6 @@ library polymer_app.routes;
 import "polymer_app_manager.dart";
 import "polymer_app_elements.dart";
 import "utils.dart";
-import "dart:io";
 
 class RoutesManager extends Manager {
   ElementsManager elements;
@@ -22,12 +21,12 @@ class RoutesManager extends Manager {
 
   createRoute(String name,
       {String dartTemplate, String htmlTemplate, String cssTemplate}) {
+    name = "$name-route";
     if (dartTemplate == null) {
       dartTemplate = routeDartTemplate(name);
     }
-    if (htmlTemplate == null) {
-      htmlTemplate = elements.elementHtmlTemplate(name);
-    }
+    htmlTemplate =
+        elements.elementHtmlTemplate(name, htmlTemplate ?? "");
     if (cssTemplate == null) {
       cssTemplate = elements.elementCssTemplate(name);
     }
@@ -39,6 +38,10 @@ class RoutesManager extends Manager {
         htmlTemplate);
     writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
         cssTemplate);
+  }
+
+  addToLibrary(String name, [String path = "."]) {
+    super.addToLibrary(name, name);
   }
 
   routeDartTemplate(String name) => "@HtmlImport('${toSnakeCase(name)}.html')"

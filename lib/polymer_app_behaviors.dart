@@ -6,7 +6,6 @@ library polymer_app.behaviors;
 
 import "polymer_app_manager.dart";
 import "utils.dart";
-import "dart:io";
 
 class BehaviorsManager extends Manager {
 

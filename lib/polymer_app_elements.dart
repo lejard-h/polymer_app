@@ -6,7 +6,6 @@ library polymer_app.elements;
 
 import "polymer_app_manager.dart";
 import "utils.dart";
-import "dart:io";
 
 class ElementsManager extends Manager {
   ElementsManager(String appName, String libraryPath)
@@ -36,7 +35,7 @@ class ElementsManager extends Manager {
   }
 
   addToLibrary(String name, [String path = "."]) {
-  super.addToLibrary(name, name);
+    super.addToLibrary(name, name);
   }
 
   String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;"
