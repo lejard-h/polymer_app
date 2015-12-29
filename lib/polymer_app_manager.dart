@@ -45,18 +45,21 @@ class Manager {
   Manager(this.appName, this.libraryPath, this.libraryName);
 
   createLibraryDirectory() {
-    writeInDartFile("$libraryPath/$libraryName.dart", libraryTemplate);
+    writeInDartFile(
+        "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart",
+        libraryTemplate);
   }
 
-  addToLibrary(String name) {
+  addToLibrary(String name, [String path = "."]) {
     print("Add ${green(name)} to library.");
-    File lib = new File("$libraryPath/$libraryName.dart");
+    File lib = new File(
+        "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart");
     if (!lib.existsSync()) {
       lib.createSync(recursive: true);
     }
     lib.writeAsString(lib.readAsStringSync() +
         "\n" +
-        "export '${toSnakeCase(name)}/${toSnakeCase(name)}.dart';\n");
+        "export '${toSnakeCase(path)}/${toSnakeCase(name)}.dart';\n");
   }
 }
 
@@ -138,6 +141,7 @@ class PolymerAppManager extends JsonObject {
     createLibrary(material: material);
     createIndex();
     createRootElement(material: material);
+    createHomeRoute();
   }
 
   createLibrary({material: false}) {
@@ -162,7 +166,8 @@ class PolymerAppManager extends JsonObject {
     if (file.existsSync()) {
       throw "Please create an empty folder";
     }
-    writeInFile("$pathOutput//pubspec.yaml", pubspecTemplate(material: material));
+    writeInFile(
+        "$pathOutput//pubspec.yaml", pubspecTemplate(material: material));
   }
 
   createIndex() {
@@ -183,6 +188,11 @@ class PolymerAppManager extends JsonObject {
             ? rootMaterialElementHtmlTemplate()
             : rootElementHtmlTemplate());
     elements.addToLibrary("root-element");
+  }
+
+  createHomeRoute() {
+    routes.createRoute("Home", htmlTemplate: githubButton);
+    routes.addToLibrary("home-route");
   }
 
   rootElementHtmlTemplate() => '<div header> '
@@ -329,7 +339,7 @@ class PolymerAppManager extends JsonObject {
       "export '${get("routes_path")}/routes.dart';"
       "export '${get("behaviors_path")}/behaviors.dart';"
       "export '${get("models_path")}/models.dart';"
-      "export '${get("service_path")}/services.dart';"
+      "export '${get("services_path")}/services.dart';"
       "${material ? "export 'material.dart';" : ""}";
 
   pubspecTemplate({material: false}) => "name: ${toSnakeCase(name)}\n"
@@ -359,6 +369,13 @@ class PolymerAppManager extends JsonObject {
       "      commandLineOptions: ['--trust-type-annotations', '--trust-primitives', '--enable-experimental-mirrors']\n"
       '  - dart_to_js_script_rewriter\n';
 
+  String get githubButton => '<div style="display: flex; flex-direction: row">'
+      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-icon=\"octicon-eye\" data-count-href=\"/lejard-h/polymer_app/watchers\" data-count-api=\"/repos/lejard-h/polymer_app#subscribers_count\" data-count-aria-label=\"# watchers on GitHub\" aria-label=\"Watch lejard-h/polymer_app on GitHub\">Watch</a>'
+      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-icon=\"octicon-star\" data-count-href=\"/lejard-h/polymer_app/stargazers\" data-count-api=\"/repos/lejard-h/polymer_app#stargazers_count\" data-count-aria-label=\"# stargazers on GitHub\" aria-label=\"Star lejard-h/polymer_app on GitHub\">Star</a>'
+      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app/issues\" data-icon=\"octicon-issue-opened\" data-count-api=\"/repos/lejard-h/polymer_app#open_issues_count\" data-count-aria-label=\"# issues on GitHub\" aria-label=\"Issue lejard-h/polymer_app on GitHub\">Issue</a>'
+      '<script async defer id=\"github-bjs\" src=\"https://buttons.github.io/buttons.js\"></script>'
+      '</div>';
+
   rootMaterialElementDartTemplate() => '@HtmlImport("root_element.html")'
       "library ${toSnakeCase(name)}.elements.root_element;"
       'import "package:polymer/polymer.dart";'
@@ -366,21 +383,13 @@ class PolymerAppManager extends JsonObject {
       'import "package:web_components/web_components.dart" show HtmlImport;'
       'import "package:polymer_app_router/polymer_app_router.dart";'
       'import "package:${toSnakeCase(name)}/${get("routes_path")}/routes.dart";'
-      'import "package:${toSnakeCase(name)}/material.dart";'
-      'PolymerAppRoute createRoute(String text) {'
-      'PolymerAppRoute route ='
-      'document.createElement("polymer-app-route") as PolymerAppRoute;'
-      'route.innerHtml = text;'
-      'return route;'
-      '}'
+      'import "package:${toSnakeCase(name)}/material.dart";\n'
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement {'
-      'RootElement.created() : super.created();'
+      'RootElement.created() : super.created();\n\n'
       "PaperDrawerPanel get drawer => \$['drawerPanel'];"
       ' List<Page> _pages = ['
-      'new Page("home", "",'
-      'createRoute("<h2>Home</h2>"),'
-      'isDefault: true)'
+      'new Page("Home", "", document.createElement("home-route"), isDefault: true)'
       '];'
       '@Property() List<Page> get pages => _pages;'
       'set pages(List<Page> value) {'
@@ -438,7 +447,7 @@ class PolymerAppManager extends JsonObject {
       '</paper-toolbar>'
       '<!-- Main Content -->'
       '<div class="content layout horizontal fit">'
-      '<polymer-app-router selected="{{selected}}" pages="{{pages}}"></polymer-app-router>'
+      '<polymer-app-router class="flex" selected="{{selected}}" pages="{{pages}}"></polymer-app-router>'
       '</div>'
       '</paper-header-panel>'
       '</paper-drawer-panel>';

@@ -35,6 +35,10 @@ class ElementsManager extends Manager {
         cssContent);
   }
 
+  addToLibrary(String name, [String path = "."]) {
+  super.addToLibrary(name, name);
+  }
+
   String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;"
       "//export 'element/element.dart';";
 

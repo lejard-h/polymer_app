@@ -7,12 +7,13 @@
 ## Usage
 
     polymer_app 
-        new app app_name
-        new element element-name
-        new model name
-        new behavior name
-        new service name
-        new route name path
+        new app "app_name" [-m](Material Desgin Template)
+        new element "element-name"
+        new model "name"
+        new behavior "name"
+        new service "name"
+        new route "name" "path"
+        new config "name"
         -o, --output-folder    (defaults to "./")
         -h, --[no-]help  
 

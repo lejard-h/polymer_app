@@ -20,14 +20,25 @@ class RoutesManager extends Manager {
   String get libraryTemplate => "library ${toSnakeCase(appName)}.routes;"
       "// export 'route.dart';";
 
-  createRoute(String name) {
+  createRoute(String name,
+      {String dartTemplate, String htmlTemplate, String cssTemplate}) {
+    if (dartTemplate == null) {
+      dartTemplate = routeDartTemplate(name);
+    }
+    if (htmlTemplate == null) {
+      htmlTemplate = elements.elementHtmlTemplate(name);
+    }
+    if (cssTemplate == null) {
+      cssTemplate = elements.elementCssTemplate(name);
+    }
+
     writeInDartFile(
         "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
-        routeDartTemplate(name));
+        dartTemplate);
     writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
-        elements.elementHtmlTemplate(name));
+        htmlTemplate);
     writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
-        elements.elementCssTemplate(name));
+        cssTemplate);
   }
 
   routeDartTemplate(String name) => "@HtmlImport('${toSnakeCase(name)}.html')"
