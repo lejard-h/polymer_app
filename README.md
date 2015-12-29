@@ -33,15 +33,15 @@
 
 ### Create a polymer behavior
 
-    polymer_app new behavior my-behavior
+    polymer_app new behavior name
     
 ### Create a polymer model (with serialize/deserilize)
 
-    polymer_app new model my-model
+    polymer_app new model name
     
 ### Create a service (class with factory constructor)
 
-    polymer_app new service my-service
+    polymer_app new service name
     
 ### Usage of Router
 
