@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+- New Route
+    * No need to instanciate a new ```Page()```
+    * Use of ```@PolymerRoute``` and ```PolymerRouterBehavior```
+
 ## 0.1.4
 - fix route creation
 - fix model creation

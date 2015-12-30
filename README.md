@@ -74,4 +74,3 @@
 ## TODO
 
  * Auto serialization/deserialization for ```PolymerModel``` and ```HttpService```
- * Implemente a ```@Route``` notation for Routing

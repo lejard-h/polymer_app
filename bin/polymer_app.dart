@@ -51,7 +51,7 @@ Directory getDirectory(String appName, ArgParser parser) {
   return dir;
 }
 
-createNewApplication(ArgResults results, { material: false}) {
+createNewApplication(ArgResults results, {material: false}) {
   String appName = results.rest[2];
   print("Creating '${green(appName)}' application");
   writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
@@ -69,7 +69,6 @@ createNewService(String name) {
   if (manager != null) {
     services.addToLibrary("$name-service");
   }
-
 }
 
 createNewModel(String name) {
@@ -100,7 +99,8 @@ createNewElement(String name) {
 }
 
 createNewBehavior(String name) {
-  BehaviorsManager behaviors = manager?.behaviors ?? new BehaviorsManager(name, outputFolderPath);
+  BehaviorsManager behaviors =
+      manager?.behaviors ?? new BehaviorsManager(name, outputFolderPath);
   print(outputFolderPath);
 
   print("Creating '${green(name)}' behavior");
@@ -113,22 +113,13 @@ createNewBehavior(String name) {
 createNewRoute(String routeName, String path) {
   print("Creating '${green(routeName)}' route");
 
-  RoutesManager routes = manager?.routes ?? new RoutesManager(routeName, outputFolderPath);
+  RoutesManager routes =
+      manager?.routes ?? new RoutesManager(routeName, outputFolderPath);
 
-  routes.createRoute(routeName);
-  print(white("\nImport and add page to your root-element\n"));
+  routes.createRoute(routeName, path);
   if (manager != null) {
     routes.addToLibrary("$routeName-route");
-   /* print(green(
-        "import 'package:${toSnakeCase(manager.name)}/routes/routes.dart';") +
-        "\n");*/
   }
-  print("List<Page> _pages = [");
-  print("...");
-  print(green(
-      "\tnew Page('${toCamelCase(routeName)}', '${toSnakeCase(path)}', document.createElement('${toLispCase(routeName + "-route")}') as PolymerAppRouteBehavior)"));
-  print("...");
-  print("];");
 }
 
 void main(List<String> args) {
@@ -156,7 +147,8 @@ void main(List<String> args) {
     if (isCommandNew(results.rest, "app")) {
       if (manager == null) {
         manager = new PolymerAppManager.fromJson(
-            getDefaultJsonConfig(results.rest[2]), outputFolder.resolveSymbolicLinksSync());
+            getDefaultJsonConfig(results.rest[2]),
+            outputFolder.resolveSymbolicLinksSync());
       }
       return createNewApplication(results, material: materialDesign);
     } else if (isCommandNew(results.rest)) {

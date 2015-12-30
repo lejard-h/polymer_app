@@ -1,6 +1,6 @@
 name: polymer_app
 description: Generation and management of polymer application
-version: 0.1.4
+version: 0.2.0
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 homepage: https://github.com/lejard-h/polymer_app
 
@@ -12,6 +12,7 @@ environment:
 
 dependencies:
   polymer: "^1.0.0-rc.10"
+  polymer_app_router: "^0.0.5"
   args: ^0.13.2
   path: ^1.3.9
   ansicolor: ^0.0.9
