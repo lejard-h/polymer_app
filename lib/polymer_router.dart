@@ -4,9 +4,11 @@
 
 import 'package:initialize/initialize.dart' as init;
 import 'package:polymer/polymer.dart';
+import 'package:polymer/src/common/declarations.dart';
 import 'package:polymer_app_router/polymer_app_router.dart';
-import 'dart:mirrors';
 import 'dart:html';
+import "package:reflectable/reflectable.dart";
+import "./polymer_model.dart";
 
 @behavior
 abstract class PolymerRouterBehavior {
@@ -27,13 +29,11 @@ abstract class PolymerRouterBehavior {
   }
 }
 
-Object _getAnnotation(DeclarationMirror declaration, Type annotation) {
-  for (var instance in declaration.metadata) {
-    if (instance.hasReflectee) {
-      var reflectee = instance.reflectee;
-      if (reflectee.runtimeType == annotation) {
-        return reflectee;
-      }
+Object _getAnnotation(Type element, Type annotation) {
+  TypeMirror mir = jsProxyReflectable.reflectType(element);
+  for (var dec in mir.metadata) {
+    if (dec.runtimeType == annotation) {
+      return dec;
     }
   }
 
@@ -47,9 +47,7 @@ class PolymerRoute implements init.Initializer<Type> {
   const PolymerRoute(this.name, this.path);
 
   initialize(Type element) {
-    TypeMirror mir = reflectType(element);
-    PolymerRegister reg = _getAnnotation(mir, PolymerRegister);
-
+    PolymerRegister reg = _getAnnotation(element, PolymerRegister);
     if (reg != null) {
       PolymerRouterBehavior.pagesRouter.add(new Page(name, path,
           document.createElement(reg.tagName) as PolymerAppRouteBehavior));

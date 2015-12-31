@@ -1,6 +1,6 @@
 name: polymer_app
 description: Generation and management of polymer application
-version: 0.2.0
+version: 0.3.0
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 homepage: https://github.com/lejard-h/polymer_app
 
@@ -13,8 +13,26 @@ environment:
 dependencies:
   polymer: "^1.0.0-rc.10"
   polymer_app_router: "^0.0.5"
+  web_components: "^0.12.0"
+  reflectable: "^0.5.1"
+  dart_to_js_script_rewriter: "^0.1.0+4"
   args: ^0.13.2
   path: ^1.3.9
   ansicolor: ^0.0.9
   http: ^0.11.3+3
   dart_style: ^0.2.2
+  json_mapper: ^0.2.0
+
+transformers:
+  - web_components:
+      entry_points:
+      - test/index.html
+  - reflectable:
+      entry_points:
+      - test/dson_service.dart
+  - $dart2js:
+      commandLineOptions: ['--trust-type-annotations', '--trust-primitives', '--enable-experimental-mirrors']
+  - dart_to_js_script_rewriter
+
+dev_dependencies:
+  test: '>=0.12.0'
