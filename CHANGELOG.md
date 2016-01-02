@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+- Serializer (frist version)
+    * ```toJson, fromJson, toMap, fromMap, fromList```
+- Use ```reflectable instead of mirror```
+
 ## 0.2.0
 - New Route
     * No need to instanciate a new ```Page()```
