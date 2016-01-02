@@ -323,7 +323,9 @@ class PolymerAppManager extends JsonObject {
 
   indexDartTemplate() => "import 'package:polymer/polymer.dart';"
       "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
+      'import "package:polymer_app/serializer.dart";'
       "main() async {"
+      "initSerializer();"
       "await initPolymer();"
       "}";
 
