@@ -8,8 +8,20 @@ import 'package:http/http.dart';
 import "package:http/browser_client.dart";
 import "dart:async";
 import "dart:convert";
+import 'serializer.dart';
+
+String get json_format => "json";
+
+class HttpResponse {
+  Response response;
+  dynamic convertedBody;
+
+  num get statusCode => response?.statusCode;
+}
 
 class HttpService {
+  static String data_format = json_format;
+
   static HttpService _cache;
 
   factory HttpService() {
@@ -23,44 +35,76 @@ class HttpService {
 
   BrowserClient _http = new BrowserClient();
 
-  Future<Response> delete(String url,
-          {Map params, Map<String, String> headers, bool list: false}) =>
-      _http.delete(_constructUrlParams(url, params), headers: headers);
+  Future<HttpResponse> delete(String url,
+      {Map params,
+      Map<String, String> headers,
+      Type decodeType}) async {
 
-  Future<Response> get(String url,
-          {Map params, Map<String, String> headers, bool list: false}) =>
-      _http.get(_constructUrlParams(url, params), headers: headers);
+    HttpResponse res = new HttpResponse();
+    res.response  = await _http.delete(_constructUrlParams(url, params), headers: headers);
+    return _handleResponseBody(res, decodeType);
+  }
 
-  Future<Response> head(String url,
-          {Map params, Map<String, String> headers, bool list: false}) =>
-      _http.head(_constructUrlParams(url, params), headers: headers);
+  Future<HttpResponse> get(String url,
+          {Map params,
+          Map<String, String> headers,
+          Type decodeType}) async {
+    HttpResponse res = new HttpResponse();
+    res.response = await _http.get(_constructUrlParams(url, params), headers: headers);
+    return _handleResponseBody(res, decodeType);
+  }
 
-  Future<Response> patch(String url,
+  Future<HttpResponse> head(String url,
+          {Map params,
+          Map<String, String> headers,
+          Type decodeType}) async {
+    HttpResponse res = new HttpResponse();
+    res.response = await _http.head(_constructUrlParams(url, params), headers: headers);
+    return _handleResponseBody(res, decodeType);
+  }
+
+  Future<HttpResponse> patch(String url,
           {body,
           Map params,
           Map<String, String> headers,
           Encoding encoding,
-          bool list: false}) =>
-      _http.patch(_constructUrlParams(url, params),
+          Type decodeType}) async {
+    HttpResponse res = new HttpResponse();
+    res.response = await _http.patch(_constructUrlParams(url, params),
           body: body, headers: headers, encoding: encoding);
+    return _handleResponseBody(res, decodeType);
+  }
 
-  Future<Response> post(String url,
+  Future<HttpResponse> post(String url,
           {body,
           Map params,
           Map<String, String> headers,
           Encoding encoding,
-          bool list: false}) =>
-      _http.post(_constructUrlParams(url, params),
+          Type decodeType}) async {
+    HttpResponse res = new HttpResponse();
+    res.response = await _http.post(_constructUrlParams(url, params),
           body: body, headers: headers, encoding: encoding);
+    return _handleResponseBody(res, decodeType);
+  }
 
-  Future<Response> put(String url,
+  Future<HttpResponse> put(String url,
           {body,
           Map params,
           Map<String, String> headers,
           Encoding encoding,
-          bool list: false}) =>
-      _http.put(_constructUrlParams(url, params),
+          Type decodeType}) async {
+    HttpResponse res = new HttpResponse();
+    res.response = await _http.put(_constructUrlParams(url, params),
           body: body, headers: headers, encoding: encoding);
+    return _handleResponseBody(res, decodeType);
+  }
+
+  HttpResponse _handleResponseBody(HttpResponse res, Type decodeType) {
+    if (decodeType != null && res.response?.body != null && data_format == json_format) {
+      res.convertedBody = Serializer.fromJson(res.response?.body, decodeType);
+    }
+    return res;
+  }
 
   _constructUrlParams(String url, Map params) {
     if (params != null && params.length > 0) {
