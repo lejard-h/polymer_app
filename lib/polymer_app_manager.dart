@@ -57,7 +57,6 @@ class Manager {
       lib.createSync(recursive: true);
     }
     lib.writeAsString(lib.readAsStringSync() +
-        "\n" +
         "export '${toSnakeCase(path)}/${toSnakeCase(name)}.dart';\n");
   }
 }

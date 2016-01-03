@@ -28,10 +28,12 @@ class ModelsManager extends Manager {
       'import "package:polymer/polymer.dart";'
       'import "package:polymer_app/polymer_model.dart";'
       'import "package:polymer_app/serializer.dart";\n'
+      '/// @serializable specify that ${toCamelCase(name)} can be serialize/deserialize by polymer_app\n'
       '@serializable\n'
       'class ${toCamelCase(name)} extends PolymerModel {'
       '@reflectable\n'
       'String bar;\n\n'
+      '/// The Serializer need to have an empty constructor on the class or a contructor with optionnal value\n'
       '${toCamelCase(name)}([this.bar]);\n\n'
       '${toCamelCase(name)}.foo(this.bar);'
       '}';
