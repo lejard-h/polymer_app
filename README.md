@@ -1,5 +1,10 @@
 # polymer_app
 
+## Roadmap
+- Create a full website/documentation on the library
+- Polymer Theming
+- Improve cli
+
 ## Installation
 
     pub global activate polymer_app
@@ -70,7 +75,3 @@
            bool replace: false,
            Map queryParameters,
            bool forceReload: false})
-   
-## TODO
-
- * Auto serialization/deserialization for ```PolymerModel``` and ```HttpService```

@@ -1,8 +1,9 @@
 # Changelog
 
 ## 0.3.0
-- Serializer (frist version)
+- Serializer (first version)
     * ```toJson, fromJson, toMap, fromMap, fromList```
+    * Serializer in HttpService
 - Use ```reflectable instead of mirror```
 
 ## 0.2.0
