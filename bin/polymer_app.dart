@@ -69,26 +69,26 @@ class PolymerApp extends Program {
         exit();
       }
     }
-    String behaviorDirectory = "./";
+    String routesDirectory = "./";
     _getOutputFodler("./");
     _getConfigFile();
 
     if (manager != null) {
-      behaviorDirectory = manager.routes.libraryPath;
-    }
-
-    Question askElementsDirectory = new Question(
-        'Route directory path (default: $behaviorDirectory):',
-        type: String);
-    String behaviorsDirectoryPath = await ask(askElementsDirectory);
-    if (behaviorDirectory.isEmpty) {
-      behaviorDirectory = behaviorDirectory;
+      routesDirectory = manager.routes.libraryPath;
+    } else {
+      Question askElementsDirectory = new Question(
+          'Route directory path (default: $routesDirectory):',
+          type: String);
+      String path = await ask(askElementsDirectory);
+      if (path.isNotEmpty) {
+        routesDirectory = path;
+      }
     }
 
     print("Creating '${green(name)}' route");
 
     RoutesManager routes =
-        manager?.routes ?? new RoutesManager(name, behaviorsDirectoryPath);
+        manager?.routes ?? new RoutesManager(name, routesDirectory);
 
     routes.createRoute(name, path);
     if (manager != null) {
@@ -107,29 +107,29 @@ class PolymerApp extends Program {
         exit();
       }
     }
-    String behaviorDirectory = "./";
+    String modelsDirectoryPath = "./";
     _getOutputFodler("./");
     _getConfigFile();
 
     if (manager != null) {
-      behaviorDirectory = manager.models.libraryPath;
-    }
-
-    Question askElementsDirectory = new Question(
-        'Model directory path (default: $behaviorDirectory):',
-        type: String);
-    String behaviorsDirectoryPath = await ask(askElementsDirectory);
-    if (behaviorDirectory.isEmpty) {
-      behaviorDirectory = behaviorDirectory;
+      modelsDirectoryPath = manager.models.libraryPath;
+    } else {
+      Question askModelsDirectory = new Question(
+          'Model directory path (default: $modelsDirectoryPath):',
+          type: String);
+      String path = await ask(askModelsDirectory);
+      if (path.isNotEmpty) {
+        modelsDirectoryPath = modelsDirectoryPath;
+      }
     }
 
     print("Creating '${green(name)}' model");
     ModelsManager models =
-        manager?.models ?? new ModelsManager(name, behaviorsDirectoryPath);
+        manager?.models ?? new ModelsManager(name, modelsDirectoryPath);
 
     models.createModel(name);
     if (manager != null) {
-      models.addToLibrary("$name-model");
+      models.addToLibrary("$name\_model");
     }
   }
 
@@ -150,24 +150,24 @@ class PolymerApp extends Program {
 
     if (manager != null) {
       serviceDirectory = manager.services.libraryPath;
-    }
-
-    Question askServiceDirectory = new Question(
-        'Service directory path (default: $serviceDirectory):',
-        type: String);
-    String serviceDirectoryPath = await ask(askServiceDirectory);
-    if (serviceDirectoryPath.isEmpty) {
-      serviceDirectoryPath = serviceDirectory;
+    } else {
+      Question askServiceDirectory = new Question(
+          'Service directory path (default: $serviceDirectory):',
+          type: String);
+      String path = await ask(askServiceDirectory);
+      if (path.isNotEmpty) {
+         serviceDirectory = path;
+      }
     }
 
     printInfo("Creating '${green(name)}' service");
 
     ServicesManager services =
-        manager?.services ?? new ServicesManager(name, serviceDirectoryPath);
+        manager?.services ?? new ServicesManager(name, serviceDirectory);
 
     services.createService(name);
     if (manager != null) {
-      services.addToLibrary("$name-service");
+      services.addToLibrary("$name\_service");
     }
   }
 
@@ -182,28 +182,29 @@ class PolymerApp extends Program {
         exit();
       }
     }
-    String behaviorDirectory = "./";
+    String behaviorsDirectory = "./";
     _getOutputFodler("./");
     _getConfigFile();
 
     if (manager != null) {
-      behaviorDirectory = manager.behaviors.libraryPath;
+      behaviorsDirectory = manager.behaviors.libraryPath;
     }
-
-    Question askElementsDirectory = new Question(
-        'Behavior directory path (default: $behaviorDirectory):',
-        type: String);
-    String behaviorsDirectoryPath = await ask(askElementsDirectory);
-    if (behaviorDirectory.isEmpty) {
-      behaviorDirectory = behaviorDirectory;
+ else {
+      Question askBehaviorsDirectory = new Question(
+          'Behavior directory path (default: $behaviorsDirectory):',
+          type: String);
+      String path = await ask(askBehaviorsDirectory);
+      if (path.isNotEmpty) {
+        behaviorsDirectory = path;
+      }
     }
     BehaviorsManager behaviors = manager?.behaviors ??
-        new BehaviorsManager(name, behaviorsDirectoryPath);
+        new BehaviorsManager(name, behaviorsDirectory);
 
     print("Creating '${green(name)}' behavior");
     behaviors.createBehavior(name);
     if (manager != null) {
-      behaviors.addToLibrary("$name-behavior");
+      behaviors.addToLibrary("$name\_behavior");
     }
   }
 
@@ -218,24 +219,24 @@ class PolymerApp extends Program {
         exit();
       }
     }
-    String elementDirectory = "./";
+    String elementsDirectory = "./";
     _getOutputFodler("./");
     _getConfigFile();
 
     if (manager != null) {
-      elementDirectory = manager.elements.libraryPath;
-    }
-
-    Question askElementsDirectory = new Question(
-        'Element directory path (default: $elementDirectory):',
-        type: String);
-    String elementsDirectoryPath = await ask(askElementsDirectory);
-    if (elementDirectory.isEmpty) {
-      elementDirectory = elementDirectory;
+      elementsDirectory = manager.elements.libraryPath;
+    } else {
+      Question askElementsDirectory = new Question(
+          'Element directory path (default: $elementsDirectory):',
+          type: String);
+      String path = await ask(askElementsDirectory);
+      if (path.isNotEmpty) {
+        elementsDirectory = path;
+      }
     }
 
     ElementsManager elements =
-        manager?.elements ?? new ElementsManager(name, elementsDirectoryPath);
+        manager?.elements ?? new ElementsManager(name, elementsDirectory);
 
     print("Creating '${green(name)}' element");
     elements.createElement(name);

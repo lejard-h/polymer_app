@@ -11,13 +11,16 @@ class ModelsManager extends Manager {
   ModelsManager(String appName, String libraryPath)
       : super(appName, libraryPath, "models");
 
-  createModel(String name, [String content]) {
+  createModel(String name, {String content, String outpuPath}) {
     name = "$name-model";
     if (content == null) {
       content = modelDartTemplate(name);
     }
+    if (outpuPath == null) {
+      outpuPath = libraryPath;
+    }
     writeInDartFile(
-        "$libraryPath/${toSnakeCase(name)}.dart", content);
+        "$outpuPath/${toSnakeCase(name)}.dart", content);
   }
 
   String get libraryTemplate => "library ${toSnakeCase(appName)}.models;"
