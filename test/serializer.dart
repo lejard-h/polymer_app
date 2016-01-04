@@ -99,6 +99,13 @@ main() {
 
     group("Deserialize", () {
 
+        test("simple test", () {
+            ModelA a = new ModelA("toto");
+
+            expect('{"@dart_type":"ModelA","foo":"toto"}', a.toJson());
+            expect({ "@dart_type": "ModelA", "foo": "toto"}, a.toMap);
+        });
+
         test("Datetime", () {
            Date date = Serializer.fromJson('{"@dart_type":"Date","date":"2016-01-01 00:00:00.000"}', Date);
 
