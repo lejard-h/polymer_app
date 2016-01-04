@@ -8,10 +8,5 @@ import "package:polymer/polymer.dart";
 import "serializer.dart";
 
 @serializable
-abstract class PolymerModel extends JsProxy {
-  Map get toMap => Serializer.toMap(this);
-
-  String toString() => toMap.toString();
-
-  String toJson() => Serializer.toJson(this);
+abstract class PolymerModel extends JsProxy with Serialize {
 }

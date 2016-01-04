@@ -6,10 +6,19 @@ library polymer_app.serializer;
 
 import "dart:convert";
 import "package:reflectable/reflectable.dart";
-import "polymer_model.dart";
+
+class Serialize {
+    Map get toMap => Serializer.toMap(this);
+
+    String toString() => toMap.toString();
+
+    String toJson() => Serializer.toJson(this);
+}
 
 class Serializer {
     static final Map<String, ClassMirror> classes = <String, ClassMirror>{};
+
+    static Type max_superclass_type = Object;
 
     static Map toMap(Object obj) => _toMap(obj);
 
@@ -100,6 +109,8 @@ Object _fromMap(Map json, Type type) {
         if (dec != null && _isSerializableVariable(dec)) {
             if (_isPrimaryType(dec.reflectedReturnType)) {
                 instance.invokeSetter(key, json[key]);
+            } else if (dec.reflectedReturnType == DateTime) {
+                instance.invokeSetter(key, DateTime.parse(json[key]));
             } else {
                 instance.invokeSetter(key, _decode(json[key], dec.reflectedReturnType));
             }
@@ -130,7 +141,7 @@ List _convertList(List list) {
     for (var elem in list) {
         if (elem is List) {
             elem = _convertList(elem);
-        } else if (elem is Map || elem is PolymerModel || _isObjPrimaryType(elem)) {
+        } else if (elem is Map || elem is Serialize || _isObjPrimaryType(elem)) {
             elem = _toMap(elem);
         }
     }
@@ -147,7 +158,7 @@ Map _toMap(Object obj) {
         data.forEach((key, value) {
             if (value is List) {
                 data[key] = _convertList(value);
-            } else if (value is Map || value is PolymerModel) {
+            } else if (value is Map || value.runtimeType is Serialize) {
                 data[key] = _toMap(value);
             }
         });
@@ -159,17 +170,19 @@ Map _toMap(Object obj) {
 
     data[type_info_key] = obj.runtimeType.toString();
 
-    while (cm.superclass != null && cm.reflectedType != PolymerModel) {
+    while (cm.superclass != null && cm.reflectedType != Serializer.max_superclass_type) {
         cm.declarations.forEach((String key, DeclarationMirror dec) {
             if (dec is VariableMirror) {
                 if (_isSerializableVariable(dec)) {
                     var value = mir.invokeGetter(dec.simpleName);
                     if (_isObjPrimaryType(value)) {
                         data[key] = value;
-                    } else if (value is Map || value is PolymerModel) {
+                    } else if (value is Map || value is Serialize) {
                         data[key] = _toMap(value);
                     } else if (value is List) {
                         data[key] = _convertList(value);
+                    } else if (value is DateTime) {
+                        data[key] = value.toString();
                     }
                 }
             }

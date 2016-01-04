@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.1
+- Serialize Date
+
 ## 0.3.0
 - Serializer (first version)
     * ```toJson, fromJson, toMap, fromMap, fromList```

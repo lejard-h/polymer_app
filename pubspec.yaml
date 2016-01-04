@@ -22,16 +22,5 @@ dependencies:
   http: ^0.11.3+3
   dart_style: ^0.2.2
 
-transformers:
-  - web_components:
-      entry_points:
-      - test/index.html
-  - reflectable:
-      entry_points:
-      - test/dson_service.dart
-  - $dart2js:
-      commandLineOptions: ['--trust-type-annotations', '--trust-primitives', '--enable-experimental-mirrors']
-  - dart_to_js_script_rewriter
-
 dev_dependencies:
   test: '>=0.12.0'
