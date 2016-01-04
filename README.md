@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/lejard-h/polymer_app.svg?branch=master)](https://travis-ci.org/lejard-h/polymer_app)
 # polymer_app
 
 ## Roadmap
