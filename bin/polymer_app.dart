@@ -33,13 +33,27 @@ class PolymerApp extends Program {
   String appName;
   String rootDirectoryPath;
 
+  setUp() {
+    _getOutputFodler("./");
+    _getConfigFile();
+    if (configFile.existsSync()) {
+      print("'polymer_app.json' config found.");
+    }
+  }
+
+  tearDown() {
+    if (pidServe != null) {
+      io.Process.killPid(pidServe);
+    }
+  }
+
   @Command('Create new polymer_app route.')
   new_route(
       {@Option('Your route name') String name,
       @Option('Your route path') String path}) async {
     if (name == null) {
       Question askBehaviorName =
-      const Question('Name of your route:', type: String);
+          const Question('Name of your route:', type: String);
       name = await ask(askBehaviorName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid route name");
@@ -48,7 +62,7 @@ class PolymerApp extends Program {
     }
     if (path == null) {
       Question askRoutePath =
-      const Question('Path of your route:', type: String);
+          const Question('Path of your route:', type: String);
       path = await ask(askRoutePath);
       if (path?.isEmpty) {
         printDanger("Please enter a valid route path");
@@ -86,7 +100,7 @@ class PolymerApp extends Program {
   new_model({@Option('Your model name') String name}) async {
     if (name == null) {
       Question askBehaviorName =
-      const Question('Name of your model:', type: String);
+          const Question('Name of your model:', type: String);
       name = await ask(askBehaviorName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid model name");
@@ -123,7 +137,7 @@ class PolymerApp extends Program {
   new_service({@Option('Your service name') String name}) async {
     if (name == null) {
       Question askServiceName =
-      const Question('Name of your service:', type: String);
+          const Question('Name of your service:', type: String);
       name = await ask(askServiceName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid service name");
@@ -161,7 +175,7 @@ class PolymerApp extends Program {
   new_behavior({@Option('Your behavior name') String name}) async {
     if (name == null) {
       Question askBehaviorName =
-      const Question('Name of your behavior:', type: String);
+          const Question('Name of your behavior:', type: String);
       name = await ask(askBehaviorName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid behavior name");
@@ -197,7 +211,7 @@ class PolymerApp extends Program {
   new_element({@Option('Your element name') String name}) async {
     if (name == null) {
       Question askElementName =
-      const Question('Name of your element:', type: String);
+          const Question('Name of your element:', type: String);
       name = await ask(askElementName);
       if (name?.isEmpty || toLispCase(name).split("-").length < 2) {
         printDanger("Please enter a valid element name");
@@ -245,16 +259,39 @@ class PolymerApp extends Program {
         getDefaultJsonConfig(appName));
   }
 
+  num pidServe;
+
+  @Command('Pub get and pub serve your application')
+  serve() async {
+    String path = "./";
+    if (rootDirectoryPath != null) {
+      path = rootDirectoryPath;
+    }
+    this.print(path);
+    this.print("Running pub get ...");
+    io.ProcessResult resultsGet = await io.Process
+        .run('pub', ['get'], workingDirectory: path);
+
+    if (resultsGet.exitCode == 0) {
+      this.print("Start serve application");
+      io.Process
+          .run('pub', ['serve'], workingDirectory: path)
+          .then((io.ProcessResult resultsServe) {
+        pidServe = resultsServe.pid;
+      });
+    }
+  }
+
   @Command('Create new polymer application.')
   new_application(
       {@Option('Your application name') String name,
       @Option('The output folder of your application')
-      String outputFolderPath: "./"}) async {
+      String outputFolderPath}) async {
     appName = name;
     if (appName == null) {
       appName = await _askAppName();
     }
-    rootDirectoryPath = outputFolderPath;
+    rootDirectoryPath = await _askRootDirectory();
     _getOutputFodler(rootDirectoryPath);
     _getConfigFile();
     bool isMaterial = await _askMaterial();
