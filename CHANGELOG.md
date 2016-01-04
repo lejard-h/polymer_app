@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.0
+- Breaking Change:
+    * polymer_app cli with ```cupid```
+    * new commands :
+        + new_application
+        + new_route
+        + new_element
+        + new_behavior
+        + new_service
+        + new_model
+
 ## 0.3.1
 - Serialize Date
 
