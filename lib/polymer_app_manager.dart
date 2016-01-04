@@ -309,24 +309,22 @@ class PolymerAppManager extends JsonObject {
       '\t\t<meta charset="utf-8">\n'
       '\t\t<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">\n'
       '\t\t<title>$name</title>\n'
-      '\t\t<scripts src="packages/web_components/webcomponents-lite.min.js"></scripts>\n'
-      '\t\t<scripts src="packages/web_components/dart_support.js"></scripts>\n'
+      '\t\t<script src="packages/web_components/webcomponents-lite.min.js"></script>\n'
+      '\t\t<script src="packages/web_components/dart_support.js"></script>\n'
       "\t\t<style>body {margin:0;}</style>\n"
       '\t</head>\n'
       '\t<body unresolved class="fullbleed layout vertical">\n'
       '\t\t<root-element></root-element>\n'
-      '\t\t<scripts type="application/dart" src="index.dart"></scripts>\n'
-      '\t\t<scripts src="packages/browser/dart.js"></scripts>\n'
+      '\t\t<script type="application/dart" src="index.dart"></script>\n'
+      '\t\t<script src="packages/browser/dart.js"></script>\n'
       '\t</body>\n'
       '</html>\n';
 
   indexDartTemplate() => "import 'package:polymer/polymer.dart';"
       "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
-      'import "package:polymer_app/polymer_model.dart";'
       'import "package:polymer_app/serializer.dart";'
       "main() async {"
       "initSerializer();"
-      "Serializer.max_superclass_type = PolymerModel;"
       "await initPolymer();"
       "}";
 
@@ -371,7 +369,7 @@ class PolymerAppManager extends JsonObject {
       '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-style=\"mega\" data-icon=\"octicon-eye\" data-count-href=\"/lejard-h/polymer_app/watchers\" data-count-api=\"/repos/lejard-h/polymer_app#subscribers_count\" data-count-aria-label=\"# watchers on GitHub\" aria-label=\"Watch lejard-h/polymer_app on GitHub\">Watch</a>'
       '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-style=\"mega\" data-icon=\"octicon-star\" data-count-href=\"/lejard-h/polymer_app/stargazers\" data-count-api=\"/repos/lejard-h/polymer_app#stargazers_count\" data-count-aria-label=\"# stargazers on GitHub\" aria-label=\"Star lejard-h/polymer_app on GitHub\">Star</a>'
       '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app/issues\" data-style=\"mega\" data-icon=\"octicon-issue-opened\" data-count-api=\"/repos/lejard-h/polymer_app#open_issues_count\" data-count-aria-label=\"# issues on GitHub\" aria-label=\"Issue lejard-h/polymer_app on GitHub\">Issue</a>'
-      '<scripts async defer id=\"github-bjs\" src=\"https://buttons.github.io/buttons.js\"></scripts>'
+      '<script async defer id=\"github-bjs\" src=\"https://buttons.github.io/buttons.js\"></script>'
       '</div>';
 
   rootMaterialElementDartTemplate() => '@HtmlImport("root_element.html")'
