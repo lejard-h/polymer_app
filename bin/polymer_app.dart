@@ -100,6 +100,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       routes.addToLibrary("$name-route");
     }
+    exit();
   }
 
   @Command('Create new polymer_app model.')
@@ -137,6 +138,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       models.addToLibrary("$name\_model");
     }
+    exit();
   }
 
   @Command('Create new polymer_app service.')
@@ -175,6 +177,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       services.addToLibrary("$name\_service");
     }
+    exit();
   }
 
   @Command('Create new polymer behavior.')
@@ -211,6 +214,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       behaviors.addToLibrary("$name\_behavior");
     }
+    exit();
   }
 
   @Command('Create new polymer element.')
@@ -238,6 +242,7 @@ class PolymerApp extends Program {
       if (path.isNotEmpty) {
         elementsDirectory = path;
       }
+      exit();
     }
 
     ElementsManager elements =
@@ -261,28 +266,11 @@ class PolymerApp extends Program {
       appName = await _askAppName();
     }
     _getOutputFodler(rootDirectoryPath);
-    return writeInFile(
+    io.File config = writeInFile(
         "${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
-  }
-
-  @Command('Pub get and pub serve your application')
-  Future<io.Process> serve() async {
-    String path = "./";
-    if (rootDirectoryPath != null) {
-      path = rootDirectoryPath;
-    }
-    this.print("Running pub get ...");
-    io.Process processGet =
-        await _run('pub', ['get'], workingDirectory: path, showOutput: true);
-
-    num exitCode = await processGet.exitCode;
-
-    if (exitCode == 0) {
-      this.print("Start serve application");
-      servingProcess = await _run('pub', ['serve'], workingDirectory: path);
-    }
-    return servingProcess;
+    exit();
+    return config;
   }
 
   @Command('Create new polymer application.')
@@ -306,7 +294,8 @@ class PolymerApp extends Program {
         getDefaultJsonConfig(appName));
     _getConfigFile();
     manager.createApplication(material: isMaterial);
-    return manager;
+    this.print("cd $rootDirectoryPath; pub get; pub serve");
+    exit();
   }
 
   _getOutputFodler(String outputFolderPath) {
@@ -345,16 +334,6 @@ class PolymerApp extends Program {
       rootDirectory = default_root_directory;
     }
     return rootDirectory;
-  }
-
-  _askMaterial() async {
-    String material = await ask(askMaterial);
-    bool isMaterial = true;
-    material = material.toLowerCase();
-    if (material == "n") {
-      isMaterial = false;
-    }
-    return isMaterial;
   }
 
   Future _run(String executable, List<String> arguments,
