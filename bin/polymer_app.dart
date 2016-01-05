@@ -11,6 +11,8 @@ import "package:polymer_app/polymer_app_models.dart";
 import "package:polymer_app/polymer_app_behaviors.dart";
 import "package:polymer_app/polymer_app_elements.dart";
 import "package:polymer_app/polymer_app_routes.dart";
+import "dart:convert";
+import "dart:async";
 
 const default_root_directory = "./";
 
@@ -32,8 +34,12 @@ class PolymerApp extends Program {
   PolymerAppManager manager;
   String appName;
   String rootDirectoryPath;
+  io.Process servingProcess;
 
+
+  PolymerApp();
   setUp() {
+    InputDevice.prompt = new Output('<cyan>polymer_app ></cyan> ');
     _getOutputFodler("./");
     _getConfigFile();
     if (configFile.existsSync()) {
@@ -42,9 +48,11 @@ class PolymerApp extends Program {
   }
 
   tearDown() {
-    if (pidServe != null) {
-      io.Process.killPid(pidServe);
+    if (servingProcess != null) {
+      servingProcess.kill();
+      this.print("Stop serve application");
     }
+
   }
 
   @Command('Create new polymer_app route.')
@@ -156,7 +164,7 @@ class PolymerApp extends Program {
           type: String);
       String path = await ask(askServiceDirectory);
       if (path.isNotEmpty) {
-         serviceDirectory = path;
+        serviceDirectory = path;
       }
     }
 
@@ -188,8 +196,7 @@ class PolymerApp extends Program {
 
     if (manager != null) {
       behaviorsDirectory = manager.behaviors.libraryPath;
-    }
- else {
+    } else {
       Question askBehaviorsDirectory = new Question(
           'Behavior directory path (default: $behaviorsDirectory):',
           type: String);
@@ -198,8 +205,8 @@ class PolymerApp extends Program {
         behaviorsDirectory = path;
       }
     }
-    BehaviorsManager behaviors = manager?.behaviors ??
-        new BehaviorsManager(name, behaviorsDirectory);
+    BehaviorsManager behaviors =
+        manager?.behaviors ?? new BehaviorsManager(name, behaviorsDirectory);
 
     print("Creating '${green(name)}' behavior");
     behaviors.createBehavior(name);
@@ -260,26 +267,20 @@ class PolymerApp extends Program {
         getDefaultJsonConfig(appName));
   }
 
-  num pidServe;
-
   @Command('Pub get and pub serve your application')
   serve() async {
     String path = "./";
     if (rootDirectoryPath != null) {
       path = rootDirectoryPath;
     }
-    this.print(path);
     this.print("Running pub get ...");
-    io.ProcessResult resultsGet = await io.Process
-        .run('pub', ['get'], workingDirectory: path);
+    io.Process processGet = await _run('pub', ['get'], workingDirectory: path, showOutput: true);
 
-    if (resultsGet.exitCode == 0) {
+    num exitCode = await processGet.exitCode;
+
+    if (exitCode == 0) {
       this.print("Start serve application");
-      io.Process
-          .run('pub', ['serve'], workingDirectory: path)
-          .then((io.ProcessResult resultsServe) {
-        pidServe = resultsServe.pid;
-      });
+      servingProcess = await _run('pub', ['serve'], workingDirectory: path);
     }
   }
 
@@ -351,15 +352,17 @@ class PolymerApp extends Program {
     return isMaterial;
   }
 
-  _askMinimum() async {
-    rootDirectoryPath = await _askRootDirectory();
-    _getOutputFodler(rootDirectoryPath);
-    _getConfigFile();
-    if (manager?.name != null) {
-      appName = manager.name;
-    } else {
-      appName = await _askAppName();
-    }
+  Future _run(String executable, List<String> arguments, {String workingDirectory:"./", bool showOutput: false}) async {
+    final io.Process process = await io.Process.start(executable, arguments, workingDirectory: workingDirectory);
+   if (showOutput) {
+     process.stdout
+         .map(UTF8.decode)
+         .listen(this.print);
+     process.stderr
+         .map(UTF8.decode)
+         .listen(this.printDanger);
+   }
+    return process;
   }
 }
 

@@ -4,11 +4,9 @@
 
 import 'package:initialize/initialize.dart' as init;
 import 'package:polymer/polymer.dart';
-import 'package:polymer/src/common/declarations.dart';
 import 'package:polymer_app_router/polymer_app_router.dart';
 import 'dart:html';
 import "package:reflectable/reflectable.dart";
-import "./polymer_model.dart";
 
 @behavior
 abstract class PolymerRouterBehavior {
