@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/walletek/polymer_app.svg?branch=master)](https://travis-ci.org/walletek/polymer_app)
 [![pub package](https://img.shields.io/pub/v/polymer_app.svg)](https://pub.dartlang.org/packages/polymer_app)
-[![Coverage Status](https://coveralls.io/repos/walletek/polymer_app/badge.svg?branch=develop&service=github)](https://coveralls.io/github/walletek/polymer_app?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/walletek/polymer_app/badge.svg?branch=master&service=github)](https://coveralls.io/github/walletek/polymer_app?branch=master)
 # polymer_app
 
 ## Roadmap
