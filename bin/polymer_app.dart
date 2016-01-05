@@ -265,7 +265,7 @@ class PolymerApp extends Program {
       appName = await _askAppName();
     }
     _getOutputFodler(rootDirectoryPath);
-    writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
+    return writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
   }
 

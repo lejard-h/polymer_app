@@ -43,7 +43,7 @@ main() {
     });
 
     test('createFile', () {
-      File file = createFile("./test_file");
+      File file = createFile("./test/test_file");
       expect(true, file.existsSync());
 
       file.deleteSync();
@@ -51,7 +51,7 @@ main() {
     });
 
     test('writeInFile', () {
-      File file = writeInFile("./test_file", "test_file");
+      File file = writeInFile("./test/test_file", "test_file");
 
       expect(true, file.existsSync());
       expect("test_file", file.readAsStringSync());
@@ -60,7 +60,7 @@ main() {
     });
 
     test('writeInDartFile', () {
-        File file = writeInDartFile("./test_file.dart", "library test_file;");
+        File file = writeInDartFile("./test/test_file.dart", "library test_file;");
 
         expect(true, file.existsSync());
         expect("library test_file;\n", file.readAsStringSync());

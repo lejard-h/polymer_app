@@ -14,6 +14,8 @@ import "polymer_app_behaviors.dart";
 import "polymer_app_elements.dart";
 import "polymer_app_routes.dart";
 
+String get version => "0.4.1";
+
 abstract class JsonObject {
   Map _obj;
 
@@ -345,7 +347,7 @@ class PolymerAppManager extends JsonObject {
       "  sdk: '>=1.13.0 <2.0.0'\n\n"
       "dependencies:\n"
       '  polymer: "^1.0.0-rc.10"\n'
-      '  polymer_app: "^0.4.0"\n'
+      '  polymer_app: "^$version"\n'
       '${material ? "  polymer_elements: '^1.0.0-rc.5'\n" : ""}'
       '  polymer_app_router: "^0.0.5"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
