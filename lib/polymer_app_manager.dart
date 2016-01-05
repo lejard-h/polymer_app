@@ -14,7 +14,7 @@ import "polymer_app_behaviors.dart";
 import "polymer_app_elements.dart";
 import "polymer_app_routes.dart";
 
-String get version => "0.4.1+1";
+String get version => "0.4.1+2";
 
 abstract class JsonObject {
   Map _obj;
@@ -324,6 +324,7 @@ class PolymerAppManager extends JsonObject {
 
   indexDartTemplate() => "import 'package:polymer/polymer.dart';"
       "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
+      'import "package:polymer_app/polymer_model.dart";'
       'import "package:polymer_app/serializer.dart";'
       "main() async {"
       "initSerializer();"
@@ -368,9 +369,9 @@ class PolymerAppManager extends JsonObject {
 
   String get githubButton =>
       '<div style="display: flex; display: flex;flex: 1;align-items: center;">'
-      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-style=\"mega\" data-icon=\"octicon-eye\" data-count-href=\"/lejard-h/polymer_app/watchers\" data-count-api=\"/repos/lejard-h/polymer_app#subscribers_count\" data-count-aria-label=\"# watchers on GitHub\" aria-label=\"Watch lejard-h/polymer_app on GitHub\">Watch</a>'
-      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app\" data-style=\"mega\" data-icon=\"octicon-star\" data-count-href=\"/lejard-h/polymer_app/stargazers\" data-count-api=\"/repos/lejard-h/polymer_app#stargazers_count\" data-count-aria-label=\"# stargazers on GitHub\" aria-label=\"Star lejard-h/polymer_app on GitHub\">Star</a>'
-      '<a class="github-button\" href=\"https://github.com/lejard-h/polymer_app/issues\" data-style=\"mega\" data-icon=\"octicon-issue-opened\" data-count-api=\"/repos/lejard-h/polymer_app#open_issues_count\" data-count-aria-label=\"# issues on GitHub\" aria-label=\"Issue lejard-h/polymer_app on GitHub\">Issue</a>'
+      '<a class="github-button\" href=\"https://github.com/walletek/polymer_app\" data-style=\"mega\" data-icon=\"octicon-eye\" data-count-href=\"/walletek/polymer_app/watchers\" data-count-api=\"/repos/walletek/polymer_app#subscribers_count\" data-count-aria-label=\"# watchers on GitHub\" aria-label=\"Watch walletek/polymer_app on GitHub\">Watch</a>'
+      '<a class="github-button\" href=\"https://github.com/walletek/polymer_app\" data-style=\"mega\" data-icon=\"octicon-star\" data-count-href=\"/walletek/polymer_app/stargazers\" data-count-api=\"/repos/walletek/polymer_app#stargazers_count\" data-count-aria-label=\"# stargazers on GitHub\" aria-label=\"Star walletek/polymer_app on GitHub\">Star</a>'
+      '<a class="github-button\" href=\"https://github.com/walletek/polymer_app/issues\" data-style=\"mega\" data-icon=\"octicon-issue-opened\" data-count-api=\"/repos/walletek/polymer_app#open_issues_count\" data-count-aria-label=\"# issues on GitHub\" aria-label=\"Issue lejard-h/polymer_app on GitHub\">Issue</a>'
       '<script async defer id=\"github-bjs\" src=\"https://buttons.github.io/buttons.js\"></script>'
       '</div>';
 
