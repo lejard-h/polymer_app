@@ -24,8 +24,6 @@ Question askMaterial = const Question(
     'Do you want material design application (Y/n):',
     type: String);
 
-
-
 main(List<String> args, __) {
   cupid(new PolymerApp(), args, __);
 }
@@ -37,7 +35,6 @@ class PolymerApp extends Program {
   String appName;
   String rootDirectoryPath;
   io.Process servingProcess;
-
 
   PolymerApp();
   setUp() {
@@ -54,7 +51,6 @@ class PolymerApp extends Program {
       servingProcess.kill();
       this.print("Stop serve application");
     }
-
   }
 
   @Command('Create new polymer_app route.')
@@ -265,45 +261,52 @@ class PolymerApp extends Program {
       appName = await _askAppName();
     }
     _getOutputFodler(rootDirectoryPath);
-    return writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
+    return writeInFile(
+        "${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
   }
 
   @Command('Pub get and pub serve your application')
-  serve() async {
+  Future<io.Process> serve() async {
     String path = "./";
     if (rootDirectoryPath != null) {
       path = rootDirectoryPath;
     }
     this.print("Running pub get ...");
-    io.Process processGet = await _run('pub', ['get'], workingDirectory: path, showOutput: true);
+    io.Process processGet =
+        await _run('pub', ['get'], workingDirectory: path, showOutput: true);
 
     num exitCode = await processGet.exitCode;
 
     if (exitCode == 0) {
       this.print("Start serve application");
-      servingProcess = await _run('pub', ['serve'], workingDirectory: path);
+      servingProcess = await _run('pub', ['serve'], workingDirectory: path, showOutput: true);
     }
+    return servingProcess;
   }
 
   @Command('Create new polymer application.')
   new_application(
       {@Option('Your application name') String name,
-      @Option('The output folder of your application')
-      String outputFolderPath}) async {
+      @Option('The output folder of your application') String outputFolderPath,
+      @Option('True if you want Material Design')
+      bool isMaterial: true}) async {
     appName = name;
     if (appName == null) {
       appName = await _askAppName();
     }
-    rootDirectoryPath = await _askRootDirectory();
+    rootDirectoryPath = outputFolderPath;
+    if (rootDirectoryPath == null) {
+      rootDirectoryPath = await _askRootDirectory();
+    }
     _getOutputFodler(rootDirectoryPath);
     _getConfigFile();
-    bool isMaterial = await _askMaterial();
     printInfo("Creating '${green(appName)}' application");
     writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
     _getConfigFile();
     manager.createApplication(material: isMaterial);
+    return manager;
   }
 
   _getOutputFodler(String outputFolderPath) {
@@ -354,16 +357,14 @@ class PolymerApp extends Program {
     return isMaterial;
   }
 
-  Future _run(String executable, List<String> arguments, {String workingDirectory:"./", bool showOutput: false}) async {
-    final io.Process process = await io.Process.start(executable, arguments, workingDirectory: workingDirectory);
-   if (showOutput) {
-     process.stdout
-         .map(UTF8.decode)
-         .listen(this.print);
-     process.stderr
-         .map(UTF8.decode)
-         .listen(this.printDanger);
-   }
+  Future _run(String executable, List<String> arguments,
+      {String workingDirectory: "./", bool showOutput: false}) async {
+    final io.Process process = await io.Process
+        .start(executable, arguments, workingDirectory: workingDirectory);
+    if (showOutput) {
+      process.stdout.map(UTF8.decode).listen(this.print);
+      process.stderr.map(UTF8.decode).listen(this.printDanger);
+    }
     return process;
   }
 }
