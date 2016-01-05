@@ -56,10 +56,14 @@ class Manager {
     File lib = new File(
         "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart");
     if (!lib.existsSync()) {
-      lib.createSync(recursive: true);
+      print(
+          "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart : not found");
+      return;
     }
-    lib.writeAsString(lib.readAsStringSync() +
-        "export '${toSnakeCase(path)}/${toSnakeCase(name)}.dart';\n");
+
+    lib.writeAsStringSync(
+        "export '${toSnakeCase(path)}/${toSnakeCase(name)}.dart';\n",
+        mode: FileMode.APPEND);
   }
 }
 
@@ -145,7 +149,6 @@ class PolymerAppManager extends JsonObject {
   }
 
   createLibrary({material: false}) {
-    print("");
     elements.createLibraryDirectory();
     behaviors.createLibraryDirectory();
     services.createLibraryDirectory();
@@ -161,7 +164,6 @@ class PolymerAppManager extends JsonObject {
   }
 
   createPubspec({material: false}) {
-    print("");
     File file = new File("$pathOutput//pubspec.yaml");
     if (file.existsSync()) {
       throw "Please create an empty folder";
@@ -171,7 +173,6 @@ class PolymerAppManager extends JsonObject {
   }
 
   createIndex() {
-    print("");
     writeInFile("$pathOutput/$webPath/index.html", indexHtmlTemplate());
     writeInDartFile("$pathOutput/$webPath/index.dart", indexDartTemplate());
   }
@@ -188,6 +189,7 @@ class PolymerAppManager extends JsonObject {
             ? rootMaterialElementHtmlTemplate()
             : rootElementHtmlTemplate());
     elements.addToLibrary("root-element");
+    writeInFile("$elementsPath/root_element/theme.html", themeHtml);
   }
 
   createHomeRoute() {
@@ -195,6 +197,21 @@ class PolymerAppManager extends JsonObject {
         htmlTemplate: githubButton, cssTemplate: routeHomeCssTemplate);
     routes.addToLibrary(toSnakeCase("Home-route"));
   }
+
+  String get themeHtml => '<dom-module id="theme">'
+      '<template>'
+      '<style>'
+      ':root {'
+      '--default-primary-color: #b24830;'
+      '--background-color: #efefef;'
+      '}'
+      ':host {'
+      'font-family: \'Roboto\', \'Noto\', sans-serif;'
+      'font-weight: 300;'
+      '}'
+      '</style>'
+      '</template>'
+      '</dom-module>';
 
   String get routeHomeCssTemplate => ":host {"
       "display: flex;"
@@ -204,7 +221,8 @@ class PolymerAppManager extends JsonObject {
       "height: 100%;"
       "}";
 
-  rootElementHtmlTemplate() => '<div header> '
+  rootElementHtmlTemplate() => '<style include="theme"></style>'
+      '<div header> '
       '<span title>{{selected}}</span>'
       '<span flex ></span> '
       '<template is="dom-repeat" items="{{pages}}"> '
@@ -217,13 +235,8 @@ class PolymerAppManager extends JsonObject {
       '</div>';
 
   rootElementCssTemplate() => ":host { "
-      "font-family: 'Roboto', 'Noto', sans-serif; "
-      "font-weight: 300;"
       "display: block;"
       "height: 100vh;"
-      "/* Material Template */"
-      "--paper-toolbar-background: #b24830;"
-      "/*********************/"
       "} "
       "*[flex] {"
       "display: flex;"
@@ -243,7 +256,7 @@ class PolymerAppManager extends JsonObject {
       "top: 0;"
       "width: 100%;"
       "height: 45px;"
-      "background-color: #b24830;"
+      "background-color: var(--default-primary-color);"
       "}"
       "div[header] a {"
       "margin: 10px;"
@@ -254,7 +267,7 @@ class PolymerAppManager extends JsonObject {
       "text-transform: capitalize;"
       "}"
       "div[content] {"
-      "background-color: #efefef;"
+      "background-color: var(--background-color);"
       "padding-top: 60px;"
       "padding-right: 15px;"
       "padding-left: 15px;"
@@ -262,7 +275,7 @@ class PolymerAppManager extends JsonObject {
       "}"
       "/* Material Template */"
       ".content {"
-      "background-color: #efefef;"
+      "background-color: var(--background-color);"
       "}"
       ".menu-item {"
       "cursor: pointer;"
@@ -272,7 +285,8 @@ class PolymerAppManager extends JsonObject {
       "}"
       "/*********************/";
 
-  rootElementDartTemplate() => '@HtmlImport("root_element.html")'
+  rootElementDartTemplate() => '@HtmlImport("theme.html")'
+      '@HtmlImport("root_element.html")'
       "library ${toSnakeCase(name)}.elements.root_element;"
       'import "package:polymer/polymer.dart";'
       'import "dart:html";'
@@ -375,7 +389,8 @@ class PolymerAppManager extends JsonObject {
       '<script async defer id=\"github-bjs\" src=\"https://buttons.github.io/buttons.js\"></script>'
       '</div>';
 
-  rootMaterialElementDartTemplate() => '@HtmlImport("root_element.html")'
+  rootMaterialElementDartTemplate() => '@HtmlImport("theme.html")'
+      '@HtmlImport("root_element.html")'
       "library ${toSnakeCase(name)}.elements.root_element;"
       'import "package:polymer/polymer.dart";'
       'import "dart:html";'
@@ -411,7 +426,7 @@ class PolymerAppManager extends JsonObject {
       '}'
       '}';
 
-  rootMaterialElementHtmlTemplate() =>
+  rootMaterialElementHtmlTemplate() => '<style include="theme"></style>'
       '<paper-drawer-panel id="drawerPanel" responsive-width="1280px" transition>'
       '<div class="nav layout vertical" drawer id="nav">'
       '<!-- Nav Content -->'

@@ -1,6 +1,6 @@
 name: polymer_app
 description: Generation and management of polymer application
-version: 0.4.1+2
+version: 0.5.0
 author: Walletek <hadrien.lejard@gmail.com>
 homepage: https://github.com/walletek/polymer_app
 

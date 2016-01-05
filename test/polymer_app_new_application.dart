@@ -14,7 +14,7 @@ main() {
 
   group("Application", () {
     setUpAll(() async {
-      manager = await prog.new_application(
+      await prog.new_application(
           name: "test_app", outputFolderPath: "./test/test_app");
     });
 
@@ -27,8 +27,8 @@ main() {
     });
 
     test("generate", () async {
-      expect("test_app", manager.name);
-      expect("lib", manager.libraryPath);
+      expect("test_app", prog.manager.name);
+      expect("lib", prog.manager.libraryPath);
 
       Directory dir = new Directory("./test/test_app");
       Directory dirlib = new Directory("./test/test_app/lib");

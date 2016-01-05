@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0:
+- Add theme to root_element
+
+## 0.4.1:
+- Add ```serve``` command (do pub get then pub serve)
+
 ## 0.4.0
 - Breaking Change:
     * polymer_app cli with ```cupid```

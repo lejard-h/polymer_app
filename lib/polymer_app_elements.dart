@@ -38,7 +38,7 @@ class ElementsManager extends Manager {
     super.addToLibrary(name, name);
   }
 
-  String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;"
+  String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;\n"
       "//export 'element/element.dart';";
 
   elementDartTemplate(String name) => "@HtmlImport('${toSnakeCase(name)}.html')"
