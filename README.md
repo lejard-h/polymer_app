@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/lejard-h/polymer_app.svg?branch=master)](https://travis-ci.org/lejard-h/polymer_app)
+[![Coverage Status](https://coveralls.io/repos/lejard-h/polymer_app/badge.svg?branch=develop&service=github)](https://coveralls.io/github/lejard-h/polymer_app?branch=develop)
 # polymer_app
 
 ## Roadmap
