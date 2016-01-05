@@ -11,8 +11,6 @@ import "package:polymer_app/polymer_app_models.dart";
 import "package:polymer_app/polymer_app_behaviors.dart";
 import "package:polymer_app/polymer_app_elements.dart";
 import "package:polymer_app/polymer_app_routes.dart";
-import "dart:convert";
-import "dart:async";
 
 const default_root_directory = "./";
 
@@ -35,6 +33,12 @@ class PolymerApp extends Program {
   String appName;
   String rootDirectoryPath;
   io.Process servingProcess;
+  bool isShell = false;
+
+  @Command('Launch polymer_app as_shell')
+  as_shell() {
+    isShell = true;
+  }
 
   PolymerApp();
   setUp() {
@@ -53,6 +57,12 @@ class PolymerApp extends Program {
     }
   }
 
+  myExit() {
+    if (!isShell) {
+      exit();
+    }
+  }
+
   @Command('Create new polymer_app route.')
   new_route(
       {@Option('Your route name') String name,
@@ -63,7 +73,7 @@ class PolymerApp extends Program {
       name = await ask(askBehaviorName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid route name");
-        exit();
+        myExit();
       }
     }
     if (path == null) {
@@ -72,7 +82,7 @@ class PolymerApp extends Program {
       path = await ask(askRoutePath);
       if (path?.isEmpty) {
         printDanger("Please enter a valid route path");
-        exit();
+        myExit();
       }
     }
     String routesDirectory = "./";
@@ -100,7 +110,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       routes.addToLibrary("$name-route");
     }
-    exit();
+    myExit();
   }
 
   @Command('Create new polymer_app model.')
@@ -111,7 +121,7 @@ class PolymerApp extends Program {
       name = await ask(askBehaviorName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid model name");
-        exit();
+        myExit();
       }
     }
     String modelsDirectoryPath = "./";
@@ -138,7 +148,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       models.addToLibrary("$name\_model");
     }
-    exit();
+    myExit();
   }
 
   @Command('Create new polymer_app service.')
@@ -149,7 +159,7 @@ class PolymerApp extends Program {
       name = await ask(askServiceName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid service name");
-        exit();
+        myExit();
       }
     }
     String serviceDirectory = "./";
@@ -177,7 +187,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       services.addToLibrary("$name\_service");
     }
-    exit();
+    myExit();
   }
 
   @Command('Create new polymer behavior.')
@@ -188,7 +198,7 @@ class PolymerApp extends Program {
       name = await ask(askBehaviorName);
       if (name?.isEmpty) {
         printDanger("Please enter a valid behavior name");
-        exit();
+        myExit();
       }
     }
     String behaviorsDirectory = "./";
@@ -214,7 +224,7 @@ class PolymerApp extends Program {
     if (manager != null) {
       behaviors.addToLibrary("$name\_behavior");
     }
-    exit();
+    myExit();
   }
 
   @Command('Create new polymer element.')
@@ -225,7 +235,7 @@ class PolymerApp extends Program {
       name = await ask(askElementName);
       if (name?.isEmpty || toLispCase(name).split("-").length < 2) {
         printDanger("Please enter a valid element name");
-        exit();
+        myExit();
       }
     }
     String elementsDirectory = "./";
@@ -242,7 +252,7 @@ class PolymerApp extends Program {
       if (path.isNotEmpty) {
         elementsDirectory = path;
       }
-      exit();
+      myExit();
     }
 
     ElementsManager elements =
@@ -269,7 +279,7 @@ class PolymerApp extends Program {
     io.File config = writeInFile(
         "${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
-    exit();
+    myExit();
     return config;
   }
 
@@ -295,7 +305,7 @@ class PolymerApp extends Program {
     _getConfigFile();
     manager.createApplication(material: isMaterial);
     this.print("cd $rootDirectoryPath; pub get; pub serve");
-    exit();
+    myExit();
   }
 
   _getOutputFodler(String outputFolderPath) {
@@ -323,7 +333,7 @@ class PolymerApp extends Program {
     String appName = await ask(askName);
     if (appName?.isEmpty || appName == "test") {
       printDanger("Please enter a valid application name.");
-      exit();
+      myExit();
     }
     return appName;
   }
@@ -334,17 +344,6 @@ class PolymerApp extends Program {
       rootDirectory = default_root_directory;
     }
     return rootDirectory;
-  }
-
-  Future _run(String executable, List<String> arguments,
-      {String workingDirectory: "./", bool showOutput: false}) async {
-    final io.Process process = await io.Process
-        .start(executable, arguments, workingDirectory: workingDirectory);
-    if (showOutput) {
-      process.stdout.map(UTF8.decode).listen(this.print);
-      process.stderr.map(UTF8.decode).listen(this.printDanger);
-    }
-    return process;
   }
 }
 

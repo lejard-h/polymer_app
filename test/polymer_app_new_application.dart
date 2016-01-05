@@ -6,11 +6,9 @@ import "package:test/test.dart";
 import "dart:io";
 import "../bin/polymer_app.dart";
 import "package:polymer_app/polymer_app_manager.dart";
-import "dart:async";
 
 main() {
   PolymerApp prog = new PolymerApp();
-  PolymerAppManager manager;
 
   group("Application", () {
     setUpAll(() async {

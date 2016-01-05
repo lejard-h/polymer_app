@@ -6,13 +6,6 @@ import "package:test/test.dart";
 import "dart:io";
 import "../bin/polymer_app.dart";
 import "package:polymer_app/serializer.dart";
-import "package:polymer_app/polymer_app_manager.dart";
-import "package:polymer_app/polymer_app_services.dart";
-import "package:polymer_app/polymer_app_models.dart";
-import "package:polymer_app/polymer_app_behaviors.dart";
-import "package:polymer_app/polymer_app_elements.dart";
-import "package:polymer_app/polymer_app_routes.dart";
-import "dart:async";
 
 main() {
   group("Config", () {

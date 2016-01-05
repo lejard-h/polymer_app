@@ -2,6 +2,11 @@
 
 ## 0.5.0:
 - Add theme to root_element
+- Add ```as_shell``` command
+- Multiple Material design layout
+    * nav-view
+    * nav-header
+    * list-card-over
 
 ## 0.4.1:
 - Add ```serve``` command (do pub get then pub serve)
