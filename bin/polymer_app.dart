@@ -14,6 +14,7 @@ import "package:polymer_app/polymer_app_routes.dart";
 
 const default_root_directory = "./";
 
+Question askMaterialDesignLayout = const Question('Which material layout:\n - $nav_view_material\n - $nav_header_material', type: String);
 Question askName = const Question('Name of your application:', type: String);
 Question askRootDirectory = const Question(
     'Localisation of your application (default: "$default_root_directory"):',
@@ -288,7 +289,9 @@ class PolymerApp extends Program {
       {@Option('Your application name') String name,
       @Option('The output folder of your application') String outputFolderPath,
       @Option('True if you want Material Design')
-      bool isMaterial: true}) async {
+      bool isMaterial: true,
+      @Option('Material design layout')
+      String materialLayout}) async {
     appName = name;
     if (appName == null) {
       appName = await _askAppName();
@@ -297,13 +300,16 @@ class PolymerApp extends Program {
     if (rootDirectoryPath == null) {
       rootDirectoryPath = await _askRootDirectory();
     }
+    if (materialLayout == null) {
+      materialLayout = await _askMaterialDesignLayout();
+    }
     _getOutputFodler(rootDirectoryPath);
     _getConfigFile();
     printInfo("Creating '${green(appName)}' application");
     writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
     _getConfigFile();
-    manager.createApplication(material: isMaterial);
+    manager.createApplication(material: isMaterial, materialLayout: materialLayout);
     this.print("cd $rootDirectoryPath; pub get; pub serve");
     myExit();
   }
@@ -344,6 +350,14 @@ class PolymerApp extends Program {
       rootDirectory = default_root_directory;
     }
     return rootDirectory;
+  }
+
+  _askMaterialDesignLayout() async {
+    String layout = await ask(askMaterialDesignLayout);
+    if (layout == nav_view_material || layout == nav_header_material) {
+      return layout;
+    }
+    return nav_view_material;
   }
 }
 

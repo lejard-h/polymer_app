@@ -6,7 +6,6 @@
 - Multiple Material design layout
     * nav-view
     * nav-header
-    * list-card-over
 
 ## 0.4.1:
 - Add ```serve``` command (do pub get then pub serve)
