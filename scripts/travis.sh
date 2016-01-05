@@ -17,7 +17,7 @@ dartanalyzer $DARTANALYZER_FLAGS \
 
 # Run the tests.
 echo "Running tests..."
-pub run test ./test/all_test.dart
+pub run test ./test/test_all.dart
 
 if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
   echo "Running coverage..."
@@ -25,6 +25,5 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
   pub global run dart_coveralls report \
     --retry 2 \
     --debug \
-    test/serializer.dart \
-    bin/polymer_app.dart
+    test/test_all.dart
 fi
