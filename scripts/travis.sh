@@ -25,5 +25,6 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
   pub global run dart_coveralls report \
     --retry 2 \
     --debug \
-    test/serializer.dart
+    test/serializer.dart \
+    bin/polymer_app.dart
 fi
