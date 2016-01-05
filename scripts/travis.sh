@@ -17,7 +17,7 @@ dartanalyzer $DARTANALYZER_FLAGS \
 
 # Run the tests.
 echo "Running tests..."
-pub run test ./test/serializer.dart
+pub run test ./test/all_test.dart
 
 if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
   echo "Running coverage..."

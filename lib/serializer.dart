@@ -63,7 +63,7 @@ bool _isPrimaryType(Type obj) => obj == num || obj == String || obj == bool;
 
 Type _decodeType(String name) {
     ClassMirror classMirror = Serializer.classes[".$name"];
-    return classMirror.dynamicReflectedType;
+    return classMirror?.dynamicReflectedType;
 }
 
 List _fromList(List list, Type type) {
@@ -73,10 +73,10 @@ List _fromList(List list, Type type) {
             _list[i] = JSON.decode(_list[i]);
         }
         Type _type = type;
-        if (_list[i] is Map && (_list[i] as Map).containsKey(type_info_key)) {
+        if (_list[i] is Map && _list[i].containsKey(type_info_key)) {
             _type = _decodeType(_list[i][type_info_key]);
         }
-        _list[i] = _decode(_list[i], _type);
+        _list[i] = _decode(_list[i], _type ?? type);
     }
     return _list;
 }
@@ -101,6 +101,7 @@ Object _fromMap(Map json, Type type) {
         instance = serializable.reflect(obj);
         ref = instance.reflectee;
     } catch (e) {
+        print(e);
         return null;
     }
 
