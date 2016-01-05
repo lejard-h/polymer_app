@@ -1,8 +1,8 @@
 name: polymer_app
 description: Generation and management of polymer application
-version: 0.4.0
-author: Hadrien Lejard <hadrien.lejard@gmail.com>
-homepage: https://github.com/lejard-h/polymer_app
+version: 0.4.1
+author: Walletek <hadrien.lejard@gmail.com>
+homepage: https://github.com/walletek/polymer_app
 
 executables:
   polymer_app: polymer_app
