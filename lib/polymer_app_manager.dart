@@ -349,7 +349,7 @@ class PolymerAppManager extends JsonObject {
       '  polymer: "^1.0.0-rc.10"\n'
       '  polymer_app: "^$version"\n'
       '${material ? "  polymer_elements: '^1.0.0-rc.5'\n" : ""}'
-      '  polymer_app_router: "^0.0.5"\n'
+      '  polymer_app_router: "^0.0.6"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
       '  web_components: "^0.12.0"\n'
       '  browser: "^0.10.0"\n'
