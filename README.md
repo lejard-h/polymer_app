@@ -4,7 +4,7 @@
 # polymer_app
 
 ## Roadmap
-- Create a full website/documentation on the library
+- Create a full website/documentation about the library
 - Polymer Theming
 - Add some [polymer_app_layout_templates](https://github.com/lejard-h/polymer_app_layout_templates)
 

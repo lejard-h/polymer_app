@@ -14,7 +14,7 @@ import "polymer_app_behaviors.dart";
 import "polymer_app_elements.dart";
 import "polymer_app_routes.dart";
 
-String get version => "0.4.1";
+String get version => "0.4.1+1";
 
 abstract class JsonObject {
   Map _obj;
@@ -324,7 +324,7 @@ class PolymerAppManager extends JsonObject {
 
   indexDartTemplate() => "import 'package:polymer/polymer.dart';"
       "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
-      //'import "package:polymer_app/serializer.dart";'
+      'import "package:polymer_app/serializer.dart";'
       "main() async {"
       "initSerializer();"
       "await initPolymer();"

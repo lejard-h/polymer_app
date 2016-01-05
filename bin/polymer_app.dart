@@ -280,7 +280,7 @@ class PolymerApp extends Program {
 
     if (exitCode == 0) {
       this.print("Start serve application");
-      servingProcess = await _run('pub', ['serve'], workingDirectory: path, showOutput: true);
+      servingProcess = await _run('pub', ['serve'], workingDirectory: path);
     }
     return servingProcess;
   }
