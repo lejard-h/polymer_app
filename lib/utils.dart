@@ -40,11 +40,11 @@ toCamelCase(String str) => toLispCase(str)
 
 DartFormatter _formatter = new DartFormatter();
 
-writeInDartFile(String path, String content) {
-  writeInFile(path, _formatter.format(content));
-}
+writeInDartFile(String path, String content) =>
+    writeInFile(path, _formatter.format(content));
 
 writeInFile(String path, String content) {
   File fileDart = createFile(path);
   fileDart.writeAsStringSync(content);
+  return fileDart;
 }
