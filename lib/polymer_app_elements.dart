@@ -50,9 +50,11 @@ class ElementsManager extends Manager {
       "${toCamelCase(name)}.created() : super.created();\n\n"
       "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
       "attached() {"
+      "super.attached()"
       "}\n\n"
       "/// Called when an instance of ${toLispCase(name)} is removed from the DOM.\n"
-      "detached() {"
+      "detached() { "
+      "super.detached()"
       "}\n\n"
       "/// Called when an attribute (such as  a class) of an instance of ${toLispCase(name)} is added, changed, or removed.\n"
       "attributeChanged(String name, String oldValue, String newValue) {"
@@ -64,8 +66,8 @@ class ElementsManager extends Manager {
 
   elementHtmlTemplate(String name, [String innerContent = ""]) =>
       '<dom-module id="${toLispCase(name)}">\n'
-      '\t<link rel="import" type="css" href="${toSnakeCase(name)}.css">\n'
       '\t<template>\n'
+      '\t\t<link rel="import" type="css" href="${toSnakeCase(name)}.css">\n'
       '\t\t<!-- local DOM for your element -->\n'
       '\t\t$innerContent\n'
       '\t</template>\n'

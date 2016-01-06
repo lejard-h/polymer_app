@@ -477,7 +477,7 @@ class PolymerAppManager extends JsonObject {
       '</paper-toolbar>'
       '<paper-menu id="menu" valueattr="hash" class="flex" attr-for-selected="hash" selected="{{selected}}">'
       '<template is="dom-repeat" items="{{pages}}">'
-      '<paper-item class="menu-item" hash\$={{item.name}} on-click="goTo">'
+      '<paper-item class="menu-item" hash\$={{item.name}}>'
       '<span class="layout horizontal">'
       '<span class="flex">{{item.name}}</span>'
       '</span>'
