@@ -15,50 +15,26 @@
 ## Usage
 
     polymer_app
-    > new_application --outputFolderPath=./foo
+    > new_application my_application --output_folder=./app
 or
-
-    polymer_app new_application --name=awesome_app --outputFolderPath=./foo
-
-### Create a polymer app
-
-    polymer_app
-    > new_application --outputFolderPath=./foo
-    > serve
-
-### Create a polymer element
-
-    polymer_app new_element --name=my-element
+    ls
     
-### Create a route
 
-    polymer_app new_route --name=foo --path=/foo   
-
-### Create a polymer behavior
-
-    polymer_app new_behavior --name=foo
-    
-### Create a polymer model (with serialize/deserilize)
-
-    polymer_app new_model --name=foo
-    
-### Create a service (class with factory constructor)
-
-    polymer_app new_service --name=foo
     
 ### Available commands
 
-    exit                                                            Exit the program
-    help             [term=String]                                  Show help screen
-    reload           [arguments=List<String>]                       Exit and restart the program
-    new_route        --name=String --path=String                    Create new polymer_app route.
-    new_model        --name=String                                  Create new polymer_app model.
-    new_service      --name=String                                  Create new polymer_app service.
-    new_behavior     --name=String                                  Create new polymer behavior.
-    new_element      --name=String                                  Create new polymer element.
-    new_config       --name=String --configOutputFolderPath=String  Create new polymer_app config.
-    serve                                                           Pub get and pub serve your application
-    new_application  --name=String --outputFolderPath=String        Create new polymer application.
+    exit                                                                                             Exit the program
+    help             [term=String]                                                                   Show help screen
+    reload           [arguments=List<String>]                                                        Exit and restart the program
+    as_shell                                                                                         Launch polymer_app as_shell
+    new_route        name=String path=String --output_folder=String                                  Create new polymer_app route.
+    new_model        name=String --output_folder=String                                              Create new polymer_app model.
+    new_service      name=String --output_folder=String                                              Create new polymer_app service.
+    new_behavior     name=String --output_folder=String                                              Create new polymer behavior.
+    new_element      name=String --output_folder=String                                              Create new polymer element.
+    new_config       name=String --output_folder=String                                              Create new polymer_app config.
+    new_application  name=String --output_folder=String --is_material=bool --material_layout=String  Create new polymer application.
+
 ### Usage of Router
 
 #### Html
