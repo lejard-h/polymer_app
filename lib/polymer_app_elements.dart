@@ -38,7 +38,7 @@ class ElementsManager extends Manager {
     super.addToLibrary(name, name);
   }
 
-  String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;"
+  String get libraryTemplate => "library ${toSnakeCase(appName)}.elements;\n"
       "//export 'element/element.dart';";
 
   elementDartTemplate(String name) => "@HtmlImport('${toSnakeCase(name)}.html')"
@@ -50,9 +50,11 @@ class ElementsManager extends Manager {
       "${toCamelCase(name)}.created() : super.created();\n\n"
       "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
       "attached() {"
+      "super.attached();"
       "}\n\n"
       "/// Called when an instance of ${toLispCase(name)} is removed from the DOM.\n"
-      "detached() {"
+      "detached() { "
+      "super.detached();"
       "}\n\n"
       "/// Called when an attribute (such as  a class) of an instance of ${toLispCase(name)} is added, changed, or removed.\n"
       "attributeChanged(String name, String oldValue, String newValue) {"

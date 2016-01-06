@@ -37,12 +37,14 @@ class ModelC extends ProxyA {
 @serializable
 class ModelD extends ProxyA {
   List tests;
+
   ModelD([this.tests]);
 }
 
 @serializable
 class Date extends ProxyA {
   DateTime date = new DateTime.now();
+
   Date([this.date]);
 }
 
@@ -55,6 +57,12 @@ main() {
       expect("{@dart_type: ModelA, foo: toto}", a.toString());
       expect('{"@dart_type":"ModelA","foo":"toto"}', a.toJson());
       expect({"@dart_type": "ModelA", "foo": "toto"}, a.toMap);
+    });
+
+    test("Map to Map", () {
+      Map a = {"test": "toto", "titi": new ModelA()};
+      String json = Serializer.toJson(a);
+      expect('{"test":"toto","titi":"{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"bar\\"}","@dart_type":"_InternalLinkedHashMap"}', json);
     });
 
     test("list", () {
@@ -102,6 +110,16 @@ main() {
           json);
     });
 
+    test("list inner list", () {
+      List listA = [new ModelB(), new ModelB()];
+      List listB = [new ModelB(), listA];
+      String json = Serializer.toJson(listB);
+      print(json);
+      expect(
+          '["{\\"@dart_type\\":\\"ModelB\\",\\"toto\\":\\"tata\\"}",["{\\"@dart_type\\":\\"ModelB\\",\\"toto\\":\\"tata\\"}","{\\"@dart_type\\":\\"ModelB\\",\\"toto\\":\\"tata\\"}"]]',
+          json);
+    });
+
     test("list class serializable", () {
       List list = [new ModelC(), new ModelC()];
       String json = Serializer.toJson(list);
@@ -136,6 +154,14 @@ main() {
       expect("toto", a.foo);
     });
 
+    test("Map fromMap Map", () {
+      //TODO: add model inside map
+      Map a = {"test": "toto"};
+      Map b = Serializer.fromMap(a, Map);
+
+      expect(a["test"], b["test"]);
+    });
+
     test("list - fromJson", () {
       List list = Serializer.fromJson(
           '["{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"toto\\"}","{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"bar\\"}"]',
@@ -150,41 +176,47 @@ main() {
     });
 
     test("list - fromList", () {
-        List list = Serializer.fromList(
-            JSON.decode('["{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"toto\\"}","{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"bar\\"}"]'),
-            ModelA);
+      List list = Serializer.fromList(
+          JSON.decode(
+              '["{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"toto\\"}","{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"bar\\"}"]'),
+          ModelA);
 
-        expect(2, list.length);
-        expect("toto", list[0]?.foo);
-        expect("bar", list[1]?.foo);
+      expect(2, list.length);
+      expect("toto", list[0]?.foo);
+      expect("bar", list[1]?.foo);
 
-        expect(ModelA, list[0]?.runtimeType);
-        expect(ModelA, list[1]?.runtimeType);
+      expect(ModelA, list[0]?.runtimeType);
+      expect(ModelA, list[1]?.runtimeType);
     });
 
     test("inner list", () {
-        ModelD test = Serializer.fromJson('{"@dart_type":"ModelD","tests":["{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"toto\\"}","{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"bar\\"}"]}', ModelD);
+      ModelD test = Serializer.fromJson(
+          '{"@dart_type":"ModelD","tests":["{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"toto\\"}","{\\"@dart_type\\":\\"ModelA\\",\\"foo\\":\\"bar\\"}"]}',
+          ModelD);
 
-        expect(2, test?.tests?.length);
-        expect(ModelA, test?.tests[0]?.runtimeType);
-        expect(ModelA, test?.tests[1]?.runtimeType);
-        expect("toto", test?.tests[0]?.foo);
-        expect("bar", test?.tests[1]?.foo);
+      expect(2, test?.tests?.length);
+      expect(ModelA, test?.tests[0]?.runtimeType);
+      expect(ModelA, test?.tests[1]?.runtimeType);
+      expect("toto", test?.tests[0]?.foo);
+      expect("bar", test?.tests[1]?.foo);
     });
 
     test("inner class non-serializable", () {
-        ModelB b = Serializer.fromJson('{"@dart_type":"ModelB","toto":"tata","foo":{"toto":"tata"}}', ModelB);
+      ModelB b = Serializer.fromJson(
+          '{"@dart_type":"ModelB","toto":"tata","foo":{"toto":"tata"}}',
+          ModelB);
 
-        expect(null, b.foo);
+      expect(null, b.foo);
     });
 
     test("inner class serializable", () {
-        ModelC c = Serializer.fromJson( '{"@dart_type":"ModelC","foo":{"@dart_type":"ModelA","foo":"toto"},"plop":"bar"}', ModelC);
-       expect(ModelA, c.foo.runtimeType);
-        expect("toto", c.foo.foo);
-        expect("bar", c.plop);
+      ModelC c = Serializer.fromJson(
+          '{"@dart_type":"ModelC","foo":{"@dart_type":"ModelA","foo":"toto"},"plop":"bar"}',
+          ModelC);
+      expect(ModelA, c.foo.runtimeType);
+      expect("toto", c.foo.foo);
+      expect("bar", c.plop);
     });
-
 
     test("Datetime", () {
       Date date = Serializer.fromJson(

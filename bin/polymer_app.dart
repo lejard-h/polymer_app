@@ -3,6 +3,7 @@
  */
 
 import 'dart:io' as io;
+import "dart:async";
 import 'package:cupid/cupid.dart';
 import 'package:polymer_app/utils.dart';
 import "package:polymer_app/polymer_app_manager.dart";
@@ -11,11 +12,12 @@ import "package:polymer_app/polymer_app_models.dart";
 import "package:polymer_app/polymer_app_behaviors.dart";
 import "package:polymer_app/polymer_app_elements.dart";
 import "package:polymer_app/polymer_app_routes.dart";
-import "dart:convert";
-import "dart:async";
 
 const default_root_directory = "./";
 
+Question askMaterialDesignLayout = const Question(
+    'Which material layout:\n - $nav_view_material\n - $nav_header_material',
+    type: String);
 Question askName = const Question('Name of your application:', type: String);
 Question askRootDirectory = const Question(
     'Localisation of your application (default: "$default_root_directory"):',
@@ -24,9 +26,7 @@ Question askMaterial = const Question(
     'Do you want material design application (Y/n):',
     type: String);
 
-main(List<String> args, __) {
-  cupid(new PolymerApp(), args, __);
-}
+main([List<String> args, __]) async => cupid(new PolymerApp(), args, __);
 
 class PolymerApp extends Program {
   io.Directory outputFolder;
@@ -34,7 +34,12 @@ class PolymerApp extends Program {
   PolymerAppManager manager;
   String appName;
   String rootDirectoryPath;
-  io.Process servingProcess;
+  bool isShell = false;
+
+  @Command('Launch polymer_app as_shell')
+  as_shell() {
+    isShell = true;
+  }
 
   PolymerApp();
   setUp() {
@@ -46,258 +51,185 @@ class PolymerApp extends Program {
     }
   }
 
-  tearDown() {
-    if (servingProcess != null) {
-      servingProcess.kill();
-      this.print("Stop serve application");
+  myExit() {
+    if (!isShell) {
+      exit();
     }
   }
 
+  _testField(String field, String msg, [bool test(String)]) {
+    if (field?.isEmpty || (test != null && !test(field))) {
+      printDanger("Please enter a valid $msg");
+      myExit();
+    }
+  }
+
+  Future<String> _askLib(String name, String libPath) async {
+    String dirPath = await ask(new Question(
+        '$name directory path (default: $libPath):',
+        type: String));
+    if (dirPath.isNotEmpty) {
+      return dirPath;
+    }
+    return libPath;
+  }
+
   @Command('Create new polymer_app route.')
-  new_route(
-      {@Option('Your route name') String name,
-      @Option('Your route path') String path}) async {
-    if (name == null) {
-      Question askBehaviorName =
-          const Question('Name of your route:', type: String);
-      name = await ask(askBehaviorName);
-      if (name?.isEmpty) {
-        printDanger("Please enter a valid route name");
-        exit();
-      }
-    }
-    if (path == null) {
-      Question askRoutePath =
-          const Question('Path of your route:', type: String);
-      path = await ask(askRoutePath);
-      if (path?.isEmpty) {
-        printDanger("Please enter a valid route path");
-        exit();
-      }
-    }
-    String routesDirectory = "./";
-    _getOutputFodler("./");
-    _getConfigFile();
+  new_route(String name, String path,
+      {@Option('The output folder of your route') String output_folder}) async {
+    _testField(name, "route name");
+    _testField(path, "route path");
+    String libPath = _initNewAction();
 
     if (manager != null) {
-      routesDirectory = manager.routes.libraryPath;
+      libPath = manager.routes.libraryPath;
     } else {
-      Question askElementsDirectory = new Question(
-          'Route directory path (default: $routesDirectory):',
-          type: String);
-      String path = await ask(askElementsDirectory);
-      if (path.isNotEmpty) {
-        routesDirectory = path;
-      }
+      libPath = await _askLib("route", libPath);
     }
 
     print("Creating '${green(name)}' route");
 
-    RoutesManager routes =
-        manager?.routes ?? new RoutesManager(name, routesDirectory);
+    RoutesManager routes = manager?.routes ?? new RoutesManager(name, libPath);
 
     routes.createRoute(name, path);
     if (manager != null) {
       routes.addToLibrary("$name-route");
     }
+    myExit();
+  }
+
+  _initNewAction() {
+    _getOutputFodler("./");
+    _getConfigFile();
+    return "./";
   }
 
   @Command('Create new polymer_app model.')
-  new_model({@Option('Your model name') String name}) async {
-    if (name == null) {
-      Question askBehaviorName =
-          const Question('Name of your model:', type: String);
-      name = await ask(askBehaviorName);
-      if (name?.isEmpty) {
-        printDanger("Please enter a valid model name");
-        exit();
-      }
-    }
-    String modelsDirectoryPath = "./";
-    _getOutputFodler("./");
-    _getConfigFile();
+  new_model(String name,
+      {@Option('The output folder of your service')
+      String output_folder: "./"}) async {
+    _testField(name, "model name");
+    String libPath = _initNewAction();
 
     if (manager != null) {
-      modelsDirectoryPath = manager.models.libraryPath;
+      libPath = manager.models.libraryPath;
     } else {
-      Question askModelsDirectory = new Question(
-          'Model directory path (default: $modelsDirectoryPath):',
-          type: String);
-      String path = await ask(askModelsDirectory);
-      if (path.isNotEmpty) {
-        modelsDirectoryPath = modelsDirectoryPath;
-      }
+      libPath = await _askLib("model", libPath);
     }
 
     print("Creating '${green(name)}' model");
-    ModelsManager models =
-        manager?.models ?? new ModelsManager(name, modelsDirectoryPath);
+    ModelsManager models = manager?.models ?? new ModelsManager(name, libPath);
 
     models.createModel(name);
     if (manager != null) {
       models.addToLibrary("$name\_model");
     }
+    myExit();
   }
 
   @Command('Create new polymer_app service.')
-  new_service({@Option('Your service name') String name}) async {
-    if (name == null) {
-      Question askServiceName =
-          const Question('Name of your service:', type: String);
-      name = await ask(askServiceName);
-      if (name?.isEmpty) {
-        printDanger("Please enter a valid service name");
-        exit();
-      }
-    }
-    String serviceDirectory = "./";
-    _getOutputFodler("./");
-    _getConfigFile();
+  new_service(String name,
+      {@Option('The output folder of your service')
+      String output_folder: "./"}) async {
+    _testField(name, "service name");
+    String libPath = _initNewAction();
 
     if (manager != null) {
-      serviceDirectory = manager.services.libraryPath;
+      libPath = manager.services.libraryPath;
     } else {
-      Question askServiceDirectory = new Question(
-          'Service directory path (default: $serviceDirectory):',
-          type: String);
-      String path = await ask(askServiceDirectory);
-      if (path.isNotEmpty) {
-        serviceDirectory = path;
-      }
+      libPath = await _askLib("service", libPath);
     }
 
     printInfo("Creating '${green(name)}' service");
 
     ServicesManager services =
-        manager?.services ?? new ServicesManager(name, serviceDirectory);
+        manager?.services ?? new ServicesManager(name, libPath);
 
     services.createService(name);
     if (manager != null) {
       services.addToLibrary("$name\_service");
     }
+    myExit();
   }
 
   @Command('Create new polymer behavior.')
-  new_behavior({@Option('Your behavior name') String name}) async {
-    if (name == null) {
-      Question askBehaviorName =
-          const Question('Name of your behavior:', type: String);
-      name = await ask(askBehaviorName);
-      if (name?.isEmpty) {
-        printDanger("Please enter a valid behavior name");
-        exit();
-      }
-    }
-    String behaviorsDirectory = "./";
-    _getOutputFodler("./");
-    _getConfigFile();
+  new_behavior(String name,
+      {@Option('The output folder of your service')
+      String output_folder: "./"}) async {
+    _testField(name, "behavior name");
+    String libPath = _initNewAction();
 
     if (manager != null) {
-      behaviorsDirectory = manager.behaviors.libraryPath;
+      libPath = manager.behaviors.libraryPath;
     } else {
-      Question askBehaviorsDirectory = new Question(
-          'Behavior directory path (default: $behaviorsDirectory):',
-          type: String);
-      String path = await ask(askBehaviorsDirectory);
-      if (path.isNotEmpty) {
-        behaviorsDirectory = path;
-      }
+      libPath = await _askLib("behavior", libPath);
     }
     BehaviorsManager behaviors =
-        manager?.behaviors ?? new BehaviorsManager(name, behaviorsDirectory);
+        manager?.behaviors ?? new BehaviorsManager(name, libPath);
 
     print("Creating '${green(name)}' behavior");
     behaviors.createBehavior(name);
     if (manager != null) {
       behaviors.addToLibrary("$name\_behavior");
     }
+    myExit();
   }
 
   @Command('Create new polymer element.')
-  new_element({@Option('Your element name') String name}) async {
-    if (name == null) {
-      Question askElementName =
-          const Question('Name of your element:', type: String);
-      name = await ask(askElementName);
-      if (name?.isEmpty || toLispCase(name).split("-").length < 2) {
-        printDanger("Please enter a valid element name");
-        exit();
-      }
-    }
-    String elementsDirectory = "./";
-    _getOutputFodler("./");
-    _getConfigFile();
+  new_element(String name,
+      {@Option('The output folder of your service')
+      String output_folder: "./"}) async {
+    _testField(name, "element name",
+        (field) => toLispCase(field).split("-").length >= 2);
+    String libPath = _initNewAction();
 
     if (manager != null) {
-      elementsDirectory = manager.elements.libraryPath;
+      libPath = manager.elements.libraryPath;
     } else {
-      Question askElementsDirectory = new Question(
-          'Element directory path (default: $elementsDirectory):',
-          type: String);
-      String path = await ask(askElementsDirectory);
-      if (path.isNotEmpty) {
-        elementsDirectory = path;
-      }
+      libPath = await _askLib("element", libPath);
     }
 
     ElementsManager elements =
-        manager?.elements ?? new ElementsManager(name, elementsDirectory);
+        manager?.elements ?? new ElementsManager(name, libPath);
 
     print("Creating '${green(name)}' element");
     elements.createElement(name);
     if (manager != null) {
       elements.addToLibrary(name);
     }
+    myExit();
   }
 
   @Command('Create new polymer_app config.')
-  new_config(
-      {@Option('Your application name') String name,
-      @Option('The output folder of your application')
-      String configOutputFolderPath: "./"}) async {
-    rootDirectoryPath = configOutputFolderPath;
+  new_config(String name,
+      {@Option('The output folder of your service')
+      String output_folder: "./"}) async {
+    rootDirectoryPath = output_folder;
     appName = name;
-    if (appName == null) {
-      appName = await _askAppName();
-    }
+    _testField(name, "application name");
     _getOutputFodler(rootDirectoryPath);
-    return writeInFile(
+    io.File config = writeInFile(
         "${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
-  }
-
-  @Command('Pub get and pub serve your application')
-  Future<io.Process> serve() async {
-    String path = "./";
-    if (rootDirectoryPath != null) {
-      path = rootDirectoryPath;
-    }
-    this.print("Running pub get ...");
-    io.Process processGet =
-        await _run('pub', ['get'], workingDirectory: path, showOutput: true);
-
-    num exitCode = await processGet.exitCode;
-
-    if (exitCode == 0) {
-      this.print("Start serve application");
-      servingProcess = await _run('pub', ['serve'], workingDirectory: path);
-    }
-    return servingProcess;
+    myExit();
+    return config;
   }
 
   @Command('Create new polymer application.')
-  new_application(
-      {@Option('Your application name') String name,
-      @Option('The output folder of your application') String outputFolderPath,
-      @Option('True if you want Material Design')
-      bool isMaterial: true}) async {
+  new_application(String name,
+      {@Option(
+          'The output folder of your application (default: application_name)')
+      String output_folder,
+      @Option('True if you want Material Design') bool is_material: true,
+      @Option('Material design layout') String material_layout}) async {
     appName = name;
-    if (appName == null) {
-      appName = await _askAppName();
-    }
-    rootDirectoryPath = outputFolderPath;
+    _testField(name, "application name");
+    rootDirectoryPath = output_folder;
     if (rootDirectoryPath == null) {
-      rootDirectoryPath = await _askRootDirectory();
+      rootDirectoryPath = "./$appName";
+    }
+    if (material_layout == null) {
+      material_layout = nav_view_material;
     }
     _getOutputFodler(rootDirectoryPath);
     _getConfigFile();
@@ -305,8 +237,10 @@ class PolymerApp extends Program {
     writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
     _getConfigFile();
-    manager.createApplication(material: isMaterial);
-    return manager;
+    manager.createApplication(
+        material: is_material, materialLayout: material_layout);
+    this.print("cd $rootDirectoryPath; pub get; pub serve");
+    myExit();
   }
 
   _getOutputFodler(String outputFolderPath) {
@@ -328,44 +262,6 @@ class PolymerApp extends Program {
       manager = new PolymerAppManager(configFile.resolveSymbolicLinksSync(),
           outputFolder.resolveSymbolicLinksSync());
     }
-  }
-
-  _askAppName() async {
-    String appName = await ask(askName);
-    if (appName?.isEmpty || appName == "test") {
-      printDanger("Please enter a valid application name.");
-      exit();
-    }
-    return appName;
-  }
-
-  _askRootDirectory() async {
-    String rootDirectory = await ask(askRootDirectory);
-    if (rootDirectory?.isEmpty) {
-      rootDirectory = default_root_directory;
-    }
-    return rootDirectory;
-  }
-
-  _askMaterial() async {
-    String material = await ask(askMaterial);
-    bool isMaterial = true;
-    material = material.toLowerCase();
-    if (material == "n") {
-      isMaterial = false;
-    }
-    return isMaterial;
-  }
-
-  Future _run(String executable, List<String> arguments,
-      {String workingDirectory: "./", bool showOutput: false}) async {
-    final io.Process process = await io.Process
-        .start(executable, arguments, workingDirectory: workingDirectory);
-    if (showOutput) {
-      process.stdout.map(UTF8.decode).listen(this.print);
-      process.stderr.map(UTF8.decode).listen(this.printDanger);
-    }
-    return process;
   }
 }
 

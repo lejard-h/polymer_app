@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0:
+- Breaking Change (see [wiki](https://github.com/walletek/polymer_app/wiki))
+- Add theme to root_element
+- Add ```as_shell``` command
+- Multiple Material design layout
+    * nav-view
+    * nav-header
+
+## 0.4.1:
+- Add ```serve``` command (do pub get then pub serve)
+
 ## 0.4.0
 - Breaking Change:
     * polymer_app cli with ```cupid```

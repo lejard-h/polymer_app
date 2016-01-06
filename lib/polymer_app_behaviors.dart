@@ -32,9 +32,11 @@ class BehaviorsManager extends Manager {
       'abstract class ${toCamelCase(name)} {\n\n'
       "/// Called when an instance of ${toCamelCase(name)} is inserted into the DOM.\n"
       "attached() {"
+      "super.attached();"
       "}\n\n"
       "/// Called when an instance of ${toCamelCase(name)} is removed from the DOM.\n"
       "detached() {"
+      "super.detached();"
       "}\n\n"
       "/// Called when an attribute (such as  a class) of an instance of ${toCamelCase(name)} is added, changed, or removed.\n"
       "attributeChanged(String name, String oldValue, String newValue) {"

@@ -5,11 +5,11 @@
 library polymer_app.utils;
 
 import 'dart:io';
-import 'package:ansicolor/ansicolor.dart';
 import 'package:dart_style/dart_style.dart';
 
-final AnsiPen green = new AnsiPen()..green(bold: true);
-final AnsiPen white = new AnsiPen()..white(bold: true);
+
+String green(String value) => "<green>$value</green>";
+String white(String value) => "<white>$value</white>";
 
 Directory createDirectory(String path) {
   print("Creating '${green(path)}' directory.");
