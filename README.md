@@ -3,11 +3,6 @@
 [![Coverage Status](https://coveralls.io/repos/walletek/polymer_app/badge.svg?branch=master&service=github)](https://coveralls.io/github/walletek/polymer_app?branch=master)
 # polymer_app
 
-## Roadmap
-- Create a full website/documentation about the library
-- Polymer Theming
-- Add some [polymer_app_layout_templates](https://github.com/lejard-h/polymer_app_layout_templates)
-
 ## Installation
 
     pub global activate polymer_app
