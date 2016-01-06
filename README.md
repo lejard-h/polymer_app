@@ -9,12 +9,9 @@
     
 ## Usage
 
-    polymer_app
-    > new_application my_application --output_folder=./app
-or
-    ls
+    polymer_app new_application my_app
+    cd my_app; pub get; pub serve
     
-
     
 ### Available commands
 
