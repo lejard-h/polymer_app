@@ -91,9 +91,9 @@ class PolymerApp extends Program {
 
     RoutesManager routes = manager?.routes ?? new RoutesManager(name, libPath);
 
-    routes.createRoute(name, path);
+    await routes.createRoute(name, path);
     if (manager != null) {
-      routes.addToLibrary("$name-route");
+      await routes.addToLibrary("$name-route");
     }
     myExit();
   }
@@ -120,9 +120,9 @@ class PolymerApp extends Program {
     print("Creating '${green(name)}' model");
     ModelsManager models = manager?.models ?? new ModelsManager(name, libPath);
 
-    models.createModel(name);
+    await models.createModel(name);
     if (manager != null) {
-      models.addToLibrary("$name\_model");
+     await  models.addToLibrary("$name\_model");
     }
     myExit();
   }
@@ -145,9 +145,9 @@ class PolymerApp extends Program {
     ServicesManager services =
         manager?.services ?? new ServicesManager(name, libPath);
 
-    services.createService(name);
+    await services.createService(name);
     if (manager != null) {
-      services.addToLibrary("$name\_service");
+      await services.addToLibrary("$name\_service");
     }
     myExit();
   }
@@ -168,9 +168,9 @@ class PolymerApp extends Program {
         manager?.behaviors ?? new BehaviorsManager(name, libPath);
 
     print("Creating '${green(name)}' behavior");
-    behaviors.createBehavior(name);
+    await behaviors.createBehavior(name);
     if (manager != null) {
-      behaviors.addToLibrary("$name\_behavior");
+      await behaviors.addToLibrary("$name\_behavior");
     }
     myExit();
   }
@@ -193,9 +193,9 @@ class PolymerApp extends Program {
         manager?.elements ?? new ElementsManager(name, libPath);
 
     print("Creating '${green(name)}' element");
-    elements.createElement(name);
+    await elements.createElement(name);
     if (manager != null) {
-      elements.addToLibrary(name);
+      await elements.addToLibrary(name);
     }
     myExit();
   }
@@ -233,13 +233,14 @@ class PolymerApp extends Program {
     }
     _getOutputFodler(rootDirectoryPath);
     _getConfigFile();
+
     printInfo("Creating '${green(appName)}' application");
-    writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
+    await writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
     _getConfigFile();
-    manager.createApplication(
+    await manager?.createApplication(
         material: is_material, materialLayout: material_layout);
-    this.print("cd $rootDirectoryPath; pub get; pub serve");
+     this.print("cd $rootDirectoryPath; pub get; pub serve");
     myExit();
   }
 

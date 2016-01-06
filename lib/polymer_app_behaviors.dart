@@ -11,12 +11,12 @@ class BehaviorsManager extends Manager {
 
   BehaviorsManager(String appName, String libraryPath) : super(appName, libraryPath, "behaviors");
 
-  createBehavior(String name, [String content]) {
+  createBehavior(String name, [String content]) async {
     name = "$name-behavior";
     if (content == null) {
       content = behaviorDartTemplate(name);
     }
-    writeInDartFile(
+    await writeInDartFile(
         "$libraryPath/${toSnakeCase(name)}.dart",
         content);
   }

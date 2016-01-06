@@ -14,7 +14,7 @@ import "polymer_app_behaviors.dart";
 import "polymer_app_elements.dart";
 import "polymer_app_routes.dart";
 
-const version = "0.5.0";
+const version = "0.5.1";
 const nav_view_material = "nav-view";
 const nav_header_material = "nav-header";
 
@@ -47,19 +47,20 @@ class Manager {
 
   Manager(this.appName, this.libraryPath, this.libraryName);
 
-  createLibraryDirectory() {
-    writeInDartFile(
-        "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart",
+  createLibraryDirectory() async {
+    print("$libraryPath/${toSnakeCase(libraryName)}.dart");
+    await writeInDartFile(
+        "$libraryPath/${toSnakeCase(libraryName)}.dart",
         libraryTemplate);
   }
 
   addToLibrary(String name, [String path = "."]) {
     print("Add ${green(name)} to library.");
     File lib = new File(
-        "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart");
+        "$libraryPath/${toSnakeCase(libraryName)}.dart");
     if (!lib.existsSync()) {
       print(
-          "${toSnakeCase(libraryPath)}/${toSnakeCase(libraryName)}.dart : not found");
+          "$libraryPath/${toSnakeCase(libraryName)}.dart : not found");
       return;
     }
 
@@ -142,44 +143,44 @@ class PolymerAppManager extends JsonObject {
     _fromJson(configFile.readAsStringSync());
   }
 
-  createApplication({material: false, materialLayout: nav_view_material}) {
-    createPubspec(material: material);
-    createLibrary(material: material);
-    createIndex();
-    createRootElement(material: material, materialLayout: materialLayout);
-    createHomeRoute();
+  createApplication({material: false, materialLayout: nav_view_material}) async {
+    await createPubspec(material: material);
+    await createLibrary(material: material);
+    await createIndex();
+    await createRootElement(material: material, materialLayout: materialLayout);
+    await createHomeRoute();
   }
 
-  createLibrary({material: false}) {
-    elements.createLibraryDirectory();
-    behaviors.createLibraryDirectory();
-    services.createLibraryDirectory();
-    models.createLibraryDirectory();
-    routes.createLibraryDirectory();
+  createLibrary({material: false}) async {
+    await elements.createLibraryDirectory();
+    await behaviors.createLibraryDirectory();
+    await services.createLibraryDirectory();
+    await models.createLibraryDirectory();
+    await routes.createLibraryDirectory();
 
     if (material) {
-      writeInDartFile(
+      await writeInDartFile(
           "$pathOutput/$libraryPath/material.dart", materialLibrary());
     }
-    writeInDartFile("$pathOutput/$libraryPath/${toSnakeCase(name)}.dart",
+    await writeInDartFile("$pathOutput/$libraryPath/${toSnakeCase(name)}.dart",
         appLibraryTemplate(material: material));
   }
 
-  createPubspec({material: false}) {
+  createPubspec({material: false}) async {
     File file = new File("$pathOutput//pubspec.yaml");
     if (file.existsSync()) {
       throw "Please create an empty folder";
     }
-    writeInFile(
+    await writeInFile(
         "$pathOutput//pubspec.yaml", pubspecTemplate(material: material));
   }
 
-  createIndex() {
-    writeInFile("$pathOutput/$webPath/index.html", indexHtmlTemplate());
-    writeInDartFile("$pathOutput/$webPath/index.dart", indexDartTemplate());
+  createIndex() async{
+    await writeInFile("$pathOutput/$webPath/index.html", indexHtmlTemplate());
+    await writeInDartFile("$pathOutput/$webPath/index.dart", indexDartTemplate());
   }
 
-  createRootElement({material: false, materialLayout: nav_view_material}) {
+  createRootElement({material: false, materialLayout: nav_view_material}) async {
     elements.createElement(
         "root-element",
         material
@@ -191,7 +192,7 @@ class PolymerAppManager extends JsonObject {
             ? rootMaterialElementHtmlTemplate(materialLayout)
             : rootElementHtmlTemplate());
     elements.addToLibrary("root-element");
-    writeInFile("$elementsPath/root_element/theme.html", themeHtml);
+   await writeInFile("$elementsPath/root_element/theme.html", themeHtml);
   }
 
   createHomeRoute() {

@@ -11,7 +11,7 @@ class ModelsManager extends Manager {
   ModelsManager(String appName, String libraryPath)
       : super(appName, libraryPath, "models");
 
-  createModel(String name, {String content, String outpuPath}) {
+  createModel(String name, {String content, String outpuPath}) async {
     name = "$name-model";
     if (content == null) {
       content = modelDartTemplate(name);
@@ -19,7 +19,7 @@ class ModelsManager extends Manager {
     if (outpuPath == null) {
       outpuPath = libraryPath;
     }
-    writeInDartFile(
+    await writeInDartFile(
         "$outpuPath/${toSnakeCase(name)}.dart", content);
   }
 

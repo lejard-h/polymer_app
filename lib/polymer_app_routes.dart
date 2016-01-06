@@ -21,7 +21,7 @@ class RoutesManager extends Manager {
       "// export 'route.dart';";
 
   createRoute(String name, String path,
-      {String dartTemplate, String htmlTemplate, String cssTemplate}) {
+      {String dartTemplate, String htmlTemplate, String cssTemplate}) async {
     String routeName = name;
     name = "$name-route";
     if (dartTemplate == null) {
@@ -32,12 +32,12 @@ class RoutesManager extends Manager {
       cssTemplate = elements.elementCssTemplate(name);
     }
 
-    writeInDartFile(
+    await writeInDartFile(
         "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         dartTemplate);
-    writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
+    await writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
         htmlTemplate);
-    writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
+    await writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
         cssTemplate);
   }
 

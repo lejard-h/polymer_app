@@ -11,12 +11,12 @@ class ServicesManager extends Manager {
   ServicesManager(String appName, String libraryPath)
       : super(appName, libraryPath, "services");
 
-  createService(String name, [String content]) {
+  createService(String name, [String content]) async {
     name = "$name-service";
     if (content == null) {
       content = serviceDartTemplate(name);
     }
-    writeInDartFile(
+    await writeInDartFile(
         "$libraryPath/${toSnakeCase(name)}.dart", content);
   }
 

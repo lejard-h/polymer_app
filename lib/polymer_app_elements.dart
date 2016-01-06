@@ -15,7 +15,7 @@ class ElementsManager extends Manager {
       [String dartContent,
       String htmlContent,
       String cssContent,
-      String innerHtmlContent = ""]) {
+      String innerHtmlContent = ""]) async {
     if (dartContent == null) {
       dartContent = elementDartTemplate(name);
     }
@@ -25,12 +25,12 @@ class ElementsManager extends Manager {
     if (cssContent == null) {
       cssContent = elementCssTemplate(name);
     }
-    writeInDartFile(
+    await writeInDartFile(
         "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         dartContent);
-    writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
+    await writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
         htmlContent);
-    writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
+    await writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
         cssContent);
   }
 

@@ -34,24 +34,24 @@ main() {
       expect("Foobar", toCamelCase(testD));
     });
 
-    test('createDirectory', () {
-      Directory dir = createDirectory("./test_dir");
+    test('createDirectory', () async  {
+      Directory dir = await createDirectory("./test_dir");
       expect(true, dir.existsSync());
 
       dir.deleteSync();
       expect(false, dir.existsSync());
     });
 
-    test('createFile', () {
-      File file = createFile("./test/test_file");
+    test('createFile', () async {
+      File file = await createFile("./test/test_file");
       expect(true, file.existsSync());
 
       file.deleteSync();
       expect(false, file.existsSync());
     });
 
-    test('writeInFile', () {
-      File file = writeInFile("./test/test_file", "test_file");
+    test('writeInFile', () async {
+      File file = await writeInFile("./test/test_file", "test_file");
 
       expect(true, file.existsSync());
       expect("test_file", file.readAsStringSync());
@@ -59,8 +59,8 @@ main() {
       expect(false, file.existsSync());
     });
 
-    test('writeInDartFile', () {
-        File file = writeInDartFile("./test/test_file.dart", "library test_file;");
+    test('writeInDartFile', () async  {
+        File file = await writeInDartFile("./test/test_file.dart", "library test_file;");
 
         expect(true, file.existsSync());
         expect("library test_file;\n", file.readAsStringSync());
