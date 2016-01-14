@@ -74,7 +74,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer_app route.')
-  new_route(String name, String path,
+  route(String name, String path,
       {@Option('The output folder of your route') String output_folder}) async {
     _testField(name, "route name");
     _testField(path, "route path");

@@ -11,13 +11,13 @@ main() {
 
   setUpAll(() async {
     print("Generating all test");
-    await app.new_application("test_app",
+    await app.app("test_app",
         output_folder: "./test/test_app", material_layout: "nav-view");
-    await app.new_element("test-element", output_folder: "./test/test_app");
-    await app.new_service("test", output_folder: "./test/test_app");
-    await app.new_model("test", output_folder: "./test/test_app");
-    await app.new_route("test", "test", output_folder: "./test/test_app");
-    await app.new_behavior("test", output_folder: "./test/test_app");
+    await app.element("test-element", output_folder: "./test/test_app");
+    await app.service("test", output_folder: "./test/test_app");
+    await app.model("test", output_folder: "./test/test_app");
+    await app.route("test", "test", output_folder: "./test/test_app");
+    await app.behavior("test", output_folder: "./test/test_app");
   });
 
   tearDownAll(() {
