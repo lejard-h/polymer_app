@@ -2,7 +2,6 @@
  * Created by lejard_h on 24/12/15.
  */
 
-
 part of polymer_app.cli;
 
 class ModelsManager extends Manager {
@@ -27,8 +26,7 @@ class ModelsManager extends Manager {
   modelDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};\n\n'
       'import "package:polymer/polymer.dart";'
-      'import "package:polymer_app/polymer_model.dart";'
-      'import "package:polymer_app/serializer.dart";\n'
+      'import "package:polymer_app/polymer_app.dart";\n'
       '/// @serializable specify that ${toCamelCase(name)} can be serialize/deserialize by polymer_app\n'
       '@serializable\n'
       'class ${toCamelCase(name)} extends PolymerModel {'

@@ -1,6 +1,24 @@
 # Changelog
 
-## 0.5.0:
+## 0.6.0
+- Breaking Changes:
+    * commands:
+        + ```new_application to app```
+        + ```new_element``` to ```element```
+        + ```new_route``` to ```route```
+        + ```new_behavior``` to ```behavior```
+        + ```new_service``` to ```service``` 
+        + ```new_model``` to ```model```
+        + ```new_config``` to ```config```
+    * No more factory constructor for service class. Service class is now a class extending PolymerModel automatically instanciate and assignate to a global.
+        + HttpService http_service = new HttpService();
+        + It can be serialize and use in the dom.
+- Add ```version``` command
+- update to ```polymer 1.0.0-rc.13```
+           
+           
+
+## 0.5.0
 - Breaking Change (see [wiki](https://github.com/walletek/polymer_app/wiki))
 - Add theme to root_element
 - Add ```as_shell``` command
@@ -8,7 +26,7 @@
     * nav-view
     * nav-header
 
-## 0.4.1:
+## 0.4.1
 - Add ```serve``` command (do pub get then pub serve)
 
 ## 0.4.0

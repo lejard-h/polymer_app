@@ -13,7 +13,6 @@ class HttpResponse {
   num get statusCode => response?.statusCode;
 }
 
-@service
 @serializable
 class HttpService extends PolymerModel {
   static String data_format = json_format;

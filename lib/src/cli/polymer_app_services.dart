@@ -22,20 +22,12 @@ class ServicesManager extends Manager {
 
   serviceDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
-      "import 'package:polymer_app/http_service.dart';"
-      "class ${toCamelCase(name)} {"
-      '/// With this code, ${toCamelCase(name)} work as a Singleton.\n'
-
-      "static ${toCamelCase(name)} _cache;\n"
-      "factory ${toCamelCase(name)}() {"
-      "if (_cache == null) {"
-      "_cache = new ${toCamelCase(name)}._internal();"
+      "import 'package:polymer_app/polymer_app.dart';\n"
+      '@serializable\n'
+      "class ${toCamelCase(name)} extends PolymerModel {"
+      "HttpService http = http_service;"
+      '@reflectable\n'
+      'String foo = "bar";'
       "}"
-      "return _cache;"
-      "}\n"
-      "${toCamelCase(name)}._internal();\n"
-      '/////////////////////////////////////\n\n'
-      '/// You can instantiate an other service to use it\n'
-      "HttpService http = new HttpService();"
-      "}";
+  "${toCamelCase(name)} ${toSnakeCase(name)} = new ${toCamelCase(name)}();";
 }

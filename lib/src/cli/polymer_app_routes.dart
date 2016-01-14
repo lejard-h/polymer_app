@@ -46,9 +46,7 @@ class RoutesManager extends Manager {
       "library ${toSnakeCase(appName)}.elements.${toSnakeCase(name)};"
       "import 'package:polymer/polymer.dart';"
       "import 'package:web_components/web_components.dart' show HtmlImport;"
-      'import "package:polymer_app_router/polymer_app_router.dart";'
-      'import "package:route_hierarchical/client.dart";'
-      'import "package:polymer_app/polymer_router.dart";\n\n'
+      'import "package:polymer_app/polymer_app.dart";\n\n'
 
       '@PolymerRoute("${toCamelCase(routeName)}", "$path")'
       "@PolymerRegister('${toLispCase(name)}')\n"

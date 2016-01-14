@@ -68,6 +68,11 @@ class PolymerApp extends Program {
     return libPath;
   }
 
+  @Command('Version')
+  version() {
+    this.print(package_version);
+  }
+
   @Command('Create new polymer_app route.')
   new_route(String name, String path,
       {@Option('The output folder of your route') String output_folder}) async {
@@ -99,7 +104,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer_app model.')
-  new_model(String name,
+  model(String name,
       {@Option('The output folder of your service')
       String output_folder: "./"}) async {
     _testField(name, "model name");
@@ -122,7 +127,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer_app service.')
-  new_service(String name,
+  service(String name,
       {@Option('The output folder of your service')
       String output_folder: "./"}) async {
     _testField(name, "service name");
@@ -147,7 +152,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer behavior.')
-  new_behavior(String name,
+  behavior(String name,
       {@Option('The output folder of your service')
       String output_folder: "./"}) async {
     _testField(name, "behavior name");
@@ -170,7 +175,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer element.')
-  new_element(String name,
+  element(String name,
       {@Option('The output folder of your service')
       String output_folder: "./"}) async {
     _testField(name, "element name",
@@ -195,7 +200,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer_app config.')
-  new_config(String name,
+  config(String name,
       {@Option('The output folder of your service')
       String output_folder: "./"}) async {
     rootDirectoryPath = output_folder;
@@ -210,7 +215,7 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer application.')
-  new_application(String name,
+  app(String name,
       {@Option(
           'The output folder of your application (default: application_name)')
       String output_folder,
@@ -234,7 +239,7 @@ class PolymerApp extends Program {
     _getConfigFile();
     await manager?.createApplication(
         material: is_material, materialLayout: material_layout);
-     this.print("cd $rootDirectoryPath; pub get; pub serve");
+     this.print("${green("cd $rootDirectoryPath; pub get; pub serve")}");
     myExit();
   }
 

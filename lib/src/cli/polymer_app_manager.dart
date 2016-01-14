@@ -5,7 +5,7 @@
 
 part of polymer_app.cli;
 
-const version = "0.5.2";
+const package_version = "0.5.2";
 const polymer_version = ">=1.0.0-rc.12";
 const polymer_elements_version = ">=1.0.0-rc.7";
 const analyzer_version = ">=0.27.0";
@@ -43,14 +43,13 @@ class Manager {
   Manager(this.appName, this.libraryPath, this.libraryName);
 
   createLibraryDirectory() async {
-    print("$libraryPath/${toSnakeCase(libraryName)}.dart");
     await writeInDartFile(
         "$libraryPath/${toSnakeCase(libraryName)}.dart",
         libraryTemplate);
   }
 
   addToLibrary(String name, [String path = "."]) {
-    print("Add ${green(name)} to library.");
+    print("Add ${green(name)} to library.\n");
     File lib = new File(
         "$libraryPath/${toSnakeCase(libraryName)}.dart");
     if (!lib.existsSync()) {
@@ -190,8 +189,8 @@ class PolymerAppManager extends JsonObject {
    await writeInFile("$elementsPath/root_element/theme.html", themeHtml);
   }
 
-  createHomeRoute() {
-    routes.createRoute("Home", "",
+  createHomeRoute() async {
+    await routes.createRoute("Home", "",
         htmlTemplate: githubButton, cssTemplate: routeHomeCssTemplate);
     routes.addToLibrary(toSnakeCase("Home-route"));
   }
@@ -366,7 +365,7 @@ class PolymerAppManager extends JsonObject {
       "dependencies:\n"
       '  analyzer: "$analyzer_version"\n'
       '  polymer: "$polymer_version"\n'
-      '  polymer_app: "^$version"\n'
+      '  polymer_app: "^$package_version"\n'
       '${material ? "  polymer_elements: '$polymer_elements_version'\n" : ""}'
       '  polymer_app_router: "^0.0.6"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'

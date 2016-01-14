@@ -14,9 +14,12 @@ import "package:polymer/polymer.dart";
 import "package:reflectable/reflectable.dart";
 import "package:initialize/initialize.dart" as init;
 import "package:polymer_app_router/polymer_app_router.dart";
+import "src/serializer.dart";
+
+export "package:polymer_app_router/polymer_app_router.dart";
+export "package:route_hierarchical/client.dart";
+export "src/serializer.dart";
 
 part "src/http_service.dart";
 part "src/polymer_model.dart";
 part "src/polymer_router.dart";
-part "src/serializer.dart";
-part "src/polymer_service.dart";
