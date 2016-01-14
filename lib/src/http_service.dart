@@ -2,13 +2,7 @@
  * Created by lejard_h on 23/12/15.
  */
 
-library polymer_app.http_service;
-
-import 'package:http/http.dart';
-import "package:http/browser_client.dart";
-import "dart:async";
-import "dart:convert";
-import 'serializer.dart';
+part of polymer_app;
 
 String get json_format => "json";
 
@@ -19,19 +13,10 @@ class HttpResponse {
   num get statusCode => response?.statusCode;
 }
 
-class HttpService {
+@service
+@serializable
+class HttpService extends PolymerModel {
   static String data_format = json_format;
-
-  static HttpService _cache;
-
-  factory HttpService() {
-    if (_cache == null) {
-      _cache = new HttpService._internal();
-    }
-    return _cache;
-  }
-
-  HttpService._internal();
 
   BrowserClient _http = new BrowserClient();
 
@@ -125,3 +110,5 @@ class HttpService {
     return uri;
   }
 }
+
+HttpService http_service = new HttpService();

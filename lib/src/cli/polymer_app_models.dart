@@ -2,10 +2,8 @@
  * Created by lejard_h on 24/12/15.
  */
 
-library polymer_app.models;
 
-import "polymer_app_manager.dart";
-import "utils.dart";
+part of polymer_app.cli;
 
 class ModelsManager extends Manager {
   ModelsManager(String appName, String libraryPath)

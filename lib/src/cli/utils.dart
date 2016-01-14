@@ -2,12 +2,7 @@
  * Created by lejard_h on 23/12/15.
  */
 
-library polymer_app.utils;
-
-import 'dart:io';
-import 'package:dart_style/dart_style.dart';
-import "dart:async";
-
+part of polymer_app.cli;
 
 String green(String value) => "<green>$value</green>";
 String white(String value) => "<white>$value</white>";
@@ -42,13 +37,13 @@ Future<File> createFile(String path) async {
 }
 
 toSnakeCase(String name) =>
-    name?.replaceAll("-", "_").replaceAll(" ", "_")?.toLowerCase();
+    name?.replaceAll("-", "_")?.replaceAll(" ", "_")?.toLowerCase();
 toLispCase(String name) =>
-    name?.replaceAll("_", "-").replaceAll(" ", "-")?.toLowerCase();
+    name?.replaceAll("_", "-")?.replaceAll(" ", "-")?.toLowerCase();
 toCamelCase(String str) => toLispCase(str)
     ?.split('-')
     ?.map((e) => e[0].toUpperCase() + e.substring(1))
-    .join('');
+    ?.join('');
 
 DartFormatter _formatter = new DartFormatter();
 

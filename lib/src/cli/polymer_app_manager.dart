@@ -2,19 +2,14 @@
  * Created by lejard_h on 24/12/15.
  */
 
-library polymer_app.manager;
 
-import 'dart:io';
-import "utils.dart";
-import "dart:convert";
+part of polymer_app.cli;
 
-import "polymer_app_services.dart";
-import "polymer_app_models.dart";
-import "polymer_app_behaviors.dart";
-import "polymer_app_elements.dart";
-import "polymer_app_routes.dart";
-
-const version = "0.5.1";
+const version = "0.5.2";
+const polymer_version = ">=1.0.0-rc.12";
+const polymer_elements_version = ">=1.0.0-rc.7";
+const analyzer_version = ">=0.27.0";
+const reflectable_version = ">=0.5.0";
 const nav_view_material = "nav-view";
 const nav_header_material = "nav-header";
 
@@ -369,16 +364,17 @@ class PolymerAppManager extends JsonObject {
       "environment:\n"
       "  sdk: '>=1.13.0 <2.0.0'\n\n"
       "dependencies:\n"
-      '  polymer: "^1.0.0-rc.10"\n'
+      '  analyzer: "$analyzer_version"\n'
+      '  polymer: "$polymer_version"\n'
       '  polymer_app: "^$version"\n'
-      '${material ? "  polymer_elements: '^1.0.0-rc.5'\n" : ""}'
+      '${material ? "  polymer_elements: '$polymer_elements_version'\n" : ""}'
       '  polymer_app_router: "^0.0.6"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
       '  web_components: "^0.12.0"\n'
       '  browser: "^0.10.0"\n'
-      '  reflectable: "^0.5.1"\n\n'
+      '  reflectable: "$reflectable_version"\n\n'
       'transformers:\n'
-      '  - web_components:\n'
+      '  - polymer:\n'
       '      entry_points:\n'
       '      - web/index.html\n'
       '  - reflectable:\n'

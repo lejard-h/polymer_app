@@ -4,7 +4,7 @@
 
 import "package:test/test.dart";
 import "dart:convert";
-import "package:polymer_app/serializer.dart";
+import "package:polymer_app/polymer_app.dart";
 
 @serializable
 abstract class Proxy {}

@@ -3,7 +3,7 @@
  */
 
 import "package:test/test.dart";
-import 'package:polymer_app/utils.dart';
+import 'package:polymer_app/polymer_app_cli.dart';
 import 'dart:io';
 
 main() {

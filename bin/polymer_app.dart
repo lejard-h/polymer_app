@@ -5,13 +5,7 @@
 import 'dart:io' as io;
 import "dart:async";
 import 'package:cupid/cupid.dart';
-import 'package:polymer_app/utils.dart';
-import "package:polymer_app/polymer_app_manager.dart";
-import "package:polymer_app/polymer_app_services.dart";
-import "package:polymer_app/polymer_app_models.dart";
-import "package:polymer_app/polymer_app_behaviors.dart";
-import "package:polymer_app/polymer_app_elements.dart";
-import "package:polymer_app/polymer_app_routes.dart";
+import 'package:polymer_app/polymer_app_cli.dart';
 
 const default_root_directory = "./";
 
@@ -58,7 +52,7 @@ class PolymerApp extends Program {
   }
 
   _testField(String field, String msg, [bool test(String)]) {
-    if (field?.isEmpty || (test != null && !test(field))) {
+    if (field.isEmpty || (test != null && !test(field))) {
       printDanger("Please enter a valid $msg");
       myExit();
     }

@@ -2,10 +2,7 @@
  * Created by lejard_h on 24/12/15.
  */
 
-library polymer_app.services;
-
-import "polymer_app_manager.dart";
-import "utils.dart";
+part of polymer_app.cli;
 
 class ServicesManager extends Manager {
   ServicesManager(String appName, String libraryPath)

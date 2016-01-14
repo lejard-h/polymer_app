@@ -2,11 +2,8 @@
  * Created by lejard_h on 24/12/15.
  */
 
-library polymer_app.routes;
 
-import "utils.dart";
-import "polymer_app_manager.dart";
-import "polymer_app_elements.dart";
+part of polymer_app.cli;
 
 class RoutesManager extends Manager {
   ElementsManager elements;

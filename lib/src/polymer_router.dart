@@ -2,13 +2,7 @@
  * Created by lejard_h on 30/12/15.
  */
 
-library polymer_app.router;
-
-import 'package:initialize/initialize.dart' as init;
-import 'package:polymer/polymer.dart';
-import 'package:polymer_app_router/polymer_app_router.dart';
-import 'dart:html';
-import "package:reflectable/reflectable.dart";
+part of polymer_app;
 
 @behavior
 abstract class PolymerRouterBehavior {

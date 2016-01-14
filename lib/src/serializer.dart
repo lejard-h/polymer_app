@@ -2,10 +2,7 @@
  * Created by lejard_h on 02/01/16.
  */
 
-library polymer_app.serializer;
-
-import "dart:convert";
-import "package:reflectable/reflectable.dart";
+part of polymer_app;
 
 class Serialize {
   Map get toMap => Serializer.toMap(this);

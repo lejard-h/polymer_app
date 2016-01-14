@@ -21,10 +21,10 @@ main() {
   });
 
   tearDownAll(() {
-     Directory dir = new Directory("./test/test_app");
+    /* Directory dir = new Directory("./test/test_app");
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
-    }
+    }*/
   });
 
   test("application", () {
