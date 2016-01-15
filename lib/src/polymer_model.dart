@@ -5,5 +5,12 @@
 part of polymer_app;
 
 @serializable
-abstract class PolymerModel extends JsProxy with Serialize {
+abstract class PolymerModel extends JsProxy {
+
+  Map get toMap => Serializer.toMap(this);
+
+  String toString() => toMap.toString();
+
+  String toJson() => Serializer.toJson(this);
+
 }

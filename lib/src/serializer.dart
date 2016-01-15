@@ -8,7 +8,7 @@ import "dart:convert";
 
 import "package:reflectable/reflectable.dart";
 
-class Serialize {
+abstract class Serialize {
   Map get toMap => Serializer.toMap(this);
 
   String toString() => toMap.toString();

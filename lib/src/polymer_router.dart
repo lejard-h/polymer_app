@@ -5,7 +5,7 @@
 part of polymer_app;
 
 @behavior
-abstract class PolymerRouterBehavior {
+abstract class PolymerRouter {
   List<Page> _pages = [];
 
   static List<Page> pagesRouter = [];
@@ -21,6 +21,32 @@ abstract class PolymerRouterBehavior {
       pages = pagesRouter;
     });
   }
+
+  static goToDefault(
+          {Map parameters,
+          Route startingFrom,
+          bool replace: false,
+          Map queryParameters,
+          bool forceReload: false}) =>
+      PolymerRouterBehavior.goToDefault(
+          parameters: parameters,
+          startingFrom: startingFrom,
+          replace: replace,
+          queryParameters: queryParameters,
+          forceReload: forceReload);
+
+  static goToName(String name,
+          {Map parameters,
+          Route startingFrom,
+          bool replace: false,
+          Map queryParameters,
+          bool forceReload: false}) =>
+      PolymerRouterBehavior.goToName(name,
+          parameters: parameters,
+          startingFrom: startingFrom,
+          replace: replace,
+          queryParameters: queryParameters,
+          forceReload: forceReload);
 }
 
 Object _getAnnotation(Type element, Type annotation) {
@@ -43,8 +69,8 @@ class PolymerRoute implements init.Initializer<Type> {
   initialize(Type element) {
     PolymerRegister reg = _getAnnotation(element, PolymerRegister);
     if (reg != null) {
-      PolymerRouterBehavior.pagesRouter.add(new Page(name, path,
-          document.createElement(reg.tagName) as PolymerAppRouteBehavior));
+      PolymerAppRouteBehavior route = new Element.tag(reg.tagName) as PolymerAppRouteBehavior;
+      PolymerRouter.pagesRouter.add(new Page(name, path, route));
     }
   }
 }

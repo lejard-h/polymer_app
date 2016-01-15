@@ -2,7 +2,6 @@
  * Created by lejard_h on 24/12/15.
  */
 
-
 part of polymer_app.cli;
 
 const package_version = "0.5.2";
@@ -44,17 +43,14 @@ class Manager {
 
   createLibraryDirectory() async {
     await writeInDartFile(
-        "$libraryPath/${toSnakeCase(libraryName)}.dart",
-        libraryTemplate);
+        "$libraryPath/${toSnakeCase(libraryName)}.dart", libraryTemplate);
   }
 
   addToLibrary(String name, [String path = "."]) {
     print("Add ${green(name)} to library.\n");
-    File lib = new File(
-        "$libraryPath/${toSnakeCase(libraryName)}.dart");
+    File lib = new File("$libraryPath/${toSnakeCase(libraryName)}.dart");
     if (!lib.existsSync()) {
-      print(
-          "$libraryPath/${toSnakeCase(libraryName)}.dart : not found");
+      print("$libraryPath/${toSnakeCase(libraryName)}.dart : not found");
       return;
     }
 
@@ -137,7 +133,8 @@ class PolymerAppManager extends JsonObject {
     _fromJson(configFile.readAsStringSync());
   }
 
-  createApplication({material: false, materialLayout: nav_view_material}) async {
+  createApplication(
+      {material: false, materialLayout: nav_view_material}) async {
     await createPubspec(material: material);
     await createLibrary(material: material);
     await createIndex();
@@ -169,12 +166,14 @@ class PolymerAppManager extends JsonObject {
         "$pathOutput//pubspec.yaml", pubspecTemplate(material: material));
   }
 
-  createIndex() async{
+  createIndex() async {
     await writeInFile("$pathOutput/$webPath/index.html", indexHtmlTemplate());
-    await writeInDartFile("$pathOutput/$webPath/index.dart", indexDartTemplate());
+    await writeInDartFile(
+        "$pathOutput/$webPath/index.dart", indexDartTemplate());
   }
 
-  createRootElement({material: false, materialLayout: nav_view_material}) async {
+  createRootElement(
+      {material: false, materialLayout: nav_view_material}) async {
     elements.createElement(
         "root-element",
         material
@@ -186,7 +185,7 @@ class PolymerAppManager extends JsonObject {
             ? rootMaterialElementHtmlTemplate(materialLayout)
             : rootElementHtmlTemplate());
     elements.addToLibrary("root-element");
-   await writeInFile("$elementsPath/root_element/theme.html", themeHtml);
+    await writeInFile("$elementsPath/root_element/theme.html", themeHtml);
   }
 
   createHomeRoute() async {
@@ -278,6 +277,7 @@ class PolymerAppManager extends JsonObject {
       "/* Material Template */"
       ".content {"
       "background-color: var(--background-color);"
+      "height: 100%;"
       "}"
       ".menu-item {"
       "cursor: pointer;"
@@ -293,11 +293,10 @@ class PolymerAppManager extends JsonObject {
       'import "package:polymer/polymer.dart";'
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
-      'import "package:polymer_app_router/polymer_app_router.dart";'
-      'import "package:polymer_app/polymer_router.dart";'
+      'import "package:polymer_app/polymer_app.dart";'
       'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
-      'class RootElement extends PolymerElement with PolymerRouterBehavior {'
+      'class RootElement extends PolymerElement with PolymerRouter {'
       'RootElement.created() : super.created();'
       'String _selected;'
       '@Property()'
@@ -340,8 +339,7 @@ class PolymerAppManager extends JsonObject {
 
   indexDartTemplate() => "import 'package:polymer/polymer.dart';"
       "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
-      'import "package:polymer_app/polymer_model.dart";'
-      'import "package:polymer_app/serializer.dart";'
+      'import "package:polymer_app/polymer_app.dart";'
       "main() async {"
       "initSerializer();"
       "await initPolymer();"
@@ -367,7 +365,6 @@ class PolymerAppManager extends JsonObject {
       '  polymer: "$polymer_version"\n'
       '  polymer_app: "^$package_version"\n'
       '${material ? "  polymer_elements: '$polymer_elements_version'\n" : ""}'
-      '  polymer_app_router: "^0.0.6"\n'
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
       '  web_components: "^0.12.0"\n'
       '  browser: "^0.10.0"\n'
@@ -398,8 +395,7 @@ class PolymerAppManager extends JsonObject {
       'import "package:polymer/polymer.dart";'
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
-      'import "package:polymer_app_router/polymer_app_router.dart";'
-      'import "package:polymer_app/polymer_router.dart";'
+      'import "package:polymer_app/polymer_app.dart";'
       'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement with PolymerRouterBehavior {'
@@ -428,7 +424,7 @@ class PolymerAppManager extends JsonObject {
       '<iron-media-query query-matches="{{_isNotMobile}}" query="(min-width: 780px)"></iron-media-query>'
       '<paper-drawer-panel responsive-width="780px" id="drawerPanel" transition> '
       '<div class="nav layout vertical" drawer id="nav"><!-- Nav Content --> '
-      '<paper-toolbar><span>Polymer App Test</span></paper-toolbar>'
+      '<paper-toolbar><span>$name</span></paper-toolbar>'
       ' <paper-menu id="menu" valueattr="hash" class="flex" attr-for-selected="hash" selected="{{selected}}">'
       ' <template is="dom-repeat" items="{{pages}}"> '
       '<paper-item class="menu-item" hash\$={{item.name}}><spanclass="layout horizontal">'
@@ -457,7 +453,7 @@ class PolymerAppManager extends JsonObject {
       '</paper-tabs>'
       '</div>'
       '</template>'
-      ' <div class="layout horizontal flex"> '
+      ' <div class="layout vertical flex"> '
       '<polymer-app-router class="flex" selected="{{selected}}" pages="{{pages}}"></polymer-app-router>'
       '</div>'
       '</div>'
@@ -469,7 +465,7 @@ class PolymerAppManager extends JsonObject {
       '<div class="nav layout vertical" drawer id="nav">'
       '<!-- Nav Content -->'
       '<paper-toolbar>'
-      '<span>Polymer App Test</span>'
+      '<span>$name</span>'
       '</paper-toolbar>'
       '<paper-menu id="menu" valueattr="hash" class="flex" attr-for-selected="hash" selected="{{selected}}">'
       '<template is="dom-repeat" items="{{pages}}">'
@@ -488,7 +484,7 @@ class PolymerAppManager extends JsonObject {
       '<div class="flex">{{selected}}</div>'
       '</paper-toolbar>'
       '<!-- Main Content -->'
-      '<div class="content layout horizontal fit">'
+      '<div class="content">'
       '<polymer-app-router class="flex" selected="{{selected}}" pages="{{pages}}"></polymer-app-router>'
       '</div>'
       '</paper-header-panel>'

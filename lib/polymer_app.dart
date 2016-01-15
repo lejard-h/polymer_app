@@ -13,6 +13,8 @@ import "package:http/browser_client.dart";
 import "package:polymer/polymer.dart";
 import "package:reflectable/reflectable.dart";
 import "package:initialize/initialize.dart" as init;
+import "package:route_hierarchical/client.dart";
+import "package:polymer_app_router/polymer_app_router.dart";
 import "package:polymer_app_router/polymer_app_router.dart";
 import "src/serializer.dart";
 

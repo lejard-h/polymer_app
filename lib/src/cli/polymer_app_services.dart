@@ -22,6 +22,7 @@ class ServicesManager extends Manager {
 
   serviceDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
+      "import 'package:polymer/polymer.dart';"
       "import 'package:polymer_app/polymer_app.dart';\n"
       '@serializable\n'
       "class ${toCamelCase(name)} extends PolymerModel {"
