@@ -4,7 +4,7 @@
 
 part of polymer_app.cli;
 
-const package_version = "0.5.2";
+const package_version = "0.6.0";
 const polymer_version = ">=1.0.0-rc.12";
 const polymer_elements_version = ">=1.0.0-rc.7";
 const analyzer_version = ">=0.27.0";
@@ -398,7 +398,7 @@ class PolymerAppManager extends JsonObject {
       'import "package:polymer_app/polymer_app.dart";'
       'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
-      'class RootElement extends PolymerElement with PolymerRouterBehavior {'
+      'class RootElement extends PolymerElement with PolymerRouter {'
       'RootElement.created() : super.created();\n\n'
       "PaperDrawerPanel get drawer => \$['drawerPanel'];"
       'String _selected;'
