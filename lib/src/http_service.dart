@@ -14,7 +14,8 @@ class HttpResponse {
 }
 
 @serializable
-class HttpService extends PolymerModel {
+@service
+class HttpService extends PolymerService {
   static String data_format = json_format;
 
   BrowserClient _http = new BrowserClient();
@@ -109,5 +110,3 @@ class HttpService extends PolymerModel {
     return uri;
   }
 }
-
-HttpService http_service = new HttpService();

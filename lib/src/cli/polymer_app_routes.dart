@@ -50,7 +50,7 @@ class RoutesManager extends Manager {
 
       '@PolymerRoute("${toCamelCase(routeName)}", "$path")'
       "@PolymerRegister('${toLispCase(name)}')\n"
-      "class ${toCamelCase(name)} extends PolymerElement with PolymerAppRouteBehavior { "
+      "class ${toCamelCase(name)} extends PolymerElement with AutonotifyBehavior, Observable, PolymerAppRouteBehavior { "
       "${toCamelCase(name)}.created() : super.created();\n\n"
       "/// Called when an instance of ${toLispCase(name)} is inserted into the DOM.\n"
       "attached() {"

@@ -17,7 +17,7 @@ abstract class PolymerRouter {
   }
 
   ready() {
-    init.run().then((_) {
+    init.run(typeFilter: [ PolymerRoute ]).then((_) {
       pages = pagesRouter;
     });
   }
@@ -49,7 +49,7 @@ abstract class PolymerRouter {
           forceReload: forceReload);
 }
 
-Object _getAnnotation(Type element, Type annotation) {
+Object getAnnotation(Type element, Type annotation) {
   TypeMirror mir = jsProxyReflectable.reflectType(element);
   for (var dec in mir.metadata) {
     if (dec.runtimeType == annotation) {
@@ -67,7 +67,7 @@ class PolymerRoute implements init.Initializer<Type> {
   const PolymerRoute(this.name, this.path);
 
   initialize(Type element) {
-    PolymerRegister reg = _getAnnotation(element, PolymerRegister);
+    PolymerRegister reg = getAnnotation(element, PolymerRegister);
     if (reg != null) {
       PolymerAppRouteBehavior route = new Element.tag(reg.tagName) as PolymerAppRouteBehavior;
       PolymerRouter.pagesRouter.add(new Page(name, path, route));

@@ -4,6 +4,7 @@
 
 part of polymer_app.cli;
 
+
 String green(String value) => "<green>$value</green>";
 String white(String value) => "<white>$value</white>";
 String red(String value) => "<red>$value</red>";
@@ -35,15 +36,6 @@ Future<File> createFile(String path) async {
   }
   return file;
 }
-
-toSnakeCase(String name) =>
-    name?.replaceAll("-", "_")?.replaceAll(" ", "_")?.toLowerCase();
-toLispCase(String name) =>
-    name?.replaceAll("_", "-")?.replaceAll(" ", "-")?.toLowerCase();
-toCamelCase(String str) => toLispCase(str)
-    ?.split('-')
-    ?.map((e) => e[0].toUpperCase() + e.substring(1))
-    ?.join('');
 
 DartFormatter _formatter = new DartFormatter();
 

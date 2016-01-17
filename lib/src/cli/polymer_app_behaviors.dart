@@ -26,9 +26,9 @@ class BehaviorsManager extends Manager {
 
   behaviorDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.elements.${toSnakeCase(name)};'
-      'import "package:polymer/polymer.dart";'
+      'import "package:polymer_app/polymer_app.dart";'
       '@behavior\n'
-      'abstract class ${toCamelCase(name)} {\n\n'
+      'abstract class ${toCamelCase(name)} implements AutonotifyBehavior, Observable{\n\n'
       "/// Called when an instance of ${toCamelCase(name)} is inserted into the DOM.\n"
       "attached() {"
       "super.attached();"

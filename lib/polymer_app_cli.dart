@@ -5,12 +5,15 @@
 library polymer_app.cli;
 
 import 'dart:io';
-import "dart:async";
 import "dart:convert";
 
-import 'package:dart_style/dart_style.dart';
+import "package:polymer_app/src/utils.dart";
+import "package:dart_style/dart_style.dart";
+import "dart:async";
 
-part "src/cli/utils.dart";
+export "package:polymer_app/src/utils.dart";
+
+part "src/cli/utils_io.dart";
 part "src/cli/polymer_app_manager.dart";
 part "src/cli/polymer_app_behaviors.dart";
 part "src/cli/polymer_app_routes.dart";

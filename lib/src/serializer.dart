@@ -50,7 +50,8 @@ class Serializable extends Reflectable {
           typingCapability,
           superclassQuantifyCapability,
           newInstanceCapability,
-          reflectedTypeCapability
+          reflectedTypeCapability,
+          instanceInvokeCapability
         ]);
 }
 

@@ -4,6 +4,7 @@
 
 import "package:test/test.dart";
 import 'package:polymer_app/polymer_app_cli.dart';
+import 'package:polymer_app/src/utils.dart';
 import 'dart:io';
 
 main() {
@@ -12,26 +13,30 @@ main() {
     String testB = "foo_bar";
     String testC = "foo bar";
     String testD = "fooBar";
+    String testE = "FooBar";
 
     test("toSnakeCase", () {
       expect("foo_bar", toSnakeCase(testA));
       expect("foo_bar", toSnakeCase(testB));
       expect("foo_bar", toSnakeCase(testC));
-      expect("foobar", toSnakeCase(testD));
+      expect("foo_bar", toSnakeCase(testD));
+      expect("foo_bar", toSnakeCase(testE));
     });
 
     test("toLispCase", () {
       expect("foo-bar", toLispCase(testA));
       expect("foo-bar", toLispCase(testB));
       expect("foo-bar", toLispCase(testC));
-      expect("foobar", toLispCase(testD));
+      expect("foo-bar", toLispCase(testD));
+      expect("foo-bar", toLispCase(testE));
     });
 
     test("toCamelCase", () {
       expect("FooBar", toCamelCase(testA));
       expect("FooBar", toCamelCase(testB));
       expect("FooBar", toCamelCase(testC));
-      expect("Foobar", toCamelCase(testD));
+      expect("FooBar", toCamelCase(testD));
+      expect("FooBar", toCamelCase(testE));
     });
 
     test('createDirectory', () async  {

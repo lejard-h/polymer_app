@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.0
+- Implementation of ```polymer_autonotify```
+- ```init``` function on ```PolymerService``` class
+- Breaking Changes
+    * No need to call the constructor of a service.
+    * One init function ```initPolymerApp()``` wrapper of:
+        + ```initSerializer()```
+        + ```initServices()```
+        + ```initPolymer()```
+    * Use of ```PolymerService.getService(String name)``` to get a service;
+
+## 0.6.1
+- fix minor issue on Service
+
 ## 0.6.0
 - Breaking Changes:
     * commands:

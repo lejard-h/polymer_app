@@ -13,8 +13,7 @@ class ServicesManager extends Manager {
     if (content == null) {
       content = serviceDartTemplate(name);
     }
-    await writeInDartFile(
-        "$libraryPath/${toSnakeCase(name)}.dart", content);
+    await writeInDartFile("$libraryPath/${toSnakeCase(name)}.dart", content);
   }
 
   String get libraryTemplate => "library ${toSnakeCase(appName)}.services;"
@@ -22,13 +21,14 @@ class ServicesManager extends Manager {
 
   serviceDartTemplate(String name) =>
       'library ${toSnakeCase(appName)}.services.${toSnakeCase(name)};'
-      "import 'package:polymer/polymer.dart';"
       "import 'package:polymer_app/polymer_app.dart';\n"
       '@serializable\n'
-      "class ${toCamelCase(name)} extends PolymerModel {"
-      "HttpService http = http_service;"
-      '@reflectable\n'
-      'String foo = "bar";'
-      "}"
-  "${toCamelCase(name)} ${toSnakeCase(name)} = new ${toCamelCase(name)}();";
+      '@service\n'
+      "class ${toCamelCase(name)} extends PolymerService {"
+      "HttpService http = PolymerService.getService('http');"
+      '@observable String foo = "bar";\n\n'
+      'init() {'
+      'print("init ${toCamelCase(name)}");'
+      '}'
+      "}";
 }

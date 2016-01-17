@@ -21,7 +21,7 @@ main() {
   });
 
   tearDownAll(() {
-     Directory dir = new Directory("./test/test_app");
+      Directory dir = new Directory("./test/test_app");
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
     }
@@ -56,10 +56,12 @@ main() {
   });
 
   test("element", () {
-
-    File dart = new File("./test/test_app/lib/elements/test_element/test_element.dart");
-    File html = new File("./test/test_app/lib/elements/test_element/test_element.html");
-    File css = new File("./test/test_app/lib/elements/test_element/test_element.css");
+    File dart =
+        new File("./test/test_app/lib/elements/test_element/test_element.dart");
+    File html =
+        new File("./test/test_app/lib/elements/test_element/test_element.html");
+    File css =
+        new File("./test/test_app/lib/elements/test_element/test_element.css");
 
     expect(true, dart.existsSync());
     expect(true, css.existsSync());
@@ -67,10 +69,11 @@ main() {
   });
 
   test("route", () {
-
-    File dart = new File("./test/test_app/lib/routes/test_route/test_route.dart");
+    File dart =
+        new File("./test/test_app/lib/routes/test_route/test_route.dart");
     File css = new File("./test/test_app/lib/routes/test_route/test_route.css");
-    File html = new File("./test/test_app/lib/routes/test_route/test_route.html");
+    File html =
+        new File("./test/test_app/lib/routes/test_route/test_route.html");
 
     expect(true, dart.existsSync());
     expect(true, css.existsSync());
@@ -78,21 +81,18 @@ main() {
   });
 
   test("model", () {
-
     File dart = new File("./test/test_app/lib/models/test_model.dart");
 
     expect(true, dart.existsSync());
   });
 
   test("behavior", () {
-
     File dart = new File("./test/test_app/lib/behaviors/test_behavior.dart");
 
     expect(true, dart.existsSync());
   });
 
   test("service", () {
-
     File dart = new File("./test/test_app/lib/services/test_service.dart");
 
     expect(true, dart.existsSync());

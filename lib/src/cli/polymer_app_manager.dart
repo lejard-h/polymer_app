@@ -4,13 +4,14 @@
 
 part of polymer_app.cli;
 
-const package_version = "0.6.0";
+const package_version = "0.7.0";
 const polymer_version = ">=1.0.0-rc.12";
 const polymer_elements_version = ">=1.0.0-rc.7";
 const analyzer_version = ">=0.27.0";
 const reflectable_version = ">=0.5.0";
 const nav_view_material = "nav-view";
 const nav_header_material = "nav-header";
+const autonotify_observe = "^1.0.0+7";
 
 abstract class JsonObject {
   Map _obj;
@@ -290,13 +291,12 @@ class PolymerAppManager extends JsonObject {
   rootElementDartTemplate() => '@HtmlImport("theme.html")'
       '@HtmlImport("root_element.html")'
       "library ${toSnakeCase(name)}.elements.root_element;"
-      'import "package:polymer/polymer.dart";'
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
       'import "package:polymer_app/polymer_app.dart";'
       'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
-      'class RootElement extends PolymerElement with PolymerRouter {'
+      'class RootElement extends PolymerElement with AutonotifyBehavior, Observable, PolymerRouter {'
       'RootElement.created() : super.created();'
       'String _selected;'
       '@Property()'
@@ -341,8 +341,7 @@ class PolymerAppManager extends JsonObject {
       "import 'package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart';"
       'import "package:polymer_app/polymer_app.dart";'
       "main() async {"
-      "initSerializer();"
-      "await initPolymer();"
+      "await initPolymerApp();"
       "}";
 
   appLibraryTemplate({material: false}) => "library ${toSnakeCase(name)};\n\n"
@@ -368,8 +367,10 @@ class PolymerAppManager extends JsonObject {
       '  dart_to_js_script_rewriter: "^0.1.0+4"\n'
       '  web_components: "^0.12.0"\n'
       '  browser: "^0.10.0"\n'
+      '  autonotify_observe: "$autonotify_observe"\n'
       '  reflectable: "$reflectable_version"\n\n'
       'transformers:\n'
+      '  - autonotify_observe\n'
       '  - polymer:\n'
       '      entry_points:\n'
       '      - web/index.html\n'
@@ -392,13 +393,12 @@ class PolymerAppManager extends JsonObject {
   rootMaterialElementDartTemplate() => '@HtmlImport("theme.html")'
       '@HtmlImport("root_element.html")'
       "library ${toSnakeCase(name)}.elements.root_element;"
-      'import "package:polymer/polymer.dart";'
       'import "dart:html";'
       'import "package:web_components/web_components.dart" show HtmlImport;'
       'import "package:polymer_app/polymer_app.dart";'
       'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
       '@PolymerRegister("root-element")'
-      'class RootElement extends PolymerElement with PolymerRouter {'
+      'class RootElement extends PolymerElement with AutonotifyBehavior, Observable, PolymerRouter {'
       'RootElement.created() : super.created();\n\n'
       "PaperDrawerPanel get drawer => \$['drawerPanel'];"
       'String _selected;'

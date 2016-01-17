@@ -5,7 +5,7 @@
 part of polymer_app;
 
 @serializable
-abstract class PolymerModel extends JsProxy {
+abstract class PolymerModel extends JsProxy with Observable {
 
   Map get toMap => Serializer.toMap(this);
 
