@@ -63,14 +63,15 @@ Object getAnnotation(Type element, Type annotation) {
 class PolymerRoute implements init.Initializer<Type> {
   final String name;
   final String path;
+  final bool isDefault;
 
-  const PolymerRoute(this.name, this.path);
+  const PolymerRoute(this.name, this.path, {this.isDefault: false});
 
   initialize(Type element) {
     PolymerRegister reg = getAnnotation(element, PolymerRegister);
     if (reg != null) {
       PolymerAppRouteBehavior route = new Element.tag(reg.tagName) as PolymerAppRouteBehavior;
-      PolymerRouter.pagesRouter.add(new Page(name, path, route));
+      PolymerRouter.pagesRouter.add(new Page(name, path, route, isDefault: this.isDefault));
     }
   }
 }
