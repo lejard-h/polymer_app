@@ -64,8 +64,8 @@ initServices() async {
         PolymerService.registerService(
             toSnakeCase(classMirror.simpleName).replaceAll("_service", ""),
             ref);
-        ref.init();
       }
     }
   });
+  PolymerService.initAllServices();
 }
