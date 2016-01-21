@@ -4,7 +4,7 @@
 
 part of polymer_app.cli;
 
-const package_version = "0.7.4";
+const package_version = "0.7.4+1";
 const polymer_version = ">=1.0.0-rc.14";
 const polymer_elements_version = ">=1.0.0-rc.7";
 const analyzer_version = ">=0.27.0";
@@ -191,7 +191,9 @@ class PolymerAppManager extends JsonObject {
 
   createHomeRoute() async {
     await routes.createRoute("Home", "",
-        htmlTemplate: githubButton, cssTemplate: routeHomeCssTemplate, isDefault: true);
+        htmlTemplate: githubButton,
+        cssTemplate: routeHomeCssTemplate,
+        isDefault: true);
     routes.addToLibrary(toSnakeCase("Home-route"));
   }
 
@@ -396,6 +398,7 @@ class PolymerAppManager extends JsonObject {
       'import "package:web_components/web_components.dart" show HtmlImport;'
       'import "package:polymer_app/polymer_app.dart";'
       'import "package:${toSnakeCase(name)}/${toSnakeCase(name)}.dart";'
+      'import "package:${toSnakeCase(name)}/material.dart";'
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement with AutonotifyBehavior, Observable, PolymerRouter {'
       'RootElement.created() : super.created();\n\n'
