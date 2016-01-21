@@ -86,10 +86,11 @@ List _fromList(List list, Type type) {
 }
 
 Object _fromMap(Map json, Type type) {
-  if (json == null) {
+  if (json?.isEmpty) {
     return null;
   }
   json.remove(type_info_key);
+  json.remove("useCache");
 
   if (type == Map) {
     return new Map.from(json);
@@ -98,12 +99,10 @@ Object _fromMap(Map json, Type type) {
   ClassMirror cm;
   Object obj;
   InstanceMirror instance;
-  Object ref;
   try {
     cm = serializable.reflectType(type);
     obj = cm.newInstance('', []);
     instance = serializable.reflect(obj);
-    ref = instance.reflectee;
   } catch (e) {
     print(e);
     return null;
@@ -122,7 +121,7 @@ Object _fromMap(Map json, Type type) {
     }
   }
 
-  return ref;
+  return instance.reflectee;
 }
 
 Object _decode(Object decode, Type type) {
@@ -135,7 +134,7 @@ Object _decode(Object decode, Type type) {
 }
 
 Object _fromJson(String json, Type type) {
-  if (json == null) {
+  if (json == null || json.isEmpty) {
     return null;
   }
   return _decode(JSON.decode(json), type);
@@ -178,6 +177,7 @@ Map _toMap(Object obj) {
   while (cm.superclass != null &&
       cm.reflectedType != Serializer.max_superclass_type) {
     cm.declarations.forEach((String key, DeclarationMirror dec) {
+      //print(dec);
       if (dec is VariableMirror) {
         if (_isSerializableVariable(dec)) {
           var value = mir.invokeGetter(dec.simpleName);

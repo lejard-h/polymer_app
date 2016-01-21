@@ -10,16 +10,15 @@ abstract class PolymerRouter {
 
   static List<Page> pagesRouter = [];
 
-  @Property() List<Page> get pages => _pages;
+  @Property(notify: true) List<Page> get pages => _pages;
   set pages(List<Page> value) {
     _pages = value;
     notifyPath("pages", value);
   }
 
-  ready() {
-    init.run(typeFilter: [ PolymerRoute ]).then((_) {
-      pages = pagesRouter;
-    });
+  static attached(PolymerRouter instance) async {
+    await init.run(typeFilter: [PolymerRoute]);
+    instance.pages = pagesRouter;
   }
 
   static goToDefault(
@@ -70,8 +69,10 @@ class PolymerRoute implements init.Initializer<Type> {
   initialize(Type element) {
     PolymerRegister reg = getAnnotation(element, PolymerRegister);
     if (reg != null) {
-      PolymerAppRouteBehavior route = new Element.tag(reg.tagName) as PolymerAppRouteBehavior;
-      PolymerRouter.pagesRouter.add(new Page(name, path, route, isDefault: this.isDefault));
+      PolymerAppRouteBehavior route =
+          new Element.tag(reg.tagName) as PolymerAppRouteBehavior;
+      PolymerRouter.pagesRouter
+          .add(new Page(name, path, route, isDefault: this.isDefault));
     }
   }
 }

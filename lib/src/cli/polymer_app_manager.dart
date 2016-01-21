@@ -4,8 +4,8 @@
 
 part of polymer_app.cli;
 
-const package_version = "0.7.2";
-const polymer_version = ">=1.0.0-rc.12";
+const package_version = "0.7.3";
+const polymer_version = ">=1.0.0-rc.14";
 const polymer_elements_version = ">=1.0.0-rc.7";
 const analyzer_version = ">=0.27.0";
 const reflectable_version = ">=0.5.0";
@@ -191,7 +191,7 @@ class PolymerAppManager extends JsonObject {
 
   createHomeRoute() async {
     await routes.createRoute("Home", "",
-        htmlTemplate: githubButton, cssTemplate: routeHomeCssTemplate);
+        htmlTemplate: githubButton, cssTemplate: routeHomeCssTemplate, isDefault: true);
     routes.addToLibrary(toSnakeCase("Home-route"));
   }
 
@@ -298,12 +298,11 @@ class PolymerAppManager extends JsonObject {
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement with AutonotifyBehavior, Observable, PolymerRouter {'
       'RootElement.created() : super.created();'
-      'String _selected;'
-      '@Property()'
-      'String get selected => _selected;'
-      'set selected(String value) {'
-      '_selected = value;'
-      'notifyPath("selected", value);'
+      '@observable @Property(observer: "pageChanged") String selected;\n'
+      '@reflectable pageChanged(String value, String old) {'
+      'if (value != null) {'
+      'PolymerRouter.goToName(value);'
+      '}'
       '}'
       '@reflectable '
       'void goTo(MouseEvent event, [_]) {'
@@ -313,7 +312,7 @@ class PolymerAppManager extends JsonObject {
       'PolymerRouter.goToName(elem.text);'
       '}'
       '@reflectable '
-      'void goToDefault(MouseEvent event, [_]) {'
+      'void goToHome(MouseEvent event, [_]) {'
       'event.stopPropagation();'
       'event.preventDefault();'
       'PolymerRouter.goToDefault();'
@@ -400,19 +399,15 @@ class PolymerAppManager extends JsonObject {
       '@PolymerRegister("root-element")'
       'class RootElement extends PolymerElement with AutonotifyBehavior, Observable, PolymerRouter {'
       'RootElement.created() : super.created();\n\n'
-      "PaperDrawerPanel get drawer => \$['drawerPanel'];"
-      'String _selected;'
-      '@Property()'
-      'String get selected => _selected;'
-      'set selected(String value) {'
-      '_selected = value;'
-      ' if (value != null) {'
+      "PaperDrawerPanel get drawer => \$['drawerPanel'];\n\n"
+      '@observable @Property(observer: "pageChanged") String selected;\n'
+      '@reflectable pageChanged(String value, String old) {'
+      'if (value != null) {'
       'PolymerRouter.goToName(value);'
       '}'
-      'notifyPath("selected", value);'
       '}'
       '@reflectable '
-      'void goToDefault(MouseEvent event, [_]) {'
+      'void goToHome(MouseEvent event, [_]) {'
       'event.stopPropagation();'
       'event.preventDefault();'
       'drawer.closeDrawer();'

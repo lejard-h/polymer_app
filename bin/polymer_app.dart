@@ -75,7 +75,8 @@ class PolymerApp extends Program {
 
   @Command('Create new polymer_app route.')
   route(String name, String path,
-      {@Option('The output folder of your route') String output_folder}) async {
+      {@Option('The output folder of your route') String output_folder,
+      @Option('Is default route') bool isDefault: false}) async {
     _testField(name, "route name");
     _testField(path, "route path");
     String libPath = _initNewAction();
@@ -90,7 +91,7 @@ class PolymerApp extends Program {
 
     RoutesManager routes = manager?.routes ?? new RoutesManager(name, libPath);
 
-    await routes.createRoute(name, path);
+    await routes.createRoute(name, path, isDefault: isDefault);
     if (manager != null) {
       await routes.addToLibrary("$name-route");
     }
@@ -121,7 +122,7 @@ class PolymerApp extends Program {
 
     await models.createModel(name);
     if (manager != null) {
-     await  models.addToLibrary("$name\_model");
+      await models.addToLibrary("$name\_model");
     }
     myExit();
   }
@@ -234,12 +235,13 @@ class PolymerApp extends Program {
     _getConfigFile();
 
     printInfo("Creating '${green(appName)}' application");
-    await writeInFile("${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
+    await writeInFile(
+        "${outputFolder.resolveSymbolicLinksSync()}/polymer_app.json",
         getDefaultJsonConfig(appName));
     _getConfigFile();
     await manager?.createApplication(
         material: is_material, materialLayout: material_layout);
-     this.print("${green("cd $rootDirectoryPath; pub get; pub serve")}");
+    this.print("${green("cd $rootDirectoryPath; pub get; pub serve")}");
     myExit();
   }
 

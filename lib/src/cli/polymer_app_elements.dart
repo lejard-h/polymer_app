@@ -2,7 +2,6 @@
  * Created by lejard_h on 24/12/15.
  */
 
-
 part of polymer_app.cli;
 
 class ElementsManager extends Manager {
@@ -26,9 +25,11 @@ class ElementsManager extends Manager {
     await writeInDartFile(
         "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.dart",
         dartContent);
-    await writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
+    await writeInFile(
+        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.html",
         htmlContent);
-    await writeInFile("$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
+    await writeInFile(
+        "$libraryPath/${toSnakeCase(name)}/${toSnakeCase(name)}.css",
         cssContent);
   }
 
@@ -57,6 +58,7 @@ class ElementsManager extends Manager {
       "}\n\n"
       "/// Called when an attribute (such as  a class) of an instance of ${toLispCase(name)} is added, changed, or removed.\n"
       "attributeChanged(String name, String oldValue, String newValue) {"
+      "super.attributeChanged(name, oldValue, newValue);"
       "}\n\n"
       "/// Called when ${toLispCase(name)} has been fully prepared (Shadow DOM created, property observers set up, event listeners attached).\n"
       "ready() {"

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.3
+- Update to polymer 1.0.0-rc.14
+
 ## 0.7.0
 - Implementation of ```polymer_autonotify```
 - ```init``` function on ```PolymerService``` class
