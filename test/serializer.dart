@@ -7,15 +7,18 @@ import "dart:convert";
 import "package:polymer_app/src/serializer.dart";
 
 @serializable
-abstract class Proxy {}
+abstract class Proxy extends Serialize {}
 
-abstract class ProxyA extends Proxy with Serialize {}
+abstract class ProxyA extends Proxy {}
 
 @serializable
 class ModelA extends ProxyA {
-  String foo;
+  String _foo;
 
-  ModelA([this.foo = "bar"]);
+  String get foo => _foo;
+  set foo(String value) => _foo = value;
+
+  ModelA([this._foo = "bar"]);
 }
 
 class Test {

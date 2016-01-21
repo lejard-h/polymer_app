@@ -32,7 +32,8 @@ class Serializer {
   static Object fromList(List json, Type type) => _fromList(json, type);
 }
 
-initSerializer() {
+initSerializer({Type max_superclass: Serialize}) {
+  Serializer.max_superclass_type = max_superclass;
   for (ClassMirror classMirror in serializable.annotatedClasses) {
     if (classMirror != null && classMirror.qualifiedName != null) {
       Serializer.classes[classMirror.qualifiedName] = classMirror;
@@ -177,19 +178,16 @@ Map _toMap(Object obj) {
   while (cm.superclass != null &&
       cm.reflectedType != Serializer.max_superclass_type) {
     cm.declarations.forEach((String key, DeclarationMirror dec) {
-      //print(dec);
-      if (dec is VariableMirror) {
-        if (_isSerializableVariable(dec)) {
-          var value = mir.invokeGetter(dec.simpleName);
-          if (_isObjPrimaryType(value)) {
-            data[key] = value;
-          } else if (value is Map || value is Serialize) {
-            data[key] = _toMap(value);
-          } else if (value is List) {
-            data[key] = _convertList(value);
-          } else if (value is DateTime) {
-            data[key] = value.toString();
-          }
+      if ((dec is VariableMirror && _isSerializableVariable(dec)) || (dec is MethodMirror && dec.isGetter)) {
+        var value = mir.invokeGetter(dec.simpleName);
+        if (_isObjPrimaryType(value)) {
+          data[key] = value;
+        } else if (value is Map || value is Serialize) {
+          data[key] = _toMap(value);
+        } else if (value is List) {
+          data[key] = _convertList(value);
+        } else if (value is DateTime) {
+          data[key] = value.toString();
         }
       }
     });

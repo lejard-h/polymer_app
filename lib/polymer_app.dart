@@ -35,7 +35,7 @@ part "src/polymer_services.dart";
 part "src/http_service.dart";
 
 initPolymerApp() async {
-  await initSerializer();
+  await initSerializer(max_superclass: PolymerModel);
   await initServices();
   await initPolymer();
 }
