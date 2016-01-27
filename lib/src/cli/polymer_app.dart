@@ -4,7 +4,7 @@
 
 part of polymer_app.cli;
 
-const package_version = "0.7.4+2";
+const package_version = "0.8.0";
 const polymer_version = ">=1.0.0-rc.14";
 const polymer_elements_version = ">=1.0.0-rc.7";
 const analyzer_version = ">=0.27.0";

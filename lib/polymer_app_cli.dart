@@ -14,7 +14,7 @@ import "dart:async";
 export "package:polymer_app/src/utils.dart";
 
 part "src/cli/utils_io.dart";
-part "src/cli/polymer_app_manager.dart";
+part "src/cli/polymer_app.dart";
 part "src/cli/polymer_app_behaviors.dart";
 part "src/cli/polymer_app_routes.dart";
 part "src/cli/polymer_app_models.dart";

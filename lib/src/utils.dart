@@ -15,12 +15,14 @@ toSnakeCase(String name) => name
     ?.toLowerCase();
 
 toLispCase(String name) => name
-      ?.replaceAll("_", "-")
-      ?.replaceAll(" ", "-")
-      ?.replaceAllMapped(new RegExp('(?!^)([A-Z])'), (Match g) => "-${g[1]}")
-      ?.toLowerCase();
+    ?.replaceAll("_", "-")
+    ?.replaceAll(" ", "-")
+    ?.replaceAllMapped(new RegExp('(?!^)([A-Z])'), (Match g) => "-${g[1]}")
+    ?.toLowerCase();
 
-toCamelCase(String str) => toLispCase(str)
-    ?.split('-')
-    ?.map((e) => e[0].toUpperCase() + e.substring(1))
-    ?.join('');
+toCamelCase(String str) => toLispCase(str)?.split('-')?.map((e) {
+      if (e == null || e.isEmpty) {
+        return e;
+      }
+      return e[0].toUpperCase() + e.substring(1);
+    })?.join('');

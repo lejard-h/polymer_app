@@ -74,9 +74,13 @@ class PolymerApp extends Program {
   }
 
   @Command('Create new polymer_app route.')
-  route(String name, String path,
+  route(name, path,
       {@Option('The output folder of your route') String output_folder,
-      @Option('Is default route') bool isDefault: false}) async {
+      @Option('Is default route') bool isDefault: false,
+      @Option('Is an abstract route') bool isAbstract: false,
+      @Option('Parent route name') String parent: "",
+      @Option('Need if isAbstract, redirecto to route name')
+      String redirectTo: ""}) async {
     _testField(name, "route name");
     _testField(path, "route path");
     String libPath = _initNewAction();
@@ -91,7 +95,7 @@ class PolymerApp extends Program {
 
     RoutesManager routes = manager?.routes ?? new RoutesManager(name, libPath);
 
-    await routes.createRoute(name, path, isDefault: isDefault);
+    await routes.createRoute(name, path, isDefault: isDefault, isAbstract: isAbstract, parent: parent, redirectTo: redirectTo);
     if (manager != null) {
       await routes.addToLibrary("$name-route");
     }

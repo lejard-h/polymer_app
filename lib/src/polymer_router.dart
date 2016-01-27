@@ -63,16 +63,27 @@ class PolymerRoute implements init.Initializer<Type> {
   final String name;
   final String path;
   final bool isDefault;
+  final bool isAbstract;
+  final String redirectTo;
+  final String parent;
 
-  const PolymerRoute(this.name, this.path, {this.isDefault: false});
+  const PolymerRoute(this.name, this.path,
+      {this.isDefault: false,
+      this.parent,
+      this.redirectTo,
+      this.isAbstract});
 
   initialize(Type element) {
     PolymerRegister reg = getAnnotation(element, PolymerRegister);
     if (reg != null) {
-      PolymerAppRouteBehavior route =
+      PolymerAppRouteBehavior routeElem =
           new Element.tag(reg.tagName) as PolymerAppRouteBehavior;
-      PolymerRouter.pagesRouter
-          .add(new Page(name, path, route, isDefault: this.isDefault));
+      PolymerRouter.pagesRouter.add(new Page(name, path,
+          element: routeElem,
+          isDefault: isDefault,
+          isAbstract: isAbstract,
+          redirectTo: redirectTo,
+          parent: parent));
     }
   }
 }
