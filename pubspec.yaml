@@ -1,6 +1,6 @@
 name: polymer_app
 description: Generation and management of polymer application
-version: 0.8.0
+version: 0.8.1
 author: Walletek <hadrien.lejard@gmail.com>
 homepage: https://github.com/walletek/polymer_app
 
@@ -25,6 +25,7 @@ dependencies:
   cupid: #^0.9.10
     git: "https://github.com/lejard-h/cupid.git"
     #path: "/Users/lejard_h/github/cupid"
+  serializer: ">=0.1.0"
 
 dev_dependencies:
   test: '>=0.12.0'

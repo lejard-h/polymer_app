@@ -51,7 +51,7 @@ class RoutesManager extends Manager {
   }
 
   _notEmptyButNull(String value ) {
-    if (value?.isEmpty) {
+    if (value == null || value.isEmpty) {
       return null;
     }
     return '"$value"';
